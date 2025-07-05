@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1d2b5f;
+  --color-secondary: var(--color-cyan-700);
+
+  --color-textLight: var(--color-slate-50);
+  --spacing-wrapper: 1400px;
+
+  --font-oswald: var(--font-Oswald);
+}
