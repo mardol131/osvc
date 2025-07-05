@@ -9,3 +9,7 @@
 
   --font-oswald: var(--font-Oswald);
 }
+
+h1 {
+  @apply text-6xl font-semibold;
+}
