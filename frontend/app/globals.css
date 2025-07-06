@@ -1,15 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1d2b5f;
-  --color-secondary: var(--color-cyan-700);
+  --font-oswald: "Oswald";
+  --font-bebas: "Bebas Neue";
+
+  --color-primary: var(--color-zinc-800);
+  --color-secondary: var(--color-amber-400);
+  --color-colorFrom: var(--color-amber-700);
+  --color-colorTo: var(--color-amber-300);
 
   --color-textLight: var(--color-slate-50);
+  --color-textP: var(--color-slate-600);
   --spacing-wrapper: 1400px;
 
   --font-oswald: var(--font-Oswald);
 }
 
 h1 {
-  @apply text-6xl font-semibold;
+  @apply text-7xl font-semibold font-bebas;
+}
+
+h2 {
+  @apply text-5xl font-bebas;
+}
+
+h3 {
+  @apply text-4xl font-bebas;
 }

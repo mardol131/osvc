@@ -5,28 +5,27 @@ type Props = {};
 
 export default function Hero({}: Props) {
   return (
-    <div className=" min-h-200 flex items-center justify-center px-10">
+    <div className=" min-h-200 flex items-center justify-center px-10 border-b">
       <div className=" w-full flex flex-col items-center gap-5 text-center max-w-200">
         <div className="flex flex-col items-center">
-          <p className="text-lg uppercase">Informační služba pro podnikatele</p>
-          <h1>Přestaňte se spoléhat na stát</h1>
+          <h1 className="">Vy podnikáte. My hlídáme byrokracii.</h1>
         </div>
-        <p className="text-xl">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem
-          libero quam
+        <p className="text-xl font-semibold text-textP">
+          Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,
+          když se něco změní. Už žádné pokuty ani stres z neznámých povinností.
         </p>
         <div className="grid grid-cols-2 gap-4 mt-10">
           <a
             href="/"
-            className="text-2xl font-semibold py-4 px-5 bg-primary text-textLight rounded-full font-oswald flex items-center justify-center"
+            className="shadow-lg text-2xl font-semibold py-4 px-5 bg-linear-120 from-colorFrom to-colorTo hover:scale-105 transition-all ease-in-out text-textLight rounded-lg font-oswald flex items-center justify-center"
           >
-            Koupit
+            Chci krýt záda
           </a>
           <Link
             href="#benefit"
-            className="text-2xl font-semibold py-4 px-5 border-3 border-primary  rounded-full font-oswald flex items-center justify-center"
+            className="shadow-lg text-2xl font-semibold py-3 px-6 bg-primary text-textLight rounded-lg font-oswald flex items-center justify-center"
           >
-            Proč to chtít?
+            Jak to funguje
           </Link>
         </div>
       </div>
