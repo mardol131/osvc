@@ -1,31 +1,28 @@
 export const benefitsData = {
   header: {
     subheading: "Proč",
-    heading: "Co získáte v rámci služby",
+    heading: "Co získáte v rámci služby.",
     text: "Získáte pravidelný přehled důležitých informací, upozornění na termíny, nové povinnosti i změny zákonů. Vše podané lidsky, přehledně a bez složité úřední mluvy.",
   },
-  benefitsHeading: "Co je součástí ročního členství",
+  benefitsHeading: "Součástí ročního členství:",
   benefits: [
     {
-      icon: "email",
-      title: "Měsíční e-mail s přehledem změn",
-      text: "Každý měsíc vám pošleme jasně vysvětlené shrnutí toho nejdůležitějšího pro OSVČ – změny, nové povinnosti, tipy.",
+      icon: "sms",
+      title: "SMS a emailová upozornění na blížící se termíny",
+      text: "Připomeneme vám, co se blíží. Daňové přiznání, přehledy, změny zákonů. Včas, srozumitelně a bez stresu.",
     },
     {
-      icon: "sms",
-      title: "Upozornění na blížící se termíny",
-      text: "Připomeneme vám, co se blíží – daňové přiznání, přehledy, změny zákonů. Včas, srozumitelně a bez stresu.",
+      icon: "email",
+      title: "Měsíční přehledy změn",
+      text: "Žádný marketing, pouze praktické informace. Každý měsíc vám pošleme jasně vysvětlené shrnutí toho nejdůležitějšího pro OSVČ. Změny, nové povinnosti, tipy.",
     },
+
     {
       icon: "upozorneni",
       title: "Varování před novými povinnostmi a pokutami",
-      text: "Víme, co se mění – a dáme vám vědět dřív, než za to začnete platit.",
+      text: "Víme co se mění a dáme vám vědět dřív, než za to začnete platit.",
     },
-    {
-      icon: "navody",
-      title: "Checklisty a praktické návody",
-      text: "Co, kdy a jak udělat – vysvětleno jednoduše, krok za krokem. Bez právnických kliček.",
-    },
+
     {
       icon: "linky",
       title: "Odkazy na formuláře a oficiální zdroje",
@@ -33,8 +30,8 @@ export const benefitsData = {
     },
     {
       icon: "calendar",
-      title: "Archiv dokumentů a přehledů",
-      text: "Získáte přístup k přehledné knihovně se všemi návody, formuláři a zákonnými změnami.",
+      title: "Sdílený kalendář s důležitými termíny",
+      text: "Získáte přístup ke kalendáři, ve kterém uvidíte všechny termíny jednotlivých povinností.",
     },
   ],
   audience: {

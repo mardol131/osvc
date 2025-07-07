@@ -1,10 +1,11 @@
 import React from "react";
 import { BsSignpost2 } from "react-icons/bs";
-import { FaHourglass, FaRegCalendarAlt } from "react-icons/fa";
 import { FiAlertTriangle } from "react-icons/fi";
 import { GoChecklist } from "react-icons/go";
 import { IoCalendarOutline } from "react-icons/io5";
 import { MdOutlineEmail, MdOutlineTextsms } from "react-icons/md";
+import GoldButton from "../buttons/GoldButton";
+import HeadingCenter from "../headings/HeadingCenter";
 
 type Props = {
   benefitsData: {
@@ -39,7 +40,7 @@ function BenefitCard({
   icon: string;
 }) {
   return (
-    <div className="grid grid-cols-[1fr_5fr] items-start ">
+    <div className="grid grid-cols-[1fr_5fr] items-start last:col-span-2 md:col-span-1 col-span-2 bg-zinc-100 p-5 rounded-lg">
       <div className="px-3 py-1 text-4xl">
         {icon === "email" && <MdOutlineEmail />}
         {icon === "sms" && <MdOutlineTextsms />}
@@ -58,18 +59,21 @@ function BenefitCard({
 
 export default function Benefits({ benefitsData }: Props) {
   return (
-    <div className=" flex items-center justify-center px-10 py-30">
+    <div
+      id="benefits"
+      className=" flex items-center justify-center md:px-10 px-4 md:py-30 py-20"
+    >
       <div className="max-w-wrapper flex flex-col gap-10 items-center">
-        <div className="flex flex-col items-center gap-3 max-w-200 text-center">
-          <p className="text-secondary font-bold uppercase">
-            {benefitsData.header.subheading}
-          </p>
-          <h2 className="">{benefitsData.header.heading}</h2>
-          <p className="text-lg text-textP">{benefitsData.header.text}</p>
-        </div>
+        <HeadingCenter
+          subheading={benefitsData.header.subheading}
+          heading={benefitsData.header.heading}
+          text={benefitsData.header.text}
+        />
         <div className="flex flex-col items-center gap-10">
-          <h3 className="font-bebas">{benefitsData.benefitsHeading}</h3>
-          <div className="grid grid-cols-2 gap-10 max-w-200">
+          <h3 className="font-bebas text-center">
+            {benefitsData.benefitsHeading}
+          </h3>
+          <div className="grid grid-cols-2 gap-5 max-w-200">
             {benefitsData.benefits.map((item) => {
               return (
                 <BenefitCard
@@ -83,22 +87,19 @@ export default function Benefits({ benefitsData }: Props) {
           </div>
         </div>
         <div className="flex flex-col items-center gap-10">
-          <h4 className="font-bebas">{benefitsData.audience.title}</h4>
-          <ul className="list-disc text-xl">
+          <h4 className="font-bebas text-center">
+            {benefitsData.audience.title}
+          </h4>
+          <ul className="flex flex-col gap-2 text-xl list-inside">
             {benefitsData.audience.points.map((item) => {
               return (
-                <li key={item}>
-                  <p className="">{item}</p>
+                <li className="" key={item}>
+                  <p className="">- {item}</p>
                 </li>
               );
             })}
           </ul>
-          <a
-            href="/"
-            className="shadow-lg text-2xl uppercase font-semibold py-4 px-5 bg-linear-200 from-tertiary to-colorTo hover:scale-105 transition-all ease-in-out text-textLight rounded-lg font-oswald flex items-center justify-center"
-          >
-            {benefitsData.cta.buttonText}
-          </a>
+          <GoldButton text={benefitsData.cta.buttonText} href="/" />
         </div>
       </div>
     </div>

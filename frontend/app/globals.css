@@ -18,8 +18,8 @@
   --color-tertiary: var(--color-amber-700);
   --color-colorTo: var(--color-amber-300);
 
-  --color-textLight: var(--color-slate-50);
-  --color-textP: var(--color-gray-500);
+  --color-textLight: var(--color-zinc-50);
+  --color-textP: var(--color-zinc-500);
   --spacing-wrapper: 1100px;
 }
 
@@ -33,15 +33,15 @@ a {
 }
 
 h1 {
-  @apply text-7xl font-bebas uppercase;
+  @apply md:text-7xl text-5xl font-bebas uppercase;
 }
 
 h2 {
-  @apply text-5xl font-bebas;
+  @apply md:text-5xl text-4xl font-bebas;
 }
 
 h3 {
-  @apply text-4xl font-bebas;
+  @apply md:text-4xl text-3xl font-bebas;
 }
 
 h4 {

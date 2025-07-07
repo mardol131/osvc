@@ -9,8 +9,8 @@ export default function Question({ heading, text }: Props) {
         <div className="py-3  bg-primary text-textLight cursor-pointer">
           <p className=" text-xl">{heading}</p>
         </div>
-        <div className="px-3">
-          <p className="text-textP py-5 text-lg">{text}</p>
+        <div className="p-5">
+          <p className="text-textP text-lg">{text}</p>
         </div>
       </div>
     </>
