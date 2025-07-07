@@ -1,24 +1,28 @@
 "use client";
 
 import React, { useState } from "react";
+import { FaHandshake } from "react-icons/fa";
 
 export default function CTA() {
   const [email, setEmail] = useState<string>("");
+  const [responseOk, setResponseOk] = useState(false);
 
   async function handleSubmit() {
     console.log(email);
     const response = await fetch(
-      "https://webhook-test.com/f64f80d62398bb08229d688d9c4119c1",
+      "https://hook.eu2.make.com/5dmi6nvwyg988o4h03kp7xhathne1d67",
       {
         method: "POST",
         mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email }),
+
+        body: JSON.stringify(email),
       }
     );
     console.log(response);
+
+    if (response.ok) {
+      setResponseOk(true);
+    }
   }
 
   return (
@@ -31,27 +35,37 @@ export default function CTA() {
           }}
           className="bg-primary w-full text-textLight p-10 rounded-lg flex flex-col gap-4 text-center md:text-start"
         >
-          <h4>Zanechte nám svůj email, můžeme se Vám ozvat později.</h4>
-          <div className="flex md:flex-row flex-col md:gap-5 gap-4">
-            <input
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              type="emmail"
-              className="bg-white rounded-lg min-h-10 p-3 w-full text-primary font-oswald"
-            />
-            <button
-              type="submit"
-              className="cursor-pointer shrink-0 shadow-lg text-lg uppercase font-semibold p-3 bg-linear-150 from-tertiary to-colorTo hover:scale-105 transition-all ease-in-out text-textLight rounded-lg font-oswald"
-            >
-              Přihlásit se k doběru
-            </button>
-          </div>
-          <p>
-            Nebudeme Vás otravovat žádnými reklamami. Odesílat budeme pouze
-            informace týkající se novinek v naší službě.
-          </p>
+          {responseOk ? (
+            <div className="flex flex-col md:gap-5 gap-4 items-center w-full text-center">
+              <FaHandshake className="text-4xl text-emerald-500" />
+              <h4>Děkujeme!</h4>
+              <h4>Vaše podpora je to, co nás drží na nohou.</h4>
+            </div>
+          ) : (
+            <>
+              <h4>Zanechte nám svůj email, můžeme se Vám ozvat později.</h4>
+              <div className="flex md:flex-row flex-col md:gap-5 gap-4">
+                <input
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  type="emmail"
+                  className="bg-white rounded-lg min-h-10 p-3 w-full text-primary font-oswald"
+                />
+                <button
+                  type="submit"
+                  className="cursor-pointer shrink-0 shadow-lg text-lg uppercase font-semibold p-3 bg-linear-150 from-tertiary to-colorTo hover:scale-105 transition-all ease-in-out text-textLight rounded-lg font-oswald"
+                >
+                  Přihlásit se k doběru
+                </button>
+              </div>
+              <p>
+                Nebudeme Vás otravovat žádnými reklamami. Odesílat budeme pouze
+                informace týkající se novinek v naší službě.
+              </p>
+            </>
+          )}
         </form>
       </div>
     </div>

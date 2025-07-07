@@ -21,7 +21,10 @@ export default function Pricing() {
         <div>
           <div className="flex flex-col items-start gap-3">
             <p className="text-secondary font-bold uppercase">Ceník</p>
-            <h2 className="">Jedna cena. Celý rok ochrany.</h2>
+            <h2 className="">
+              Jedna koruna denně.
+              <br /> Celý rok ochrany.
+            </h2>
             <p className="text-lg text-textP">
               Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,
               když se něco změní. Už žádné pokuty ani stres z neznámých

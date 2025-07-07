@@ -1,5 +1,6 @@
 import React from "react";
 import HeadingCenter from "../headings/HeadingCenter";
+import { GoAlertFill } from "react-icons/go";
 
 export default function Fines() {
   return (
@@ -12,9 +13,12 @@ export default function Fines() {
         />
         <div className="flex xl:flex xl:items-end md:grid md:items-stretch grid-cols-2 xl:gap-0 gap-5 xl:flex-row flex-col min-h-80 items-end justify-center">
           <div className="rounded-xl p-5 xl:bg-zinc-950 bg-primary text-textLight flex flex-col items-center justify-center text-center gap-3 xl:h-80 xl:max-w-70 w-full xl:-rotate-10 xl:shrink-0 xl:translate-x-20 xl:shadow-xl xl:hover:z-40 xl:hover:scale-110 xl:ease-in-out xl:transition-all xl:hover:rotate-0 z-0">
-            <p className="font-semibold">
-              Pokuta až <span className="text-secondary">300 000</span> Kč
-            </p>
+            <div className="flex items-center gap-2">
+              <GoAlertFill className="text-xl text-secondary" />
+              <p className="font-semibold">
+                Pokuta až <span className="text-secondary">300 000</span> Kč
+              </p>
+            </div>
             <p className="md:text-2xl text-xl font-semibold">
               Nepodání daňového přiznání
             </p>
@@ -25,9 +29,12 @@ export default function Fines() {
             </p>
           </div>
           <div className="rounded-xl p-5 xl:bg-zinc-900 bg-primary text-textLight flex flex-col items-center justify-center text-center gap-3 xl:h-100 xl:max-w-70 w-full xl:-rotate-5 xl:shrink-0 xl:translate-x-10 xl:shadow-xl xl:hover:z-40 xl:hover:scale-110 ease-in-out transition-all xl:hover:rotate-0 z-10">
-            <p className="font-semibold">
-              Pokuta až <span className="text-secondary">50 000</span> Kč
-            </p>
+            <div className="flex items-center gap-2">
+              <GoAlertFill className="text-xl text-secondary" />
+              <p className="font-semibold">
+                Pokuta až <span className="text-secondary">50 000</span> Kč
+              </p>
+            </div>
             <p className="md:text-2xl text-xl font-semibold">
               Nedodání přehledu o příjmech a výdajích na OSSZ
             </p>
@@ -37,9 +44,12 @@ export default function Fines() {
             </p>
           </div>
           <div className="col-span-2 rounded-xl p-5 xl:bg-primary bg-primary text-textLight flex flex-col items-center justify-center text-center gap-3 xl:max-w-80 w-full xl:h-110 xl:shrink-0 xl:z-20 xl:shadow-xl xl:hover:scale-110 ease-in-out transition-all hover:rotate-0 z-20">
-            <p className="">
-              Pokuta až <span className="text-secondary">10 000</span> Kč
-            </p>
+            <div className="flex items-center gap-2">
+              <GoAlertFill className="text-xl text-secondary" />
+              <p className="">
+                Pokuta až <span className="text-secondary">10 000</span> Kč
+              </p>
+            </div>
             <p className="md:text-2xl text-xl font-semibold">
               Nepřihlášení se k poplatku za televizi a rádio
             </p>
@@ -49,9 +59,12 @@ export default function Fines() {
             </p>
           </div>
           <div className="rounded-xl p-5 xl:bg-zinc-900 bg-primary text-textLight flex flex-col items-center justify-center text-center gap-3 xl:h-100 xl:max-w-70 w-full xl:rotate-5 xl:shrink-0 xl:-translate-x-10 xl:z-10 xl:shadow-xl xl:hover:z-40 xl:hover:scale-110 ease-in-out transition-all hover:rotate-0 z-10">
-            <p className="font-semibold">
-              Pokuta <span className="text-secondary">0,05 %</span> denně
-            </p>
+            <div className="flex items-center gap-2">
+              <GoAlertFill className="text-xl text-secondary" />
+              <p className="font-semibold">
+                Pokuta <span className="text-secondary">0,05 %</span> denně
+              </p>
+            </div>
             <p className="md:text-2xl text-xl font-semibold">
               Neodvedení záloh na sociální pojištění{" "}
             </p>
@@ -61,9 +74,12 @@ export default function Fines() {
             </p>
           </div>
           <div className="rounded-xl p-5 xl:bg-zinc-950 bg-primary text-textLight flex flex-col items-center justify-center text-center gap-3 xl:h-80 xl:max-w-70 w-full xl:rotate-10 xl:shrink-0 xl:-translate-x-20 xl:z-0 xl:shadow-xl xl:hover:z-40 xl:hover:scale-110 ease-in-out transition-all xl:hover:rotate-0 z-0">
-            <p className="font-semibold">
-              Pokuta až <span className="text-secondary">1 000 000</span> Kč
-            </p>
+            <div className="flex items-center gap-2">
+              <GoAlertFill className="text-xl text-secondary" />
+              <p className="font-semibold">
+                Pokuta až <span className="text-secondary">1 000 000</span> Kč
+              </p>
+            </div>
             <p className="md:text-2xl text-xl font-semibold">
               Nepodání kontrolního hlášení DPH{" "}
             </p>

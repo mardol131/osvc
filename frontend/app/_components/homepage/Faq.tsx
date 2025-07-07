@@ -22,7 +22,7 @@ export default function Faq() {
           />
           <Question
             heading="Kde berete informace?"
-            text="Využíváme oficiální zdroje jako zákony, vyhlášky, informace z webů ministerstev, ČSSZ, finanční správy, zdravotních pojišťoven a dalších relevantních institucí. Zároveň využíváme služby expertů, jejich hlavní pracovní náplní je tyto změny a novinky sledovat."
+            text="Využíváme oficiální zdroje jako zákony, vyhlášky, informace z webů ministerstev, ČSSZ, finanční správy, zdravotních pojišťoven a dalších relevantních institucí. Zároveň využíváme služby expertů, jejichž hlavní pracovní náplní je tyto změny a novinky sledovat."
           />
           <Question
             heading="Jak se dozvím, že se blíží nějaký termín?"
@@ -31,7 +31,7 @@ export default function Faq() {
 
           <Question
             heading="Je služba jen pro živnostníky nebo i pro firmy?"
-            text="Služba je navržena především pro živnostníky (OSVČ), protože právě ti často podnikají bez účetní, právníka nebo jiného profesionálního zázemí. Stát od nich očekává splnění celé řady povinností, ale zároveň jim nic aktivně nepřipomíná."
+            text="Služba je navržena především pro živnostníky (OSVČ), protože právě ti často podnikají bez účetní, právníka nebo jiného profesionálního zázemí. Stát od nich očekává splnění celé řady povinností, ale zároveň jim s ničím nepomůže a nic aktivně nepřipomíná."
           />
           <Question
             heading="Kolik služba stojí a co všechno zahrnuje?"

@@ -22,6 +22,11 @@ export default function Hero() {
           <GoldButton text="Koupit za 365 Kč na rok" href={paymentUrl} />
           <BlackButton id="benefits" text="Jak to funguje" classes="" />
         </div>
+        <div>
+          <p className="text-textP md:mt-10">
+            O službu projevilo zájem již 153 lidí...
+          </p>
+        </div>
       </div>
     </div>
   );

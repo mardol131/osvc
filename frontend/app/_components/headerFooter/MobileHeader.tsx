@@ -32,7 +32,7 @@ export default function MobileHeader() {
       <div className="max-w-wrapper w-full flex flex-col">
         <div className="w-full flex justify-between items-center">
           <p className="font-extrabold text-2xl uppercase justify-self-start">
-            Logo
+            OSVČ365
           </p>
           <IoMenu
             className="text-3xl"

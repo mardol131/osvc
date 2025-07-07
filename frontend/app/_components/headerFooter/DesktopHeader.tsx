@@ -7,7 +7,7 @@ export default function DesktopHeader() {
     <header className="hidden min-h-20 bg-white/50 backdrop-blur-md lg:flex items-center justify-center px-10 fixed top-0 w-full z-50">
       <div className="max-w-wrapper w-full grid grid-cols-[1fr_4fr_1fr] items-center">
         <p className="font-extrabold text-2xl uppercase justify-self-start">
-          Logo
+          OSVČ365
         </p>
         <ul className="text-primary font-semibold text-lg flex gap-10 justify-self-center">
           <li>
