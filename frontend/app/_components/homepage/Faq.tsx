@@ -1,13 +1,13 @@
 import Link from "next/link";
 import React from "react";
-import Question from "./Question";
+import Question from "../faq/Question";
 import HeadingCenter from "../headings/HeadingCenter";
 
 type Props = {};
 
 export default function Faq({}: Props) {
   return (
-    <div className=" flex items-start justify-center px-10 border-b py-30">
+    <div className=" flex items-start justify-center px-10 py-30">
       <div className=" w-full flex flex-col items-center text-center max-w-200">
         <HeadingCenter
           heading="Máte otázky? Pojďme si je zodpovědět!"

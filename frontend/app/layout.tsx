@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="cs">
-      <body className={` text-primary`}>
+      <body className={`font-nunito text-primary`}>
         <Header />
         {children}
       </body>

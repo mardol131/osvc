@@ -1,26 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap");
 
 @import "tailwindcss";
 
 @theme {
   --font-oswald: "Oswald";
   --font-bebas: "Bebas Neue";
+  --font-roboto: "Roboto";
+  --font-cabin: "Cabin";
+  --font-nunito: "Nunito Sans";
 
   --color-primary: var(--color-zinc-800);
   --color-secondary: var(--color-amber-400);
-  --color-colorFrom: var(--color-amber-700);
+  --color-tertiary: var(--color-amber-700);
   --color-colorTo: var(--color-amber-300);
 
   --color-textLight: var(--color-slate-50);
-  --color-textP: var(--color-slate-600);
-  --spacing-wrapper: 1400px;
+  --color-textP: var(--color-gray-500);
+  --spacing-wrapper: 1100px;
+}
 
-  --font-oswald: var(--font-Oswald);
+p {
+  @apply font-oswald;
+}
+
+button,
+a {
+  @apply font-oswald;
 }
 
 h1 {
-  @apply text-7xl font-semibold font-bebas;
+  @apply text-7xl font-bebas uppercase;
 }
 
 h2 {
@@ -29,4 +42,8 @@ h2 {
 
 h3 {
   @apply text-4xl font-bebas;
+}
+
+h4 {
+  @apply text-3xl font-bebas;
 }
