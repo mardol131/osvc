@@ -1,4 +1,3 @@
-import { paymentUrl } from "@/app/_data/pricing";
 import { scrollToElement } from "@/app/_functions/scrollToElement";
 import React from "react";
 
@@ -62,7 +61,7 @@ export default function DesktopHeader() {
           </li>
         </ul>
         <a
-          href={paymentUrl}
+          href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
           className="shadow-lg uppercase text-lg font-semibold py-2 px-5 bg-primary text-textLight rounded-lg font-oswald hover:scale-105 transition-all ease-in-out justify-self-end"
         >
           Koupit

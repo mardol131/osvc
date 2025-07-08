@@ -1,7 +1,6 @@
 import React from "react";
 import BlackButton from "../buttons/BlackButton";
 import GoldButton from "../buttons/GoldButton";
-import { paymentUrl } from "@/app/_data/pricing";
 
 export default function Hero() {
   return (
@@ -19,7 +18,10 @@ export default function Hero() {
           <span className="underline">A za rok to stojí jako tři kafe.</span>
         </p>
         <div className="grid grid-cols-2 gap-4 mt-10">
-          <GoldButton text="Koupit za 365 Kč na rok" href={paymentUrl} />
+          <GoldButton
+            text="Koupit za 365 Kč na rok"
+            href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
+          />
           <BlackButton id="benefits" text="Jak to funguje" classes="" />
         </div>
         <div>

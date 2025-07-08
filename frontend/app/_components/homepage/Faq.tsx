@@ -30,7 +30,7 @@ export default function Faq() {
           />
 
           <Question
-            heading="Je služba jen pro živnostníky nebo i pro firmy?"
+            heading="Je služba jen pro živnostníky, nebo i pro firmy?"
             text="Služba je navržena především pro živnostníky (OSVČ), protože právě ti často podnikají bez účetní, právníka nebo jiného profesionálního zázemí. Stát od nich očekává splnění celé řady povinností, ale zároveň jim s ničím nepomůže a nic aktivně nepřipomíná."
           />
           <Question

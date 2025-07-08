@@ -47,7 +47,7 @@ export default function Pricing() {
             <PriceBenefit text="Sdílený kalendář s důležitými termíny" />
           </div>
           <a
-            href={paymentUrl}
+            href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
             className="text-2xl uppercase text-primary font-semibold py-3 px-6 bg-textLight  rounded-lg flex items-center justify-center"
           >
             Koupit

@@ -1,6 +1,6 @@
 import React from "react";
 
-type Props = { text: string; href: string };
+type Props = { text: string; href: string | undefined };
 
 export default function GoldButton({ text, href }: Props) {
   return (

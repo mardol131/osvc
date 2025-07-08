@@ -99,7 +99,10 @@ export default function Benefits({ benefitsData }: Props) {
               );
             })}
           </ul>
-          <GoldButton text={benefitsData.cta.buttonText} href="/" />
+          <GoldButton
+            text={benefitsData.cta.buttonText}
+            href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
+          />
         </div>
       </div>
     </div>
