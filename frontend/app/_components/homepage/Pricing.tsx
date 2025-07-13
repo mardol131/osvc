@@ -1,4 +1,4 @@
-import { paymentUrl, servicePrice } from "@/app/_data/pricing";
+import { servicePrice } from "@/app/_data/pricing";
 import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
 
