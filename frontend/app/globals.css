@@ -21,6 +21,17 @@
   --color-textLight: var(--color-zinc-50);
   --color-textP: var(--color-zinc-500);
   --spacing-wrapper: 1100px;
+
+  --animate-moveOne: moveOne 5s ease-in-out infinite alternate;
+  @keyframes moveOne {
+    0% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(2);
+    }
+  }
 }
 
 p {
@@ -46,4 +57,8 @@ h3 {
 
 h4 {
   @apply text-3xl font-bebas;
+}
+
+h5 {
+  @apply text-2xl font-bebas;
 }

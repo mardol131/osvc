@@ -1,10 +1,11 @@
 import { scrollToElement } from "@/app/_functions/scrollToElement";
+import Link from "next/link";
 import React from "react";
 
 export default function DesktopHeader() {
   return (
     <header className="hidden min-h-20 bg-white/50 backdrop-blur-md lg:flex items-center justify-center px-10 fixed top-0 w-full z-50">
-      <div className="max-w-wrapper w-full grid grid-cols-[1fr_4fr_1fr] items-center">
+      <div className="max-w-wrapper w-full grid grid-cols-[1fr_3fr_1fr] items-center">
         <p className="font-extrabold text-2xl uppercase justify-self-start">
           OSVČ365
         </p>
@@ -59,12 +60,20 @@ export default function DesktopHeader() {
               Kontakt
             </button>
           </li>
+          {/* <li>
+            <Link
+              href={"/hub"}
+              className="hover:text-tertiary transition-all ease-in-out cursor-pointer"
+            >
+              OSVČ HUB
+            </Link>
+          </li> */}
         </ul>
         <a
           href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
-          className="shadow-lg uppercase text-lg font-semibold py-2 px-5 bg-primary text-textLight rounded-lg font-oswald hover:scale-105 transition-all ease-in-out justify-self-end"
+          className="shadow-lg uppercase text-center text-lg font-semibold py-2 px-5 bg-primary text-textLight rounded-lg font-oswald hover:scale-105 transition-all ease-in-out justify-self-end"
         >
-          Koupit
+          Koupit roční členství
         </a>
       </div>
     </header>
