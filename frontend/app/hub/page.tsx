@@ -1,11 +1,8 @@
 import React from "react";
-import { hubDataList } from "../_data/hubData";
-import Image from "next/image";
+
 import HubSearch from "../_components/hub/HubSearch";
 
-type Props = {};
-
-export default function page({}: Props) {
+export default function page() {
   return (
     <>
       <div className="bg-primary/30 w-60 h-80 fixed -z-20 top-[50%] left-[70%] rotate-45 animate-moveOne"></div>

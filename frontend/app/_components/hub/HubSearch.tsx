@@ -4,9 +4,7 @@ import { hubDataList } from "@/app/_data/hubData";
 import Image from "next/image";
 import React from "react";
 
-type Props = {};
-
-export default function HubSearch({}: Props) {
+export default function HubSearch() {
   return (
     <div className=" flex items-center justify-center md:px-10 px-4 md:py-30 py-20">
       <div className=" w-full grid grid-cols-[1fr_4fr] gap-5 max-w-400">
