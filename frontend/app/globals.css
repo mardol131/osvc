@@ -19,7 +19,7 @@
   --color-colorTo: var(--color-amber-300);
 
   --color-textLight: var(--color-zinc-50);
-  --color-textP: var(--color-zinc-500);
+  --color-textP: var(--color-zinc-600);
   --spacing-wrapper: 1100px;
 
   --animate-moveOne: moveOne 5s ease-in-out infinite alternate;

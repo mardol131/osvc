@@ -6,7 +6,7 @@ export default function Question({ heading, text }: Props) {
   return (
     <>
       <div className="border-3 border-primary rounded-lg">
-        <div className="py-3  bg-primary text-textLight cursor-pointer">
+        <div className="py-3  bg-primary text-textLight">
           <p className=" text-xl">{heading}</p>
         </div>
         <div className="p-5">

@@ -60,7 +60,7 @@ function BenefitCard({
 export default function Benefits({ benefitsData }: Props) {
   return (
     <div
-      id="benefits"
+      id="benefitsSection"
       className=" flex items-center justify-center md:px-10 px-4 md:py-30 py-20"
     >
       <div className="max-w-wrapper flex flex-col gap-10 items-center">

@@ -6,7 +6,10 @@ export function scrollToElement(id: string) {
   if (currentPath === "/") {
     const element = document.querySelector(`#${id}`);
     element?.scrollIntoView({ behavior: "smooth" });
+    console.log(id);
   } else {
+    console.log(id);
+
     redirect(`/#${id}`);
   }
 }

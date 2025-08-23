@@ -19,7 +19,7 @@ export default function DesktopHeader() {
           <li>
             <button
               onClick={() => {
-                scrollToElement("benefits");
+                scrollToElement("benefitsSection");
               }}
               className="hover:text-tertiary transition-all ease-in-out cursor-pointer"
             >
