@@ -25,6 +25,12 @@ export default function Footer() {
           <a href="/gdpr.pdf" className="text-textLight">
             GDPR
           </a>
+          <a
+            href={process.env.NEXT_PUBLIC_SUB_ACCOUNT_LINK}
+            className="text-textLight"
+          >
+            <h5 className="text-secondary">Spravovat členství</h5>
+          </a>
         </div>
       </div>
     </footer>
