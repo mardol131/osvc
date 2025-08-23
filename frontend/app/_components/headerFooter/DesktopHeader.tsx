@@ -1,14 +1,20 @@
 import { scrollToElement } from "@/app/_functions/scrollToElement";
+import Image from "next/image";
 //import Link from "next/link";
 import React from "react";
+import logo from "../../../public/logo-osvc.png";
 
 export default function DesktopHeader() {
   return (
     <header className="hidden min-h-20 bg-white/50 backdrop-blur-md lg:flex items-center justify-center px-10 fixed top-0 w-full z-50">
       <div className="max-w-wrapper w-full grid grid-cols-[1fr_3fr_1fr] items-center">
-        <p className="font-extrabold text-2xl uppercase justify-self-start">
-          OSVČ365
-        </p>
+        <Image
+          src={logo}
+          width={100}
+          height={100}
+          alt="logo"
+          className="h-15 w-auto"
+        />
         <ul className="text-primary font-semibold text-lg flex gap-10 justify-self-center">
           <li>
             <button

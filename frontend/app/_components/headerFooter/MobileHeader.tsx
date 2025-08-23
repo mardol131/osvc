@@ -3,6 +3,8 @@
 import { scrollToElement } from "@/app/_functions/scrollToElement";
 import React, { useEffect, useRef, useState } from "react";
 import { IoMenu } from "react-icons/io5";
+import logo from "../../../public/logo-osvc.png";
+import Image from "next/image";
 
 export default function MobileHeader() {
   const [toggle, setToggle] = useState<boolean>(false);
@@ -30,9 +32,13 @@ export default function MobileHeader() {
     <header className="lg:hidden bg-white/50 backdrop-blur-md flex items-center justify-center md:px-10 px-4 py-4 fixed top-0 w-full z-50">
       <div className="max-w-wrapper w-full flex flex-col">
         <div className="w-full flex justify-between items-center">
-          <p className="font-extrabold text-2xl uppercase justify-self-start">
-            OSVČ365
-          </p>
+          <Image
+            src={logo}
+            width={100}
+            height={100}
+            alt="logo"
+            className="h-12 w-auto"
+          />
           <IoMenu
             className="text-3xl"
             onClick={(e) => {
