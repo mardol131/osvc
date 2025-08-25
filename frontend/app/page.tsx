@@ -8,6 +8,7 @@ import Footer from "./_components/headerFooter/Footer";
 import About from "./_components/homepage/About";
 import TextSection from "./_components/homepage/TextSection";
 import CTA from "./_components/homepage/CTA";
+import SMS from "./_components/homepage/SMS";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <TextSection />
       <Fines />
       <Benefits benefitsData={benefitsData} />
+      <SMS />
       <Pricing />
       <About />
       <Faq />
