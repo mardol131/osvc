@@ -12,23 +12,9 @@ export default function About() {
           subheading="O nás"
           heading="Proč to děláme?"
           text="Chcete to jednou větou? Už nás prostě nebaví neschopnost státu."
+          mb={4}
         />
         <div className="text-lg flex flex-col gap-6 text-textP text-center">
-          {" "}
-          <p>
-            <span className="text-xl text-primary">
-              Největším nepřítelem každého podnikatele je zpravidla úředník
-            </span>
-            . Lidé odříznutí od reality, kterí jsou placení z daní, se snaží
-            rozhodovat o světě za zdmi jejich kanceláře. Nikdy to pořádně
-            nefungovalo, nikdy to ani dobře fungovat nemůže. Důvod je celkem
-            jednoduchý -{" "}
-            <span className="text-xl text-primary">
-              chybí expertíza, motivace a osobní zájem. Tedy přesně to, co dělá
-              podnikatele podnikatelem
-            </span>
-            .
-          </p>
           <p>
             <span className="text-xl text-primary">
               Podnikat v Česku znamená zvládat desítky povinností, nařízení a
@@ -49,26 +35,26 @@ export default function About() {
             </span>{" "}
             Ne proto, že byste chtěli něco obejít, ale protože vám to prostě
             nikdo nepřipomněl. Žádný úřad vám nenapíše: „Pozor, máte odevzdat
-            přehled, zbývá 5 dní.“ Místo toho se spoléhá, že zapomenete, protože
-            do státní kasy se přeci peníze nějak dostat musí.
+            přehled, zbývá 5 dní.“ Už je jedno, jestli jde jen o cílenou
+            neschopnost, nebo o záměr směřující k vybírání peněz.
           </p>
         </div>
-        <h4>A tady začínáme my...</h4>
+        <h5>A tady začínáme my...</h5>
         <div className="text-lg flex flex-col gap-6 text-textP text-center">
           {" "}
           <p>
             <span className="text-xl text-primary">
               {" "}
-              Systém už nám leze krkem dlouho. Rozhodli jsme se proto založit
-              jednoduchou službu, která hlídá zákonné povinnosti za Vás.
+              Tento systém už se nám nelíbí hodně dlouho. Rozhodli jsme se proto
+              založit jednoduchou službu, která hlídá zákonné povinnosti za Vás.
             </span>{" "}
             Sledování změn, připomínky termínů, upozornění e-mailem i SMS. Žádné
-            zbytečné úřadování. Jen klid, že na nic nezapomenete a že vás nějaký
-            ouřada nedostane kvůli hloupému termínu.
+            zbytečné úřadování, žádné nepodstatné informace. Jen klid, že na nic
+            nezapomenete a že nebudete muset platit zbytečné pokuty.
           </p>
           <p className="text-xl text-tertiary">
             Tenhle projekt vznikl proto, že stát selhává v úplném základu -
-            srozumitelně informovat občany. A nás už to prostě nebaví.
+            srozumitelně informovat občany.
           </p>
         </div>
       </div>
