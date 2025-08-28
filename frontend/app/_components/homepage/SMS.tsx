@@ -11,10 +11,10 @@ export default function SMS() {
       <div className=" max-w-wrapper w-full md:grid flex flex-col-reverse grid-cols-2 gap-10 rounded-3xl">
         <Image
           src={sms}
-          height={500}
-          width={500}
+          height={1000}
+          width={1000}
           alt="sms-example"
-          className="contrast-110 justify-self-start max-w-120"
+          className="contrast-105 justify-self-start self-center md:self-start md:max-w-120 max-w-70"
         />
 
         <div>

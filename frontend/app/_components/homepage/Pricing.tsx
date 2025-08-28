@@ -48,7 +48,7 @@ export default function Pricing() {
           </div>
           <a
             href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
-            className="text-2xl uppercase text-primary font-semibold py-3 px-6 bg-textLight  rounded-lg flex items-center justify-center"
+            className="text-2xl uppercase cursor-pointer text-primary font-semibold py-3 px-6 bg-textLight  rounded-lg flex items-center justify-center"
           >
             Koupit
           </a>
