@@ -5,17 +5,17 @@ import React from "react";
 
 type Props = {
   text: string;
-  id: string;
-  classes: string;
+  id?: string;
+  className?: string;
 };
 
-export default function BlackButton({ text, id, classes }: Props) {
+export default function BlackButton({ text, id, className }: Props) {
   return (
     <button
       onClick={() => {
-        scrollToElement(id);
+        id && scrollToElement(id);
       }}
-      className={`${classes} shadow-lg md:text-2xl text-lg uppercase font-semibold py-3 md:px-6 px-3 bg-primary text-textLight rounded-lg font-oswald flex items-center justify-center hover:scale-105 transition-all ease-in-out cursor-pointer`}
+      className={`${className} shadow-lg md:text-2xl text-lg uppercase font-semibold py-3 md:px-6 px-3 bg-primary text-textLight rounded-lg font-oswald flex items-center justify-center hover:scale-105 transition-all ease-in-out cursor-pointer`}
     >
       {text}
     </button>

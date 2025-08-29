@@ -20,7 +20,7 @@
 
   --color-textLight: var(--color-zinc-50);
   --color-textP: var(--color-zinc-600);
-  --spacing-wrapper: 1100px;
+  --spacing-wrapper: 1200px;
 
   --animate-moveOne: moveOne 5s ease-in-out infinite alternate;
   @keyframes moveOne {
