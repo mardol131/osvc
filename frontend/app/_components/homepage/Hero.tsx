@@ -1,6 +1,6 @@
 import React from "react";
-import BlackButton from "../buttons/BlackButton";
-import GoldButton from "../buttons/GoldButton";
+import BlackButton from "../global/buttons/BlackButton";
+import GoldButton from "../global/buttons/GoldButton";
 
 export default function Hero() {
   return (
@@ -22,7 +22,7 @@ export default function Hero() {
             text="Koupit za 365 Kč na rok"
             href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
           />
-          <BlackButton id="benefits" text="Jak to funguje" classes="" />
+          <BlackButton id="benefitsSection" text="Jak to funguje" classes="" />
         </div>
         <div>
           <p className="text-textP md:mt-10">

@@ -4,8 +4,8 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { GoChecklist } from "react-icons/go";
 import { IoCalendarOutline } from "react-icons/io5";
 import { MdOutlineEmail, MdOutlineTextsms } from "react-icons/md";
-import GoldButton from "../buttons/GoldButton";
-import HeadingCenter from "../headings/HeadingCenter";
+import GoldButton from "../global/buttons/GoldButton";
+import HeadingCenter from "../global/headings/HeadingCenter";
 
 type Props = {
   benefitsData: {

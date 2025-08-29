@@ -3,7 +3,7 @@
 import { scrollToElement } from "@/app/_functions/scrollToElement";
 import React, { useEffect, useRef, useState } from "react";
 import { IoMenu } from "react-icons/io5";
-import logo from "../../../public/logo-osvc.png";
+import logo from "../../../../public/logo-osvc.png";
 import Image from "next/image";
 
 export default function MobileHeader() {

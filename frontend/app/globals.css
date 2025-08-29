@@ -14,9 +14,9 @@
   --font-nunito: "Nunito Sans";
 
   --color-primary: var(--color-zinc-800);
-  --color-secondary: var(--color-amber-400);
+  --color-secondary: var(--color-amber-500);
   --color-tertiary: var(--color-amber-700);
-  --color-colorTo: var(--color-amber-500);
+  --color-colorTo: var(--color-amber-600);
 
   --color-textLight: var(--color-zinc-50);
   --color-textP: var(--color-zinc-600);

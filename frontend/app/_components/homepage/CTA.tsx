@@ -33,7 +33,7 @@ export default function CTA() {
             e.preventDefault();
             handleSubmit();
           }}
-          className="bg-primary w-full text-textLight p-10 rounded-lg flex flex-col gap-4 text-center md:text-start"
+          className="bg-primary shadow-lg w-full text-textLight p-10 rounded-lg flex flex-col gap-4 text-center md:text-start"
         >
           {responseOk ? (
             <div className="flex flex-col md:gap-5 gap-4 items-center w-full text-center">
@@ -55,7 +55,7 @@ export default function CTA() {
                 />
                 <button
                   type="submit"
-                  className="cursor-pointer shrink-0 shadow-lg text-lg uppercase font-semibold p-3 bg-linear-150 from-tertiary to-colorTo hover:scale-105 transition-all ease-in-out text-textLight rounded-lg font-oswald"
+                  className="cursor-pointer shrink-0 shadow-lg text-lg uppercase font-semibold p-3 bg-linear-150 from-secondary to-colorTo hover:scale-105 transition-all ease-in-out text-textLight rounded-lg font-oswald"
                 >
                   Přihlásit se k doběru
                 </button>

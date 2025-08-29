@@ -1,6 +1,6 @@
 import React from "react";
-import Question from "../faq/Question";
-import HeadingCenter from "../headings/HeadingCenter";
+import Question from "./faq/Question";
+import HeadingCenter from "../global/headings/HeadingCenter";
 
 export default function Faq() {
   return (

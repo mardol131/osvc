@@ -43,6 +43,6 @@ export const benefitsData = {
     ],
   },
   cta: {
-    buttonText: "Chci mít klid, koupit službu",
+    buttonText: "Koupit roční členství",
   },
 };

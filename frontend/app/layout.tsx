@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "./_components/headerFooter/Header";
-import ScrollButton from "./_components/buttons/ScrollButton";
+import Header from "./_components/global/headerFooter/Header";
+import ScrollButton from "./_components/global/buttons/ScrollButton";
 
 export const metadata: Metadata = {
   title: "OSVČ365: Vy podnikáte, my hlídáme byrokracii.",

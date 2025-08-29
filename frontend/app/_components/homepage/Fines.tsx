@@ -1,5 +1,5 @@
 import React from "react";
-import HeadingCenter from "../headings/HeadingCenter";
+import HeadingCenter from "../global/headings/HeadingCenter";
 import { GoAlertFill } from "react-icons/go";
 
 export default function Fines() {
