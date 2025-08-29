@@ -40,7 +40,7 @@ function BenefitCard({
   icon: string;
 }) {
   return (
-    <div className="grid grid-cols-[1fr_5fr] items-start md:col-span-1 col-span-2 bg-zinc-100 p-5 rounded-lg">
+    <div className="grid grid-cols-[1fr_5fr] items-start last:col-span-2 md:col-span-1 col-span-2 bg-zinc-100 p-5 rounded-lg">
       <div className="px-3 py-1 text-4xl">
         {icon === "email" && <MdOutlineEmail />}
         {icon === "sms" && <MdOutlineTextsms />}
