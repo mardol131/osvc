@@ -1,6 +1,10 @@
 import React from "react";
 import BlackButton from "../global/buttons/BlackButton";
 import GoldButton from "../global/buttons/GoldButton";
+import UniversalButton from "../global/buttons/UniversalButton";
+import { stripePayment } from "@/app/_data/links";
+import { scrollToElement } from "@/app/_functions/scrollToElement";
+import ScrollButton from "../global/buttons/ScrollButton";
 
 export default function Hero() {
   return (
@@ -18,11 +22,24 @@ export default function Hero() {
           <span className="underline">A za rok to stojí jako tři kafe.</span>
         </p>
         <div className="grid grid-cols-2 gap-4 mt-10">
-          <GoldButton
-            text="Koupit za 365 Kč na rok"
-            href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
+          <UniversalButton
+            options={{
+              color: "orange",
+              text: "Koupit za 365 Kč na rok",
+              size: "large",
+              href: { href: stripePayment, target: "_blank" },
+              textAlign: "end",
+            }}
           />
-          <BlackButton id="benefitsSection" text="Jak to funguje" classes="" />
+          <ScrollButton
+            id="benefitsSection"
+            options={{
+              color: "black",
+              text: "Jak to funguje",
+              size: "large",
+              textAlign: "center",
+            }}
+          />
         </div>
         <div>
           <p className="text-textP md:mt-10">

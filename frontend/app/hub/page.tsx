@@ -1,6 +1,6 @@
 import React from "react";
 
-import HubSearch from "../_components/hub/HubSearch";
+import HubSearch from "../_components/_hub/HubSearch";
 
 export default function page() {
   return (

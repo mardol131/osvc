@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./_components/global/headerFooter/Header";
 import ScrollButton from "./_components/global/buttons/ScrollButton";
+import ScrollToTopButton from "./_components/global/buttons/ScrollToTopbutton";
 
 export const metadata: Metadata = {
   title: "OSVČ365: Vy podnikáte, my hlídáme byrokracii.",
@@ -18,7 +19,7 @@ export default function RootLayout({
     <html lang="cs">
       <body className={` text-primary`}>
         <Header />
-        <ScrollButton />
+        <ScrollToTopButton />
         {children}
       </body>
     </html>

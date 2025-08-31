@@ -2,7 +2,7 @@ import React from "react";
 import BlackButton from "../buttons/BlackButton";
 import GoldButton from "../buttons/GoldButton";
 import Image, { StaticImageData } from "next/image";
-import Wrapper from "../wrapper/Wrapper";
+import Wrapper from "../wrappers/SectionWrapper";
 import UniversalButton, { ButtonType } from "../buttons/UniversalButton";
 
 type Props = {
@@ -10,6 +10,8 @@ type Props = {
     image: {
       src: StaticImageData;
       alt: string;
+      mobileVisibility?: "hidden";
+      size?: "large" | "middle" | "small";
     };
     heading: string;
     subheading?: string;
@@ -21,16 +23,20 @@ type Props = {
 export default function HeroWithImage({ options }: Props) {
   const { image, heading, subheading, buttons, text } = options;
   return (
-    <Wrapper classNameTwo={"grid grid-cols-2 items-center"} classNameOne={""}>
+    <>
       <div className=" w-full flex flex-col items-start gap-5 text-start max-w-200">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-start gap-3">
+          <p className="font-semibold uppercase text-secondary">{subheading}</p>
           <h1>{heading}</h1>
         </div>
         <p className="md:text-2xl text-lg text-textP">{text}</p>
-        <div className="grid grid-cols-2 gap-4 mt-10">
+        <div className="grid grid-cols-2 gap-4 mt-5">
           {buttons?.map((button) => {
             return (
-              <UniversalButton key={button.text + button.type} {...button} />
+              <UniversalButton
+                key={button.options.text + button.options.color}
+                {...button}
+              />
             );
           })}
         </div>
@@ -40,8 +46,8 @@ export default function HeroWithImage({ options }: Props) {
         width={1000}
         height={1000}
         alt={image.alt}
-        className={`max-w-100 justify-self-end`}
+        className={`max-w-90 justify-self-end md:block ${image.mobileVisibility}`}
       />
-    </Wrapper>
+    </>
   );
 }
