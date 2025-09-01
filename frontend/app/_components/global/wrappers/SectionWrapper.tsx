@@ -23,8 +23,8 @@ export default function SectionWrapper({
     >
       <div
         className={`${levelTwo?.className} ${
-          levelTwo?.width ? levelTwo.width : "w-full"
-        } max-w-wrapper md:mx-10 mx-4`}
+          levelTwo?.width ? levelTwo.width : "max-w-wrapper"
+        } w-full md:mx-10 mx-4`}
       >
         {children}
       </div>

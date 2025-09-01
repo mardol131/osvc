@@ -5,6 +5,7 @@ import React from "react";
 import logo from "../../../../public/logo-osvc.png";
 import UniversalButton from "../buttons/UniversalButton";
 import { stripePayment } from "@/app/_data/links";
+import LinkButton from "../buttons/LinkButton";
 
 export default function DesktopHeader() {
   return (
@@ -80,7 +81,7 @@ export default function DesktopHeader() {
           </li> */}
         </ul>
 
-        <UniversalButton
+        <LinkButton
           options={{
             color: "black",
             size: "middle",
