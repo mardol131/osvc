@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { FaHandshake } from "react-icons/fa";
-import { ButtonType } from "../buttons/UniversalButton";
 
 type Props = {
   options: {

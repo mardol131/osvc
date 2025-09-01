@@ -5,9 +5,7 @@ import SectionWrapper from "../_components/global/wrappers/SectionWrapper";
 import { makeService, stripePayment } from "../_data/links";
 import OneStringInputCta from "../_components/global/cta/OneStringInputCta";
 
-type Props = {};
-
-export default function page({}: Props) {
+export default function page() {
   return (
     <>
       {" "}

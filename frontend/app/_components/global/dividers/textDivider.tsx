@@ -1,5 +1,4 @@
 import React from "react";
-import SectionWrapper from "../wrappers/SectionWrapper";
 
 type Props = {
   options: {

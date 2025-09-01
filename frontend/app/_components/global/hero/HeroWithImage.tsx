@@ -1,8 +1,5 @@
 import React from "react";
-import BlackButton from "../buttons/BlackButton";
-import GoldButton from "../buttons/GoldButton";
 import Image, { StaticImageData } from "next/image";
-import Wrapper from "../wrappers/SectionWrapper";
 import UniversalButton, { ButtonType } from "../buttons/UniversalButton";
 
 type Props = {

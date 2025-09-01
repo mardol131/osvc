@@ -3,15 +3,15 @@ import Image from "next/image";
 //import Link from "next/link";
 import React from "react";
 import logo from "../../../../public/logo-osvc.png";
-import UniversalButton from "../buttons/UniversalButton";
 import { stripePayment } from "@/app/_data/links";
 import LinkButton from "../buttons/LinkButton";
+import Link from "next/link";
 
 export default function DesktopHeader() {
   return (
     <header className="hidden min-h-20 bg-white/50 backdrop-blur-md lg:flex items-center justify-center px-10 fixed top-0 w-full z-50">
       <div className="max-w-wrapper w-full grid grid-cols-[1fr_3fr_1fr] items-center">
-        <a href="/">
+        <Link href="/">
           <Image
             src={logo}
             width={100}
@@ -19,7 +19,7 @@ export default function DesktopHeader() {
             alt="logo"
             className="h-15 w-auto"
           />
-        </a>
+        </Link>
         <ul className="text-primary font-semibold text-lg flex gap-10 justify-self-center">
           <li>
             <button

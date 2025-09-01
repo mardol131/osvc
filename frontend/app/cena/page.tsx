@@ -1,16 +1,12 @@
 import React from "react";
 import SectionWrapper from "../_components/global/wrappers/SectionWrapper";
-import HeroWithImage from "../_components/global/hero/HeroWithImage";
-import heroImage from "../../public/SMS.png";
 import { stripePayment } from "../_data/links";
 import HeroMidAlign from "../_components/global/hero/HeroMidAlign";
 import LinkButton from "../_components/global/buttons/LinkButton";
 import ScrollButton from "../_components/global/buttons/ScrollButton";
 import NumberOfClients from "../_components/global/socialProof/NumberOfClients";
 
-type Props = {};
-
-export default function page({}: Props) {
+export default function page() {
   return (
     <>
       <div></div>

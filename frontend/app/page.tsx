@@ -6,7 +6,6 @@ import Benefits from "./_components/homepage/Benefits";
 import { benefitsData } from "./_data/benefitsData";
 import Footer from "./_components/global/headerFooter/Footer";
 import About from "./_components/homepage/About";
-import TextSection from "./_components/homepage/TextSection";
 import SMS from "./_components/homepage/SMS";
 import OneStringInputCta from "./_components/global/cta/OneStringInputCta";
 import { makeService } from "./_data/links";

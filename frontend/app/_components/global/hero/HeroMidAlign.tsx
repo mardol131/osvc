@@ -1,8 +1,4 @@
 import React from "react";
-import { stripePayment } from "@/app/_data/links";
-import LinkButton from "../buttons/LinkButton";
-import ScrollButton from "../buttons/ScrollButton";
-import NumberOfClients from "../socialProof/NumberOfClients";
 
 type Props = {
   options: {

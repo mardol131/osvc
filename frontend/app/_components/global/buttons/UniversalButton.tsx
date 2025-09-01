@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import BlackButton from "./BlackButton";
-import GoldButton from "./GoldButton";
 import Link from "next/link";
 
 export type ButtonType = {
