@@ -1,0 +1,31 @@
+"use client";
+
+import Button from "@/app/_components/atoms/Button";
+import { stripePayment } from "@/app/_data/links";
+import { scrollToElement } from "@/app/_functions/scrollToElement";
+import React from "react";
+
+type Props = {};
+
+export default function HeroButtons({}: Props) {
+  return (
+    <>
+      {" "}
+      <Button
+        variant="gold"
+        text="Koupit za 365 Kč na rok"
+        size="md"
+        href={stripePayment}
+        target="_blank"
+      />
+      <Button
+        text="Jak to funguje"
+        variant="black"
+        size="md"
+        onClick={() => {
+          scrollToElement("benefitsSection");
+        }}
+      />
+    </>
+  );
+}

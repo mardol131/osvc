@@ -1,0 +1,85 @@
+import React from "react";
+
+type Props = {
+  options: {
+    heading: string;
+    headingColor?: "secondary";
+    secondHeading?: string;
+    text: string;
+    socialProof?: React.ReactNode;
+    buttonsColumns: 1 | 2 | 3;
+    buttons?: React.ReactNode;
+  };
+};
+
+export default function HeroMidAlign({ options }: Props) {
+  return (
+    <div className="relative flex items-center justify-center md:px-10 px-4 md:py-30 py-20 pt-30 md:pt-50 overflow-hidden">
+      {/* Dekorativní pozadí */}
+      <div className="absolute inset-0 bg-linear-to-br from-zinc-50 via-white to-secondary/5 pointer-events-none"></div>
+      <div className="absolute top-20 right-0 w-96 h-96 bg-linear-to-br from-secondary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-linear-to-tr from-tertiary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="relative z-10 w-full flex flex-col items-center gap-6 text-center max-w-200 mx-auto">
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-5 py-2 bg-linear-to-r from-secondary/10 to-tertiary/10 border border-secondary/30 rounded-full">
+          <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+          <p className="text-sm font-bold text-primary uppercase tracking-wide">
+            Pro OSVČ
+          </p>
+        </div>
+
+        {/* Hlavní nadpis */}
+        <div className="flex flex-col items-center gap-3">
+          <h1 className="bg-linear-to-br from-primary via-primary to-zinc-700 bg-clip-text text-transparent">
+            <span
+              className={`${
+                options.headingColor === "secondary" ? "text-secondary" : ""
+              }`}
+            >
+              {options.heading}
+            </span>
+            {options.secondHeading && (
+              <>
+                {" "}
+                <br />
+                {options.secondHeading}
+              </>
+            )}
+          </h1>
+        </div>
+
+        {/* Popisek */}
+        <p className="md:text-2xl text-lg text-textP max-w-4xl leading-relaxed">
+          {options.text}
+        </p>
+
+        {/* CTA tlačítka */}
+        {options.buttons && (
+          <>
+            {options.buttonsColumns === 1 && (
+              <div className="grid gap-4 mt-8 w-full max-w-md">
+                {options.buttons}
+              </div>
+            )}
+            {options.buttonsColumns === 2 && (
+              <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mt-8 w-full max-w-2xl">
+                {options.buttons}
+              </div>
+            )}
+            {options.buttonsColumns === 3 && (
+              <div className="grid md:grid-cols-3 grid-cols-1 gap-4 mt-8 w-full max-w-4xl">
+                {options.buttons}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Social proof */}
+        {options.socialProof && (
+          <div className="mt-2">{options.socialProof}</div>
+        )}
+      </div>
+    </div>
+  );
+}

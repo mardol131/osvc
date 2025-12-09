@@ -1,0 +1,118 @@
+import Link from "next/link";
+import React from "react";
+import Button from "../../atoms/Button";
+
+export default function Footer() {
+  return (
+    <footer
+      id="contact"
+      className="relative bg-linear-to-br from-primary via-zinc-800 to-zinc-900 overflow-hidden"
+    >
+      {/* Dekorativní pozadí */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-secondary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-linear-to-tr from-tertiary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="relative z-10 flex items-center justify-center md:px-10 px-4 py-20">
+        <div className="max-w-wrapper w-full">
+          {/* Hlavní obsah */}
+          <div className="grid md:grid-cols-4 grid-cols-1 gap-12 mb-12">
+            {/* Stránky */}
+            <div className="flex flex-col gap-4">
+              <h4 className="text-textLight mb-2">Stránky</h4>
+              <Link
+                href="/"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+              >
+                Domů
+              </Link>
+              <Link
+                href="/cena"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+              >
+                Cena
+              </Link>
+              <Link
+                href="/hub"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+              >
+                Hub
+              </Link>
+              <Link
+                href="/otazky"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+              >
+                Otázky
+              </Link>
+            </div>
+
+            {/* Kontakt */}
+            <div className="flex flex-col gap-4">
+              <h4 className="text-textLight mb-2">Kontakt</h4>
+              <a
+                href="mailto:info@osvc365.cz"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
+              >
+                <span className="text-secondary">✉</span>
+                info@osvc365.cz
+              </a>
+              <a
+                href="tel:+420735202345"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
+              >
+                <span className="text-secondary">☎</span>
+                +420 735 202 345
+              </a>
+              <p className="text-zinc-300 flex items-center gap-2">
+                <span className="text-secondary">🏢</span>
+                IČO: 10796509
+              </p>
+            </div>
+
+            {/* Dokumenty */}
+            <div className="flex flex-col gap-4">
+              <h4 className="text-textLight mb-2">Dokumenty</h4>
+              <Link
+                href="/obchodni-podminky.pdf"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+              >
+                Obchodní podmínky
+              </Link>
+              <Link
+                href="/gdpr.pdf"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+              >
+                Ochrana osobních údajů (GDPR)
+              </Link>
+            </div>
+
+            {/* Členství */}
+            <div className="flex flex-col items-start gap-4">
+              <h4 className="text-textLight mb-2">Váš účet</h4>
+              <Button
+                text="Spravovat členství"
+                href={process.env.NEXT_PUBLIC_SUB_ACCOUNT_LINK}
+                target="_blank"
+                size="sm"
+              />
+
+              <p className="text-zinc-400 text-sm">
+                Zde můžete spravovat své předplatné.
+              </p>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-linear-to-r from-transparent via-zinc-700 to-transparent mb-8"></div>
+
+          {/* Bottom bar */}
+          <div className="flex md:flex-row flex-col md:justify-between items-center gap-4 text-zinc-400 text-sm">
+            <p>© 2025 OSVČ365. Všechna práva vyhrazena.</p>
+            <p className="text-zinc-500">
+              Pomáháme živnostníkům zvládat byrokracii
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

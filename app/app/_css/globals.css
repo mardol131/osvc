@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap");
+
+@font-face {
+  font-family: Oswald;
+  src: url("../_fonts/Oswald-variable.ttf");
+}
+
+@import "tailwindcss";
+
+@theme {
+  --font-oswald: "Oswald";
+  --font-bebas: "Bebas Neue";
+  --font-roboto: "Roboto";
+  --font-cabin: "Cabin";
+  --font-nunito: "Nunito Sans";
+
+  --color-primary: var(--color-zinc-800);
+  --color-secondary: var(--color-amber-500);
+  --color-tertiary: var(--color-amber-700);
+  --color-colorTo: var(--color-amber-600);
+
+  --color-textLight: var(--color-zinc-50);
+  --color-textP: var(--color-zinc-600);
+
+  --spacing-wrapper: 1200px;
+
+  --animate-moveOne: moveOne 5s ease-in-out infinite alternate;
+  @keyframes moveOne {
+    0% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(2);
+    }
+  }
+}
+
+p {
+  @apply font-oswald;
+}
+
+button,
+a {
+  @apply font-oswald;
+}
+
+h1 {
+  @apply md:text-7xl text-5xl font-bebas uppercase;
+}
+
+h2 {
+  @apply md:text-5xl text-4xl font-bebas;
+}
+
+h3 {
+  @apply md:text-4xl text-3xl font-bebas;
+}
+
+h4 {
+  @apply text-3xl font-bebas;
+}
+
+h5 {
+  @apply text-2xl/loose font-bebas;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  @apply tracking-wide;
+}
