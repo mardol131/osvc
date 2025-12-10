@@ -8,11 +8,8 @@ import NumberOfClients from "@/app/_components/blocks/NumberOfClients";
 
 export default function Hero() {
   return (
-    <div className="relative flex items-center justify-center md:px-10 px-4 md:py-30 py-20 pt-30 md:pt-50 overflow-hidden">
+    <div className="relative flex items-center justify-center md:px-10 px-4 md:py-20 py-20 pt-30 md:pt-50 overflow-hidden">
       {/* Dekorativní pozadí */}
-      <div className="absolute inset-0 bg-gradient-to-br from-zinc-50 via-white to-secondary/5 pointer-events-none"></div>
-      <div className="absolute top-20 right-0 w-96 h-96 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-tertiary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10 w-full flex flex-col items-center gap-6 text-center max-w-200">
         {/* Badge */}

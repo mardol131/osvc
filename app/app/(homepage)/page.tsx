@@ -9,21 +9,21 @@ import Fines from "./_components/Fines";
 import SMS from "./_components/SMS";
 import About from "./_components/About";
 import Faq from "../_components/sections/faq/Faq";
+import SaleCodeBanner from "../_components/sections/banners/SaleCodeBanner";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <TextDivider
+
+      {/* <TextDivider
         options={{
           text: "Abyste se už nemuseli bát zmeškaných a nečekaných povinností",
         }}
-      />
+      /> */}
       <Fines />
 
       <Benefits benefitsData={benefitsData} />
-
-      <SMS />
       <PricingTextAndBubble
         text=" Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,
               když se něco změní. Už žádné pokuty ani stres z neznámých
@@ -37,6 +37,10 @@ export default function Home() {
         subheading="Ceník"
         direction="horizontal"
       />
+      <div className="mt-20">
+        <SaleCodeBanner />
+      </div>
+      <SMS />
 
       <About />
       <Faq />

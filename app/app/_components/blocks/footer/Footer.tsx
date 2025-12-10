@@ -31,12 +31,12 @@ export default function Footer() {
               >
                 Cena
               </Link>
-              <Link
+              {/* <Link
                 href="/hub"
                 className="text-zinc-300 hover:text-secondary transition-colors duration-200"
               >
                 Hub
-              </Link>
+              </Link> */}
               <Link
                 href="/otazky"
                 className="text-zinc-300 hover:text-secondary transition-colors duration-200"
