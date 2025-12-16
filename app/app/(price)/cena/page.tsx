@@ -36,7 +36,7 @@ export default function page() {
           subheading:
             "Budeme Vás informovat pouze o novinkách v naší službě, žádný zbytečný marketing.",
           dataDestination: `${process.env.WEBSITE_URL}/api/ecomail/news`,
-          buttonText: "Přihlásit se k doběru novinek",
+          buttonText: "Odebírat novinky",
           inputType: "email",
           placeholder: "Zde zadejte email",
         }}

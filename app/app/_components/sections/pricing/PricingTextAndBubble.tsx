@@ -14,7 +14,7 @@ type PricingTextAndBubble = {
 
 export default function PricingTextAndBubble(props: PricingTextAndBubble) {
   return (
-    <SectionWrapper>
+    <SectionWrapper id="price">
       {props.direction === "vertical" && (
         <div className="flex flex-col items-center gap-12">
           <HeadingCenter
@@ -30,7 +30,7 @@ export default function PricingTextAndBubble(props: PricingTextAndBubble) {
       )}
       {props.direction === "horizontal" && (
         <div className="md:grid grid-cols-2 items-start gap-12">
-          <div className="md:sticky md:top-24">
+          <div className="md:sticky md:top-24 mb-5">
             <HeadingLeft
               subheading={props.subheading}
               heading={props.heading}

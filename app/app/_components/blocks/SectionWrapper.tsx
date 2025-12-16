@@ -10,15 +10,18 @@ type Props = {
     };
   };
   levelTwo?: { className?: string; width?: string };
+  id?: string;
 };
 
 export default function SectionWrapper({
   levelOne,
   levelTwo,
   children,
+  id,
 }: Props) {
   return (
     <div
+      id={id}
       className={`${levelOne?.className} w-full flex items-center justify-center gap-20 px-2 pb-10 pt-20 md:pt-30`}
     >
       <div

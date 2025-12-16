@@ -4,10 +4,7 @@ import sms from "@/public/SMS.png";
 
 export default function SMS() {
   return (
-    <div
-      id="price"
-      className="relative flex items-center justify-center md:px-10 px-4 md:py-30 py-20 overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-secondary/5"
-    >
+    <div className="relative flex items-center justify-center md:px-10 px-4 md:py-30 py-20 overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-secondary/5">
       {/* Dekorativní pozadí */}
       <div className="absolute top-20 left-0 w-96 h-96 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tr from-tertiary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>

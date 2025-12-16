@@ -59,7 +59,7 @@ export default function CTA() {
                   type="submit"
                   className="cursor-pointer shrink-0 shadow-lg text-lg uppercase font-semibold p-3 bg-linear-150 from-secondary to-colorTo hover:scale-105 transition-all ease-in-out text-textLight rounded-lg font-oswald"
                 >
-                  Přihlásit se k doběru
+                  Přihlásit se k odběru
                 </button>
               </div>
               <p>

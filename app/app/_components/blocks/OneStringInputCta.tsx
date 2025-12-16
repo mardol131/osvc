@@ -80,7 +80,12 @@ export default function OneStringInputCta({ options }: Props) {
                 type={options.inputType}
                 className="bg-white/95 backdrop-blur-sm rounded-xl min-h-14 px-5 w-full text-primary font-oswald text-lg placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-secondary transition-all shadow-md"
               />
-              <Button text={options.buttonText} htmlType="submit" size="md" />
+              <Button
+                className="md:text-nowrap"
+                text={options.buttonText}
+                htmlType="submit"
+                size="md"
+              />
             </div>
           </div>
         )}
