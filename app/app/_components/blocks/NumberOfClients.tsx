@@ -11,7 +11,7 @@ export default function NumberOfClients({}: Props) {
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary/70 to-tertiary/70 border-2 border-white"></div>
       </div>
       <p className="text-primary font-semibold">
-        <span className="text-secondary font-bold">153+</span> lidí již
+        <span className="text-secondary font-semibold">153+</span> lidí již
         projevilo zájem
       </p>
     </div>

@@ -24,7 +24,7 @@ export default function SaleCodeBanner({}: Props) {
               </h3>
               <p className="text-lg text-zinc-300 leading-relaxed">
                 Při koupi předplatného získáte{" "}
-                <span className="text-secondary font-bold">
+                <span className="text-secondary font-semibold">
                   slevový kód 20 %
                 </span>
                 , který můžete předat přátelům, rodině nebo komukoliv jinému.

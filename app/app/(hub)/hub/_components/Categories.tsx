@@ -70,7 +70,7 @@ export default function Categories({ onFilterChange, itemCounts = {} }: Props) {
     <div className="sticky top-24 flex flex-col gap-6">
       {/* Header s tlačítkem pro vyčištění */}
       <div className="flex items-center justify-between">
-        <h3 className="text-primary font-bold">Filtry</h3>
+        <h3 className="text-primary font-semibold">Filtry</h3>
         {selectedFilter && (
           <button
             onClick={handleClearFilters}
@@ -85,14 +85,14 @@ export default function Categories({ onFilterChange, itemCounts = {} }: Props) {
       {/* Celkový počet položek */}
       <div className="bg-linear-to-r from-secondary/10 to-tertiary/10 border border-secondary/30 rounded-xl p-4">
         <p className="text-sm text-textP">Celkem položek</p>
-        <p className="text-3xl font-bold text-primary">{getTotalItems()}</p>
+        <p className="text-3xl font-semibold text-primary">{getTotalItems()}</p>
       </div>
 
       {/* Kategorie filtrů */}
       {hubDataList.map((group) => {
         return (
           <div key={group.slug} className="flex flex-col gap-3">
-            <h5 className="text-primary tracking-wider font-bold uppercase text-sm tracking-wide">
+            <h5 className="text-primary tracking-wider font-semibold uppercase text-sm tracking-wide">
               {group.name}
             </h5>
             <div className="flex flex-col gap-2">
@@ -120,7 +120,7 @@ export default function Categories({ onFilterChange, itemCounts = {} }: Props) {
                       {item.name}
                     </span>
                     <span
-                      className={`text-xs font-bold px-2 py-1 rounded-full ${
+                      className={`text-xs font-semibold px-2 py-1 rounded-full ${
                         isSelected
                           ? "bg-white/20 text-white"
                           : "bg-secondary/10 text-secondary group-hover:bg-secondary group-hover:text-white"

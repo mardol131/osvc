@@ -62,7 +62,7 @@ export default function Card({
         {/* Header s názvem a kategorií */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <h5 className="text-xl tracking-wider font-bold text-primary group-hover:text-secondary transition-colors mb-1">
+            <h5 className="text-xl tracking-wider font-semibold text-primary group-hover:text-secondary transition-colors mb-1">
               {name}
             </h5>
             {category && (

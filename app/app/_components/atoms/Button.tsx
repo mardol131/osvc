@@ -36,7 +36,7 @@ export default function Button({
   };
 
   const baseClasses =
-    "shadow-lg uppercase cursor-pointer font-bold hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center";
+    "shadow-lg uppercase cursor-pointer font-semibold hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center";
 
   const combinedClassName = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
 

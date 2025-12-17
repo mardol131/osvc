@@ -1,6 +1,7 @@
 import React from "react";
 import Question from "./Question";
 import HeadingCenter from "../../blocks/headings/HeadingCenter";
+import { servicePrice } from "@/app/_data/pricing";
 
 export default function Faq({ showHeader = true }: { showHeader?: boolean }) {
   return (
@@ -41,7 +42,7 @@ export default function Faq({ showHeader = true }: { showHeader?: boolean }) {
           />
           <Question
             heading="Kolik služba stojí a co všechno zahrnuje?"
-            text="Cena je 365 Kč za rok. Zahrnuje sledování všech důležitých termínů, upozorňování e-mailem i SMS zprávami, přehled povinností a přístup k jednoduchým návodům, formulářům a kalendáři."
+            text={`Cena je ${servicePrice} Kč za rok. Zahrnuje sledování všech důležitých termínů, upozorňování e-mailem i SMS zprávami, přehled povinností a přístup k jednoduchým návodům, formulářům a kalendáři.`}
           />
           <Question
             heading="Musím něco instalovat nebo se učit nový systém?"

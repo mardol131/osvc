@@ -84,7 +84,7 @@ export default function DesktopHeader() {
         <Button
           variant="black"
           size="sm"
-          text="Koupit roční členství"
+          text="Koupit předplatné"
           href={stripePayment}
           target={"_blank"}
         />

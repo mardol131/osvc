@@ -112,9 +112,9 @@ export default function MobileHeader() {
             <li className="mt-4">
               <a
                 href={process.env.PAYMENT_LINK}
-                className="block text-center shadow-lg text-base font-bold py-3 px-6 bg-gradient-to-r from-secondary to-tertiary text-white rounded-xl font-oswald hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out"
+                className="block text-center shadow-lg text-base font-semibold py-3 px-6 bg-gradient-to-r from-secondary to-tertiary text-white rounded-xl font-oswald hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out"
               >
-                Koupit roční členství
+                Koupit roční předplatné
               </a>
             </li>
           </ul>

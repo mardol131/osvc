@@ -14,7 +14,7 @@ export default function PricingCard(props: Props) {
       <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-tertiary/15 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10">
-        <p className="text-secondary mb-5 text-sm font-bold uppercase tracking-wide">
+        <p className="text-secondary mb-5 text-sm font-semibold uppercase tracking-wide">
           Roční předplatné
         </p>
         <div className="flex items-baseline gap-2 mb-2">
@@ -22,8 +22,9 @@ export default function PricingCard(props: Props) {
           <span className="text-zinc-400 text-xl">/rok</span>
         </div>
         <p className="text-zinc-300 text-base">
-          To je jen <span className="text-secondary font-bold">1 Kč denně</span>{" "}
-          – méně než jedno kafe
+          To je jen{" "}
+          <span className="text-secondary font-semibold">1 Kč denně</span> –
+          méně než jedno kafe
         </p>
         <div className="h-px bg-gradient-to-r from-transparent via-secondary/30 to-transparent mt-6"></div>
       </div>
@@ -33,7 +34,7 @@ export default function PricingCard(props: Props) {
       <Link
         target="_blank"
         href={process.env.NEXT_PUBLIC_PAYMENT_LINK!}
-        className="relative z-10 text-xl uppercase cursor-pointer text-white font-bold py-4 px-8 bg-gradient-to-r from-secondary via-colorTo to-tertiary rounded-xl flex items-center justify-center hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out shadow-lg"
+        className="relative z-10 text-xl uppercase cursor-pointer text-white font-semibold py-4 px-8 bg-gradient-to-r from-secondary via-colorTo to-tertiary rounded-xl flex items-center justify-center hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out shadow-lg"
       >
         Koupit předplatné
       </Link>

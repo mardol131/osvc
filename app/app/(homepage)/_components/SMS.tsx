@@ -25,7 +25,7 @@ export default function SMS() {
 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-start gap-4">
-            <p className="text-secondary font-bold uppercase text-sm tracking-wide">
+            <p className="text-secondary font-semibold uppercase text-sm tracking-wide">
               Jak to vypadá v praxi
             </p>
 
@@ -43,7 +43,7 @@ export default function SMS() {
 
           {/* Příklady zpráv */}
           <div className="flex flex-col gap-3 mt-4">
-            <h5 className="text-primary font-bold mb-2">Co vám přijde:</h5>
+            <h5 className="text-primary mb-2">Co vám přijde:</h5>
 
             <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-zinc-200 shadow-sm">
               <span className="text-secondary text-2xl flex-shrink-0">✓</span>

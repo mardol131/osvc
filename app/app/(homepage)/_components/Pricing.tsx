@@ -20,7 +20,7 @@ export default function Pricing() {
       <div className="max-w-wrapper w-full md:grid flex flex-col grid-cols-2 gap-10">
         <div>
           <div className="flex flex-col items-start gap-3">
-            <p className="text-secondary font-bold uppercase">Ceník</p>
+            <p className="text-secondary font-semibold uppercase">Ceník</p>
             <h2 className=""></h2>
             <p className="text-lg text-textP">
               Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,

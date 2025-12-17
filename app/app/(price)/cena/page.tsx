@@ -41,7 +41,6 @@ export default function page() {
           placeholder: "Zde zadejte email",
         }}
       />
-      <Footer />
     </>
   );
 }
