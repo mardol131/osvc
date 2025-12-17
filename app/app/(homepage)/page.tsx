@@ -49,7 +49,7 @@ export default function Home() {
           heading: "Ještě se na to necítíte? Zanechte nám svůj email.",
           subheading:
             "Budeme Vás informovat pouze o novinkách v naší službě, žádný zbytečný marketing.",
-          dataDestination: `${process.env.WEBSITE_URL}/api/ecomail/news`,
+          dataDestination: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/ecomail/news`,
           buttonText: "Odebírat novinky",
           inputType: "email",
           placeholder: "Zde zadejte email",

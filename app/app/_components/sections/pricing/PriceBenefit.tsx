@@ -9,7 +9,7 @@ export default function PriceBenefit({ text }: Props) {
   return (
     <div className="flex items-start gap-4 group">
       <div className="flex-shrink-0 mt-1">
-        <FaCheckCircle className="text-emerald-500 text-2xl group-hover:text-tertiary transition-colors duration-200" />
+        <FaCheckCircle className="text-emerald-500 text-2xl group-hover:text-emerald-300 transition-colors duration-200" />
       </div>
       <p className="text-zinc-100 text-base leading-relaxed">{text}</p>
     </div>

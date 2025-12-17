@@ -1,4 +1,6 @@
 const url = "https://api2.ecomailapp.cz/lists/2/subscribe";
+const triggerAutomationUrl =
+  "https://api2.ecomailapp.cz/pipelines/29969/trigger/";
 
 export type SubscriberBody = {
   name?: string;
@@ -28,12 +30,26 @@ export async function POST(request: Request) {
           phone: phone,
           source: "PAYMENT",
         },
-        trigger_autoresponders: false,
-        update_existing: false,
-        resubscribe: false,
+        trigger_autoresponders: true,
+        update_existing: true,
+        resubscribe: true,
       }),
     });
-    console.log(response);
+
+    const res = await fetch(triggerAutomationUrl, {
+      method: "post",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        key: process.env.ECOMAIL_API_KEY || "",
+      },
+      body: JSON.stringify({
+        email: email,
+      }),
+    });
+
+    console.log("first", await response.json());
+    console.log("second", await res.json());
   } catch (err) {
     console.log(err);
   }

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
         const nameArray = data.customer_name?.split(" ") || [];
 
         const response = await fetch(
-          `${process.env.WEBSITE_URL}/api/ecomail/subscriber`!,
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/ecomail/subscribe`!,
           {
             method: "POST",
             mode: "cors",

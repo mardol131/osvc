@@ -10,7 +10,7 @@
         "ECOMAIL_API_KEY",
         "STRIPE_KEY",
         "STRIPE_WEBHOOK_SECRET",
-        "WEBSITE_URL"
+        "NEXT_PUBLIC_WEBSITE_URL"
       ]
     },
     "check-types": {
