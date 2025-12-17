@@ -5,6 +5,7 @@ import EntitiesWithoutLegalAdvice from "../../_components/sections/EntitiesWitho
 import HeroMidAlign from "../../_components/sections/hero/HeroMidAlign";
 import PricingTextAndBubble from "../../_components/sections/pricing/PricingTextAndBubble";
 import HeroButtons from "../_components/HeroButtons";
+import Comparison from "@/app/_components/sections/Comparison";
 
 export default function page() {
   return (
@@ -30,6 +31,7 @@ export default function page() {
         direction="horizontal"
       />
       <EntitiesWithoutLegalAdvice />
+      <Comparison />
       <OneStringInputCta
         options={{
           heading: "Ještě se na to necítíte? Zanechte nám svůj email.",

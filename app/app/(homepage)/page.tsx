@@ -10,6 +10,7 @@ import SMS from "./_components/SMS";
 import About from "./_components/About";
 import Faq from "../_components/sections/faq/Faq";
 import SaleCodeBanner from "../_components/sections/banners/SaleCodeBanner";
+import Comparison from "../_components/sections/Comparison";
 
 export default function Home() {
   return (
@@ -37,10 +38,12 @@ export default function Home() {
         subheading="Ceník"
         direction="horizontal"
       />
+      <SMS />
+
+      <Comparison />
       <div className="mt-20">
         <SaleCodeBanner />
       </div>
-      <SMS />
 
       <About />
       <Faq />
