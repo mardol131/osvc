@@ -2,7 +2,6 @@ import Benefits from "../_components/sections/Benefits";
 import { benefitsData } from "../_data/benefitsData";
 
 import OneStringInputCta from "../_components/blocks/OneStringInputCta";
-import TextDivider from "../_components/molecules/textDivider";
 import PricingTextAndBubble from "../_components/sections/pricing/PricingTextAndBubble";
 import Hero from "./_components/Hero";
 import Fines from "./_components/Fines";

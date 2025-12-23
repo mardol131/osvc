@@ -1,10 +1,9 @@
 import { servicePrice } from "@/app/_data/pricing";
-import React from "react";
+import { FaCheckCircle } from "react-icons/fa";
+import { FiX } from "react-icons/fi";
+import Button from "../atoms/Button";
 import SectionWrapper from "../blocks/SectionWrapper";
 import HeadingCenter from "../blocks/headings/HeadingCenter";
-import { FiX, FiCheck } from "react-icons/fi";
-import { FaCheckCircle } from "react-icons/fa";
-import Button from "../atoms/Button";
 
 type Props = {};
 
@@ -47,7 +46,7 @@ function CostItem({
 
 export default function Comparison({}: Props) {
   return (
-    <div className="relative py-10">
+    <div className="relative pt-10">
       <SectionWrapper
         levelTwo={{
           className: "items-center relative overflow-hidden",
@@ -68,20 +67,17 @@ export default function Comparison({}: Props) {
 
               <div className="relative z-10">
                 <div className="flex items-center justify-center gap-2 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center">
-                    <FiX className="text-zinc-600 text-xl" />
-                  </div>
                   <h3 className="text-primary text-center">Bez naší služby</h3>
                 </div>
                 <div className="space-y-2">
                   <CostItem
-                    label="Průměrná pokuta za zmeškané přiznání"
-                    value="2 500 Kč"
+                    label="Pokuty"
+                    value="až desítky tisíc Kč"
                     negative
                   />
                   <CostItem
-                    label="Ztracený čas hledáním info (5h × 500 Kč/h)"
-                    value="2 500 Kč"
+                    label="Hledání informací (2h × 500 Kč/h)"
+                    value="1 000 Kč"
                     negative
                   />
                   <CostItem
@@ -90,12 +86,12 @@ export default function Comparison({}: Props) {
                     negative
                   />
                   <div className="border-t-2 border-zinc-200 pt-4 mt-6">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-end">
                       <span className="font-bold text-lg text-primary">
-                        Potenciální náklady:
+                        Náklady:
                       </span>
                       <span className="text-2xl font-bold text-zinc-700">
-                        5 000+ Kč
+                        od 1 000 Kč Kč
                       </span>
                     </div>
                   </div>
@@ -109,9 +105,6 @@ export default function Comparison({}: Props) {
 
               <div className="relative z-10">
                 <div className="flex items-center justify-center gap-2 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-tertiary flex items-center justify-center">
-                    <FiCheck className="text-white text-xl" />
-                  </div>
                   <h3 className="text-primary text-center">S naší službou</h3>
                 </div>
                 <div className="space-y-2">
@@ -130,13 +123,9 @@ export default function Comparison({}: Props) {
                     value="Zahrnuto"
                     positive
                   />
-                  <CostItem
-                    label="Klidná mysl a čas na podnikání"
-                    value="K nezaplacení"
-                    positive
-                  />
+
                   <div className="border-t-2 border-secondary/30 pt-4 mt-6">
-                    <div className="flex justify-between items-center mb-3">
+                    <div className="flex justify-between items-end mb-3">
                       <span className="font-bold text-lg text-primary">
                         Celkem:
                       </span>
@@ -145,10 +134,9 @@ export default function Comparison({}: Props) {
                       </span>
                     </div>
                     <Button
-                      text="Koupit za 1 Kč na den"
+                      text="Koupit předplatné"
                       className="justify-self-stretch"
-                      href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
-                      target="_blank"
+                      href={"/koupit-predplatne"}
                     />
                   </div>
                 </div>
@@ -157,7 +145,7 @@ export default function Comparison({}: Props) {
           </div>
 
           {/* ROI kalkulačka */}
-          <div className="relative bg-gradient-to-br from-primary via-zinc-800 to-zinc-900 p-8 md:p-10 rounded-2xl shadow-2xl border border-secondary/20 max-w-3xl mx-auto w-full overflow-hidden">
+          <div className="relative bg-gradient-to-br mb-20 from-primary via-zinc-800 to-zinc-900 p-8 md:p-10 rounded-2xl shadow-2xl border border-secondary/20 max-w-3xl mx-auto w-full overflow-hidden">
             {/* Dekorativní pozadí */}
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-tertiary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>

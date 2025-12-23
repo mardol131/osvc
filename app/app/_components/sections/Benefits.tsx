@@ -1,4 +1,3 @@
-import React from "react";
 import { BsSignpost2 } from "react-icons/bs";
 import { FiAlertTriangle } from "react-icons/fi";
 import { GoChecklist } from "react-icons/go";
@@ -137,8 +136,7 @@ export default function Benefits({ benefitsData }: Props) {
 
             <Button
               text={benefitsData.cta.buttonText}
-              href={process.env.NEXT_PUBLIC_PAYMENT_LINK}
-              target="_blank"
+              href={"/koupit-predplatne"}
             />
           </div>
         </div>

@@ -1,0 +1,58 @@
+import React from "react";
+import { FaCheckCircle } from "react-icons/fa";
+import { servicePrice } from "@/app/_data/pricing";
+
+export default function MainServiceBox() {
+  return (
+    <div className="bg-gradient-to-br from-primary via-zinc-800 to-zinc-900 rounded-2xl p-6 md:p-8 border border-secondary/20 shadow-xl relative overflow-hidden">
+      {/* Dekorativní gradient overlay */}
+      <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-secondary/20 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="relative z-10">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex-1">
+            <span className="inline-block px-3 py-1 text-xs font-bold text-white bg-secondary rounded-md mb-3 uppercase tracking-wide">
+              Hlavní služba
+            </span>
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              Předplatné služby OSVČ365
+            </h3>
+            <p className="text-zinc-300 text-base leading-relaxed">
+              Kompletní hlídání povinností pro OSVČ včetně připomínek, měsíčních
+              přehledů změn a přístupu ke sdílenému kalendáři s důležitými
+              termíny.
+            </p>
+          </div>
+
+          <div className="text-right flex-shrink-0">
+            <div className="text-3xl md:text-4xl font-bold text-white">
+              {servicePrice} Kč
+            </div>
+            <div className="text-zinc-400 text-sm mt-1">/rok</div>
+          </div>
+        </div>
+
+        <div className="h-px bg-gradient-to-r from-transparent via-secondary/30 to-transparent my-4"></div>
+
+        <div className="grid grid-cols-1 gap-3">
+          <div className="flex items-start gap-2">
+            <FaCheckCircle className="text-emerald-500 text-lg mt-1 flex-shrink-0" />
+            <span className="text-zinc-200 text-sm">
+              Vše důležité hlídáme za Vás
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <FaCheckCircle className="text-emerald-500 text-lg mt-1 flex-shrink-0" />
+            <span className="text-zinc-200 text-sm">
+              Připomínky e-mailem i SMS
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <FaCheckCircle className="text-emerald-500 text-lg mt-1 flex-shrink-0" />
+            <span className="text-zinc-200 text-sm">Měsíční přehledy změn</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

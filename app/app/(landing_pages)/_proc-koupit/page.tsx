@@ -1,24 +1,13 @@
-import React from "react";
-import { Metadata } from "next";
-import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
-import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
-import HeadingLeft from "@/app/_components/blocks/headings/HeadingLeft";
-import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
-import EntitiesWithoutLegalAdvice from "@/app/_components/sections/EntitiesWithoutLegalAdvice";
 import Benefits from "@/app/_components/sections/Benefits";
-import { benefitsData } from "@/app/_data/benefitsData";
-import PricingTextAndBubble from "@/app/_components/sections/pricing/PricingTextAndBubble";
-import Faq from "@/app/_components/sections/faq/Faq";
-import OneStringInputCta from "@/app/_components/blocks/OneStringInputCta";
-import Button from "@/app/_components/atoms/Button";
-import { stripePayment } from "@/app/_data/links";
-import { servicePrice } from "@/app/_data/pricing";
-import { FiAlertTriangle, FiClock, FiShield } from "react-icons/fi";
-import { GoChecklist } from "react-icons/go";
-import { BsLightning } from "react-icons/bs";
 import Comparison from "@/app/_components/sections/Comparison";
-import Reasons from "@/app/_components/sections/Reasons";
+import EntitiesWithoutLegalAdvice from "@/app/_components/sections/EntitiesWithoutLegalAdvice";
 import Facts from "@/app/_components/sections/Facts";
+import Reasons from "@/app/_components/sections/Reasons";
+import Faq from "@/app/_components/sections/faq/Faq";
+import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
+import PricingTextAndBubble from "@/app/_components/sections/pricing/PricingTextAndBubble";
+import { benefitsData } from "@/app/_data/benefitsData";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Proč dává smysl hlídat si povinnosti OSVČ? | OSVČ Asistent",

@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-import { stripePayment } from "@/app/_data/links";
 import Button from "@/app/_components/atoms/Button";
 import { scrollToElement } from "@/app/_functions/scrollToElement";
 import NumberOfClients from "@/app/_components/blocks/NumberOfClients";
@@ -42,8 +40,7 @@ export default function Hero() {
         <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mt-8 w-full max-w-2xl">
           <Button
             text={`Koupit za ${servicePrice} Kč na rok`}
-            href={stripePayment}
-            target="_blank"
+            href={"/koupit-predplatne"}
           />
           <Button
             variant="black"

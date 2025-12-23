@@ -1,6 +1,6 @@
 import { servicePrice } from "@/app/_data/pricing";
 import Link from "next/link";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 type Props = {
   benefits: ReactNode;
@@ -32,8 +32,7 @@ export default function PricingCard(props: Props) {
       <div className="flex flex-col gap-4 relative z-10">{props.benefits}</div>
 
       <Link
-        target="_blank"
-        href={process.env.NEXT_PUBLIC_PAYMENT_LINK!}
+        href={"/koupit-predplatne"}
         className="relative z-10 text-xl uppercase cursor-pointer text-white font-semibold py-4 px-8 bg-gradient-to-r from-secondary via-colorTo to-tertiary rounded-xl flex items-center justify-center hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out shadow-lg"
       >
         Koupit předplatné

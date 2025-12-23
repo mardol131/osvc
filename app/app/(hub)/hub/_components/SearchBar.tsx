@@ -41,7 +41,7 @@ export default function SearchBar({
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder={placeholder}
-        className="w-full pl-14 pr-14 py-4 text-lg bg-white border-2 border-zinc-200 rounded-xl focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all duration-200 placeholder:text-zinc-400 font-oswald"
+        className="w-full pl-14 pr-14 py-4 text-lg bg-white border border-zinc-200 rounded-xl focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all duration-200 placeholder:text-zinc-400 font-oswald"
       />
 
       {/* Tlačítko vymazat */}

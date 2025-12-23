@@ -1,5 +1,4 @@
 import NumberOfClients from "@/app/_components/blocks/NumberOfClients";
-import Footer from "@/app/_components/blocks/footer/Footer";
 import OneStringInputCta from "../../_components/blocks/OneStringInputCta";
 import EntitiesWithoutLegalAdvice from "../../_components/sections/EntitiesWithoutLegalAdvice";
 import HeroMidAlign from "../../_components/sections/hero/HeroMidAlign";
@@ -14,7 +13,7 @@ export default function page() {
         options={{
           heading: "Cena za tři kafe.",
           secondHeading: "na celý rok.",
-          text: " Sledujeme zákony, připomínáme důležité termíny a dáváme Vám věsdět, když se něco změní. Už žádné pokuty ani stres z neznámých povinností.",
+          text: " Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět, když se něco změní. Už žádné pokuty ani stres z neznámých povinností.",
           buttonsColumns: 1,
           buttons: (
             <>

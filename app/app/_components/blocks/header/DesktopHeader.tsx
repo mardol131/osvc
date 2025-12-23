@@ -1,9 +1,7 @@
 import { scrollToElement } from "@/app/_functions/scrollToElement";
 import Image from "next/image";
 //import Link from "next/link";
-import React from "react";
 import logo from "@/public/logo-osvc.png";
-import { stripePayment } from "@/app/_data/links";
 import Link from "next/link";
 import Button from "../../atoms/Button";
 
@@ -85,8 +83,7 @@ export default function DesktopHeader() {
           variant="black"
           size="sm"
           text="Koupit předplatné"
-          href={stripePayment}
-          target={"_blank"}
+          href={"/koupit-predplatne"}
         />
       </div>
     </header>
