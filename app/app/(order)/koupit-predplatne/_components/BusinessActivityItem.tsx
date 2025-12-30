@@ -1,16 +1,13 @@
 "use client";
 
+import { BusinessActivity } from "@/app/_data/businessActivities";
 import React from "react";
 import { FaPlus, FaCheck, FaCheckCircle } from "react-icons/fa";
 
 type Props = {
-  name: string;
-  description: string;
-  price: number;
-  items: string[];
   isSelected: boolean;
   onToggle: () => void;
-};
+} & BusinessActivity;
 
 export default function BusinessActivityItem({
   name,
@@ -34,7 +31,7 @@ export default function BusinessActivityItem({
     >
       <div className="flex items-start gap-4">
         <div className="flex-1">
-          <h5 className="text-lg font-semibold text-zinc-800 mb-1">{name}</h5>
+          <h5 className="text-lg  text-zinc-800 mb-1">{name}</h5>
           <p className="text-zinc-600 text-sm leading-relaxed mb-3">
             {description}
           </p>
@@ -44,7 +41,7 @@ export default function BusinessActivityItem({
             {items.map((item, index) => (
               <div key={index} className="flex items-start gap-2">
                 <FaCheckCircle className="text-emerald-500 text-xs mt-1 flex-shrink-0" />
-                <span className="text-zinc-700 text-xs">{item}</span>
+                <span className="text-zinc-700 text-xs">{item.item}</span>
               </div>
             ))}
           </div>

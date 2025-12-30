@@ -7,7 +7,7 @@ import Button from "../../atoms/Button";
 
 export default function DesktopHeader() {
   return (
-    <header className="hidden min-h-20 bg-white/80 backdrop-blur-xl lg:flex items-center justify-center px-10 fixed top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
+    <header className="hidden min-h-20 bg-white/80 backdrop-blur-xl lg:flex items-center justify-center px-10 sticky top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
       <div className="max-w-wrapper w-full grid grid-cols-[1fr_3fr_1fr] items-center p-2">
         <Link href="/" className="group">
           <Image

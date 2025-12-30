@@ -11,21 +11,21 @@ export default function MainServiceBox() {
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex-1">
-            <span className="inline-block px-3 py-1 text-xs font-bold text-white bg-secondary rounded-md mb-3 uppercase tracking-wide">
+            <span className="inline-block px-3 py-1 text-xs font-semibold text-white bg-secondary rounded-md mb-3 uppercase tracking-wide">
               Hlavní služba
             </span>
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            <h3 className="text-2xl md:text-3xl text-white mb-2">
               Předplatné služby OSVČ365
             </h3>
-            <p className="text-zinc-300 text-base leading-relaxed">
-              Kompletní hlídání povinností pro OSVČ včetně připomínek, měsíčních
-              přehledů změn a přístupu ke sdílenému kalendáři s důležitými
-              termíny.
+            <p className="text-zinc-300 text-base">
+              Kompletní hlídání pravidelných a nových povinností pro OSVČ skrze
+              email a SMS zpráv, upozorňování na blížící se termíny a informace
+              o změnách.
             </p>
           </div>
 
           <div className="text-right flex-shrink-0">
-            <div className="text-3xl md:text-4xl font-bold text-white">
+            <div className="text-3xl md:text-4xl font-semibold text-white">
               {servicePrice} Kč
             </div>
             <div className="text-zinc-400 text-sm mt-1">/rok</div>

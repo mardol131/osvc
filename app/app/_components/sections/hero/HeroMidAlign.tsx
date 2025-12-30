@@ -14,7 +14,7 @@ type Props = {
 
 export default function HeroMidAlign({ options }: Props) {
   return (
-    <div className="relative flex items-center justify-center md:px-10 px-4 md:py-30 py-20 pt-30 md:pt-50 overflow-hidden">
+    <div className="relative flex items-center justify-center md:px-10 px-4 md:py-30 py-20 overflow-hidden">
       {/* Dekorativní pozadí */}
       <div className="absolute inset-0 bg-linear-to-br from-zinc-50 via-white to-secondary/5 pointer-events-none"></div>
       <div className="absolute top-20 right-0 w-96 h-96 bg-linear-to-br from-secondary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>

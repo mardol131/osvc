@@ -7,7 +7,7 @@ import { servicePrice } from "@/app/_data/pricing";
 
 export default function Hero() {
   return (
-    <div className="relative flex items-center justify-center md:px-10 px-4 md:py-20 py-20 pt-30 md:pt-50 overflow-hidden">
+    <div className="relative flex items-center justify-center md:px-10 px-4 md:py-20 py-20 overflow-hidden">
       {/* Dekorativní pozadí */}
 
       <div className="relative z-10 w-full flex flex-col items-center gap-6 text-center max-w-200">

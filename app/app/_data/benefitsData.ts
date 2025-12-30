@@ -28,11 +28,11 @@ export const benefitsData = {
       title: "Odkazy na formuláře a oficiální zdroje",
       text: "Vše důležité na jednom místě – bez zdlouhavého hledání na stránkách úřadů.",
     },
-    {
-      icon: "calendar",
-      title: "Sdílený kalendář s důležitými termíny",
-      text: "Získáte přístup ke kalendáři, ve kterém uvidíte všechny termíny jednotlivých povinností.",
-    },
+    // {
+    //   icon: "calendar",
+    //   title: "Sdílený kalendář s důležitými termíny",
+    //   text: "Získáte přístup ke kalendáři, ve kterém uvidíte všechny termíny jednotlivých povinností.",
+    // },
   ],
   audience: {
     title: "Kdo službu ocení?",

@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { activateSusbscribe } from "../../functions";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
@@ -22,6 +23,16 @@ export async function POST(request: Request) {
     switch (event.type) {
       case "invoice.payment_succeeded": {
         const data = event.data.object;
+        console.log("Invoice payment succeeded:", data);
+
+        if (!data.parent?.subscription_details?.metadata?.subscribe_id) {
+          throw new Error("Missing subscribe_id in metadata");
+        }
+
+        await activateSusbscribe(
+          data.parent.subscription_details.metadata.subscribe_id
+        );
+
         const nameArray = data.customer_name?.split(" ") || [];
 
         const response = await fetch(
@@ -41,9 +52,7 @@ export async function POST(request: Request) {
           }
         );
 
-        const json = await response.json();
-
-        console.log(json);
+        await response.json();
         break;
       }
       default:

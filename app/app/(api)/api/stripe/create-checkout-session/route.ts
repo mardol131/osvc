@@ -1,3 +1,4 @@
+import { createDraftSubscribe, createSubscribe } from "@/app/(api)/functions";
 import Stripe from "stripe";
 
 export async function POST(request: Request) {
@@ -16,7 +17,12 @@ export async function POST(request: Request) {
     culture_sports: process.env.STRIPE_CULTURE_SPORTS_PRICE_ID!,
   };
 
-  if (!("items" in body)) {
+  if (
+    !("activityGroups" in body) ||
+    !("email" in body) ||
+    !("phone" in body) ||
+    !("phonePrefix" in body)
+  ) {
     return new Response(
       JSON.stringify({ error: "Missing items in request body" }),
       {
@@ -26,8 +32,31 @@ export async function POST(request: Request) {
     );
   }
 
-  const items = body.items.map((item: { id: string }) => {
-    const priceId = priceMap[item.id];
+  let subscribeId = "";
+
+  console.log(body);
+
+  try {
+    const response = await createSubscribe(
+      body.email,
+      body.phone,
+      body.phonePrefix,
+      body.activityGroups.map((item: { id: string }) => item.id)
+    );
+
+    subscribeId = response.doc.id;
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: "Failed to create customer" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  const items = body.activityGroups.map((item: { slug: string }) => {
+    const priceId = priceMap[item.slug];
     return {
       quantity: 1,
       price: priceId,
@@ -45,7 +74,12 @@ export async function POST(request: Request) {
         ...items,
       ],
       mode: "subscription",
-      //   return_url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/koupit-predplatne`,
+      customer_email: body.email,
+      subscription_data: {
+        metadata: {
+          subscribe_id: subscribeId,
+        },
+      },
     });
 
     return new Response(

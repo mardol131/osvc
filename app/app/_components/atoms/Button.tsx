@@ -10,6 +10,7 @@ type Props = {
   htmlType?: "button" | "submit" | "reset";
   variant?: "gold" | "black";
   className?: string;
+  disabled?: boolean;
 };
 
 export default function Button({
@@ -21,6 +22,7 @@ export default function Button({
   htmlType = "button",
   variant = "gold",
   className = "",
+  disabled = false,
 }: Props) {
   const sizeClasses = {
     xs: "text-sm py-2 px-4",
@@ -36,7 +38,7 @@ export default function Button({
   };
 
   const baseClasses =
-    "shadow-lg uppercase cursor-pointer font-semibold hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center";
+    "shadow-lg uppercase cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-default font-semibold hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center";
 
   const combinedClassName = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
 
@@ -54,7 +56,12 @@ export default function Button({
   }
 
   return (
-    <button onClick={onClick} className={combinedClassName} type={htmlType}>
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      className={combinedClassName}
+      type={htmlType}
+    >
       {text}
     </button>
   );
