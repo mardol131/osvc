@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { activateSusbscribe } from "../../functions";
+import { activateSusbscribe, createSubscribe } from "../../functions";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
@@ -25,13 +25,28 @@ export async function POST(request: Request) {
         const data = event.data.object;
         console.log("Invoice payment succeeded:", data);
 
-        if (!data.parent?.subscription_details?.metadata?.subscribe_id) {
-          throw new Error("Missing subscribe_id in metadata");
+        if (!data.parent?.subscription_details?.metadata) {
+          throw new Error("Missing subscribe metadata");
         }
 
-        await activateSusbscribe(
-          data.parent.subscription_details.metadata.subscribe_id
+        console.log("METADATA", data.parent?.subscription_details?.metadata);
+
+        const subResponse = await createSubscribe(
+          data.parent.subscription_details.metadata.email,
+          data.parent.subscription_details.metadata.phone,
+          data.parent.subscription_details.metadata.phonePrefix,
+          JSON.parse(data.parent.subscription_details.metadata.activityGroups),
+          data.parent.subscription_details.metadata.terms === "true",
+          true
         );
+
+        console.log("SOMETHING");
+
+        console.log("hell", subResponse);
+
+        // await activateSusbscribe(
+        //   data.parent.subscription_details.metadata.subscribe_id
+        // );
 
         const nameArray = data.customer_name?.split(" ") || [];
 

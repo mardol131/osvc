@@ -1,6 +1,13 @@
 import Link from "next/link";
 import React from "react";
 
+const variantClasses = {
+  gold: "bg-gradient-to-r from-secondary to-colorTo text-white",
+  black: "bg-gradient-to-r from-primary to-zinc-800 text-white",
+  outlined:
+    "bg-transparent border-2 border-secondary text-secondary hover:bg-white hover:text-zinc-900",
+};
+
 type Props = {
   text: string;
   href?: string;
@@ -8,7 +15,7 @@ type Props = {
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   onClick?: () => void;
   htmlType?: "button" | "submit" | "reset";
-  variant?: "gold" | "black";
+  variant?: keyof typeof variantClasses;
   className?: string;
   disabled?: boolean;
 };
@@ -30,11 +37,6 @@ export default function Button({
     md: "md:text-lg text-base py-3 md:px-6 px-4",
     lg: "md:text-2xl text-xl py-4 md:px-8 px-6",
     xl: "md:text-3xl text-2xl py-5 md:px-10 px-8",
-  };
-
-  const variantClasses = {
-    gold: "bg-gradient-to-r from-secondary to-colorTo text-white",
-    black: "bg-gradient-to-r from-primary to-zinc-800 text-white",
   };
 
   const baseClasses =

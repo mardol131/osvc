@@ -24,7 +24,7 @@ export default function HeroMidAlign({ options }: Props) {
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-5 py-2 bg-linear-to-r from-secondary/10 to-tertiary/10 border border-secondary/30 rounded-full">
           <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
-          <p className="text-sm font-semibold text-primary uppercase tracking-wide">
+          <p className="text-sm font-semibold text-primary uppercase  ">
             Pro OSVČ
           </p>
         </div>

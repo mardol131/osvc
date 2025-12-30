@@ -32,7 +32,7 @@ export default function EntitiesWithoutLegalAdvice({}: Props) {
                   <h4 className="text-white font-semibold text-2xl md:text-4xl">
                     770 000
                   </h4>
-                  <p className="text-white/90 text-xs md:text-sm uppercase tracking-wide hidden md:block">
+                  <p className="text-white/90 text-xs md:text-sm uppercase   hidden md:block">
                     bez účetního
                   </p>
                 </div>

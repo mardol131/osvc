@@ -92,7 +92,7 @@ export default function Categories({ onFilterChange, itemCounts = {} }: Props) {
       {hubDataList.map((group) => {
         return (
           <div key={group.slug} className="flex flex-col gap-3">
-            <h5 className="text-primary tracking-wider font-semibold uppercase text-sm tracking-wide">
+            <h5 className="text-primary  r font-semibold uppercase text-sm  ">
               {group.name}
             </h5>
             <div className="flex flex-col gap-2">

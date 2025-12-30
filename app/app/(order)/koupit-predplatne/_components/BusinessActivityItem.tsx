@@ -21,7 +21,7 @@ export default function BusinessActivityItem({
     <div
       onClick={onToggle}
       className={`
-        relative p-5 rounded-xl border cursor-pointer transition-all duration-300
+        relative p-5 max-lg:p-3 rounded-xl border cursor-pointer transition-all duration-300
         ${
           isSelected
             ? "border-secondary bg-secondary/5 shadow-lg shadow-secondary/10"
@@ -30,9 +30,11 @@ export default function BusinessActivityItem({
       `}
     >
       <div className="flex items-start gap-4">
-        <div className="flex-1">
-          <h5 className="text-lg  text-zinc-800 mb-1">{name}</h5>
-          <p className="text-zinc-600 text-sm leading-relaxed mb-3">
+        <div className="flex-1 flex justify-start flex-col items-start">
+          <div className="flex items-center gap-3">
+            <h5 className="text-lg  text-zinc-800">{name}</h5>
+          </div>
+          <p className="text-secondary text-base leading-relaxed mb-3">
             {description}
           </p>
 
@@ -41,12 +43,11 @@ export default function BusinessActivityItem({
             {items.map((item, index) => (
               <div key={index} className="flex items-start gap-2">
                 <FaCheckCircle className="text-emerald-500 text-xs mt-1 flex-shrink-0" />
-                <span className="text-zinc-700 text-xs">{item.item}</span>
+                <p className="text-zinc-700 text-base">{item.item}</p>
               </div>
             ))}
           </div>
-
-          <div className="text-secondary font-semibold text-base">
+          <div className="text-secondary p-2 bg-secondary/15 rounded-md font-semibold text-lg">
             +{price} Kč/rok
           </div>
         </div>

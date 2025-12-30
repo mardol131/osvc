@@ -212,6 +212,7 @@ export interface Subscribe {
   phone?: string | null;
   phonePrefix?: string | null;
   activityGroups?: (string | ActivityGroup)[] | null;
+  terms: boolean;
   active?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -384,6 +385,7 @@ export interface SubscribesSelect<T extends boolean = true> {
   phone?: T;
   phonePrefix?: T;
   activityGroups?: T;
+  terms?: T;
   active?: T;
   updatedAt?: T;
   createdAt?: T;

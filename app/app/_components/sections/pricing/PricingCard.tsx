@@ -14,7 +14,7 @@ export default function PricingCard(props: Props) {
       <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-tertiary/15 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10">
-        <p className="text-secondary mb-5 text-sm font-semibold uppercase tracking-wide">
+        <p className="text-secondary mb-5 text-sm font-semibold uppercase  ">
           Roční předplatné
         </p>
         <div className="flex items-baseline gap-2 mb-2">

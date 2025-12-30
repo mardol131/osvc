@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer
       id="contact"
-      className="relative bg-linear-to-br from-primary via-zinc-800 to-zinc-900 overflow-hidden"
+      className="relative bg-linear-to-br from-primary via-zinc-800 to-zinc-900 overflow-hidden max-lg:pb-20"
     >
       {/* Dekorativní pozadí */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-secondary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>

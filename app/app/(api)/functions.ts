@@ -20,7 +20,9 @@ export async function createSubscribe(
   email: string,
   phone: string,
   phonePrefix: string,
-  activityGroups: string[]
+  activityGroups: string[],
+  terms: boolean,
+  active?: boolean
 ) {
   const response = await fetch(`${process.env.CMS_URL}/api/subscribes`, {
     method: "POST",
@@ -33,6 +35,8 @@ export async function createSubscribe(
       phone: phone,
       phonePrefix: phonePrefix,
       activityGroups: activityGroups,
+      terms: terms ? "true" : "false",
+      active: active ? "true" : "false",
     }),
   });
 

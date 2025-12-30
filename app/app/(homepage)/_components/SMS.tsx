@@ -23,7 +23,7 @@ export default function SMS() {
 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-start gap-4">
-            <p className="text-secondary font-semibold uppercase text-sm tracking-wide">
+            <p className="text-secondary font-semibold uppercase text-sm  ">
               Jak to vypadá v praxi
             </p>
 

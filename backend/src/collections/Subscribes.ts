@@ -44,6 +44,12 @@ export const Subscribes: CollectionConfig = {
       hasMany: true,
     },
     {
+      name: 'terms',
+      type: 'checkbox',
+      label: 'Souhlasím s obchodními podmínkami a zpracováním osobních údajů',
+      required: true,
+    },
+    {
       name: 'active',
       type: 'checkbox',
       label: 'Aktivní předplatné',

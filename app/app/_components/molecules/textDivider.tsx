@@ -15,7 +15,7 @@ export default function TextDivider({ options }: Props) {
         <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-tertiary/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
-        <h3 className="relative z-10 text-2xl font-bebas uppercase tracking-wide">
+        <h3 className="relative z-10 text-2xl font-bebas uppercase  ">
           {options.text}
         </h3>
       </div>

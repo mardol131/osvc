@@ -40,7 +40,10 @@
   }
 }
 
-p {
+p,
+span,
+label,
+div {
   @apply font-oswald;
 }
 
@@ -67,12 +70,4 @@ h4 {
 
 h5 {
   @apply text-2xl/loose font-bebas;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5 {
-  @apply tracking-wide;
 }

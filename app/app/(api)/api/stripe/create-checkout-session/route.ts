@@ -17,11 +17,14 @@ export async function POST(request: Request) {
     culture_sports: process.env.STRIPE_CULTURE_SPORTS_PRICE_ID!,
   };
 
+  console.log(body);
+
   if (
     !("activityGroups" in body) ||
     !("email" in body) ||
     !("phone" in body) ||
-    !("phonePrefix" in body)
+    !("phonePrefix" in body) ||
+    !("terms" in body)
   ) {
     return new Response(
       JSON.stringify({ error: "Missing items in request body" }),
@@ -36,24 +39,25 @@ export async function POST(request: Request) {
 
   console.log(body);
 
-  try {
-    const response = await createSubscribe(
-      body.email,
-      body.phone,
-      body.phonePrefix,
-      body.activityGroups.map((item: { id: string }) => item.id)
-    );
+  //   try {
+  //     const response = await createSubscribe(
+  //       body.email,
+  //       body.phone,
+  //       body.phonePrefix,
+  //       body.activityGroups.map((item: { id: string }) => item.id),
+  //       body.terms
+  //     );
 
-    subscribeId = response.doc.id;
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: "Failed to create customer" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-  }
+  //     subscribeId = response.doc.id;
+  //   } catch (error) {
+  //     return new Response(
+  //       JSON.stringify({ error: "Failed to create customer" }),
+  //       {
+  //         status: 500,
+  //         headers: { "Content-Type": "application/json" },
+  //       }
+  //     );
+  //   }
 
   const items = body.activityGroups.map((item: { slug: string }) => {
     const priceId = priceMap[item.slug];
@@ -77,7 +81,13 @@ export async function POST(request: Request) {
       customer_email: body.email,
       subscription_data: {
         metadata: {
-          subscribe_id: subscribeId,
+          email: body.email,
+          phone: body.phone,
+          phonePrefix: body.phonePrefix,
+          activityGroups: body.activityGroups.map(
+            (item: { id: string }) => item.id
+          ),
+          terms: body.terms,
         },
       },
     });

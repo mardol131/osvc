@@ -29,7 +29,7 @@ export default function MobileHeader() {
   }, [toggle]);
 
   return (
-    <header className="lg:hidden bg-white/80 backdrop-blur-xl flex items-center justify-center md:px-10 px-4 py-4 fixed top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
+    <header className="lg:hidden bg-white/80 backdrop-blur-xl flex items-center justify-center md:px-10 px-4 py-4 sticky top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
       <div className="max-w-wrapper w-full flex flex-col">
         <div className="w-full flex justify-between items-center">
           <Image
