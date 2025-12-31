@@ -1,4 +1,7 @@
-import { createDraftSubscribe, createSubscribe } from "@/app/(api)/functions";
+import {
+  createDraftSubscribe,
+  createSubscribe,
+} from "@/app/_functions/backend";
 import Stripe from "stripe";
 
 export async function POST(request: Request) {

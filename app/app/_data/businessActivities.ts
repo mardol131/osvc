@@ -4,7 +4,6 @@ export type BusinessActivity = {
   name: string;
   description: string;
   price: number;
-  keywords: string[];
   items: { id: string; item: string }[];
   order?: number;
 };

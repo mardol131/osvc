@@ -32,4 +32,5 @@ export default buildConfig({
   }),
   sharp,
   plugins: [],
+  cors: ['http://localhost:3000', process.env.NEXT_PUBLIC_WEBSITE_URL || ''],
 })

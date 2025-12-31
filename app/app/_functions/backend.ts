@@ -64,13 +64,17 @@ export async function activateSusbscribe(subscribeId: string) {
   return response.json();
 }
 
-export async function getPublicCollection(collectionSlug: "activity-groups") {
+export async function getCollection(
+  collectionSlug: "activity-groups" | "subscribes",
+  apiKey?: string
+) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
       },
     }
   );
@@ -81,4 +85,63 @@ export async function getPublicCollection(collectionSlug: "activity-groups") {
     );
   }
   return response.json().then((data) => data.docs);
+}
+
+export async function login(email: string, password: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/users/login`,
+    {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+      credentials: "include",
+    }
+  );
+  if (!response.ok) {
+    throw new Error(`Login failed: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+export type Notification = {
+  text: string;
+  date?: string;
+  link?: string;
+};
+
+export type GeneralNotificationMessages = {
+  general: Notification[];
+  it_services: Notification[];
+  consulting: Notification[];
+  marketing: Notification[];
+  education: Notification[];
+  culture_sports: Notification[];
+};
+
+export async function sendGeneralNotification(
+  messages: GeneralNotificationMessages,
+  password: string
+) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/notifications/send-general-notification`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: process.env.GENERAL_API_KEY || "",
+      },
+      body: JSON.stringify({ messages, password }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to send notifications: ${response.statusText}`);
+  }
+  return response.json();
 }

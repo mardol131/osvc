@@ -12,7 +12,12 @@ export const Subscribes: CollectionConfig = {
       if (!apiKey) return false
       return apiKeyAuth(apiKey)
     },
-    read: () => true,
+    read: async ({ req }) => {
+      if (req.user && req.user?.role.includes('admin')) return true
+      const apiKey = req.headers.get('authorization')
+      if (!apiKey) return false
+      return apiKeyAuth(apiKey)
+    },
     update: async ({ req }) => {
       if (req.user && req.user?.role.includes('admin')) return true
       const apiKey = req.headers.get('authorization')

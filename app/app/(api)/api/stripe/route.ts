@@ -1,5 +1,8 @@
 import Stripe from "stripe";
-import { activateSusbscribe, createSubscribe } from "../../functions";
+import {
+  activateSusbscribe,
+  createSubscribe,
+} from "../../../_functions/backend";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
