@@ -42,26 +42,6 @@ export async function POST(request: Request) {
 
   console.log(body);
 
-  //   try {
-  //     const response = await createSubscribe(
-  //       body.email,
-  //       body.phone,
-  //       body.phonePrefix,
-  //       body.activityGroups.map((item: { id: string }) => item.id),
-  //       body.terms
-  //     );
-
-  //     subscribeId = response.doc.id;
-  //   } catch (error) {
-  //     return new Response(
-  //       JSON.stringify({ error: "Failed to create customer" }),
-  //       {
-  //         status: 500,
-  //         headers: { "Content-Type": "application/json" },
-  //       }
-  //     );
-  //   }
-
   const items = body.activityGroups.map((item: { slug: string }) => {
     const priceId = priceMap[item.slug];
     return {
@@ -87,8 +67,8 @@ export async function POST(request: Request) {
           email: body.email,
           phone: body.phone,
           phonePrefix: body.phonePrefix,
-          activityGroups: body.activityGroups.map(
-            (item: { id: string }) => item.id
+          activityGroups: JSON.stringify(
+            body.activityGroups.map((item: { id: string }) => item.id)
           ),
           terms: body.terms,
         },

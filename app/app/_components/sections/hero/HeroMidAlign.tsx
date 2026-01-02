@@ -32,20 +32,9 @@ export default function HeroMidAlign({ options }: Props) {
         {/* Hlavní nadpis */}
         <div className="flex flex-col items-center gap-3">
           <h1 className="bg-linear-to-br from-primary via-primary to-zinc-700 bg-clip-text text-transparent">
-            <span
-              className={`${
-                options.headingColor === "secondary" ? "text-secondary" : ""
-              }`}
-            >
-              {options.heading}
-            </span>
-            {options.secondHeading && (
-              <>
-                {" "}
-                <br />
-                {options.secondHeading}
-              </>
-            )}
+            {options.heading}
+            <br />
+            {options.secondHeading && <>{options.secondHeading}</>}
           </h1>
         </div>
 

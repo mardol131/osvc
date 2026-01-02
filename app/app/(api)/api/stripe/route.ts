@@ -47,10 +47,6 @@ export async function POST(request: Request) {
 
         console.log("hell", subResponse);
 
-        // await activateSusbscribe(
-        //   data.parent.subscription_details.metadata.subscribe_id
-        // );
-
         const nameArray = data.customer_name?.split(" ") || [];
 
         const response = await fetch(
