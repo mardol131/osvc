@@ -115,7 +115,7 @@ export default async function page({
           subheading="Měsíční přehled"
           heading={
             <>
-              Vaše povinnosti pro měsíc
+              Povinnosti a novinky pro další měsíc
               <br />
               {monthLabel} {yearLabel}
             </>
@@ -139,7 +139,8 @@ export default async function page({
                 </h4>
               </div>
               <p className="text-textP text-sm md:text-base leading-relaxed">
-                Přehled důležitých změn a termínů pro nadcházející období
+                Přehled důležitých změn a termínů pro váš balíček v
+                nadcházejícím období
               </p>
             </div>
           </div>

@@ -16,10 +16,6 @@ type Props = {
 };
 
 export default function NotificationGroup({ heading, notifications }: Props) {
-  if (!notifications || notifications.length === 0) {
-    return null;
-  }
-
   return (
     <div className="mb-10 md:mb-12">
       {/* Hlavička skupiny */}
@@ -27,11 +23,13 @@ export default function NotificationGroup({ heading, notifications }: Props) {
         <h3 className="text-primary mb-1">{heading}</h3>
         <p className="text-textP text-sm md:text-base">
           {notifications.length}{" "}
-          {notifications.length === 1
-            ? "informace"
+          {notifications.length === 0
+            ? "aktualních informací"
+            : notifications.length === 1
+            ? "aktuální informace"
             : notifications.length < 5
-            ? "informace"
-            : "informací"}
+            ? "aktuální informace"
+            : "aktualních informací"}
         </p>
       </div>
 

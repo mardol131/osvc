@@ -14,7 +14,7 @@ export default function NotificationCard({ notification }: Props) {
       <div className="relative z-10">
         {/* Hlavní text */}
         <div className="mb-3">
-          <p className="text-base md:text-lg text-primary leading-relaxed">
+          <p className="text-base md:text-xl text-primary leading-relaxed">
             {notification.text}
           </p>
         </div>
@@ -34,6 +34,7 @@ export default function NotificationCard({ notification }: Props) {
             <div className="flex items-center gap-2 text-xs md:text-sm text-zinc-600">
               <FiCalendar className="text-secondary shrink-0" />
               <span>
+                Do{" "}
                 {format(new Date(notification.date), "d. MMMM yyyy", {
                   locale: cs,
                 })}
