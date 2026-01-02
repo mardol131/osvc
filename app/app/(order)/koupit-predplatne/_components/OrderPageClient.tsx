@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import MainServiceBox from "./MainServiceBox";
-import SearchBar from "@/app/(hub)/hub/_components/SearchBar";
+import SearchBar from "@/app/(hub)/_hub/_components/SearchBar";
 import BusinessActivityItem from "./BusinessActivityItem";
 import OrderSummary, { OrderFormData } from "./OrderSummary";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
