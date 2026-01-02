@@ -21,40 +21,42 @@ export default function BusinessActivityItem({
     <div
       onClick={onToggle}
       className={`
-        relative p-5 max-lg:p-3 rounded-xl border cursor-pointer transition-all duration-300
+        relative p-4 md:p-5 rounded-lg border-l-4 cursor-pointer transition-all duration-200
         ${
           isSelected
-            ? "border-secondary bg-secondary/5 shadow-lg shadow-secondary/10"
-            : "border-zinc-200 bg-white hover:border-secondary/50 hover:shadow-md"
+            ? "border-secondary bg-secondary/5 shadow-md"
+            : "border-zinc-300 bg-white hover:border-secondary/50 hover:shadow-sm"
         }
       `}
     >
-      <div className="flex items-start gap-4">
-        <div className="flex-1 flex justify-start flex-col items-start">
-          <div className="flex items-center gap-3">
-            <h5 className="text-lg  text-zinc-800">{name}</h5>
+      <div className="flex items-start gap-3 md:gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <h5 className="text-zinc-800">{name}</h5>
+            <span className="shrink-0 px-2 py-1 bg-secondary/10 text-secondary rounded text-sm md:text-base">
+              +{price} Kč/rok
+            </span>
           </div>
-          <p className="text-secondary text-base leading-relaxed mb-3">
+          <p className="text-secondary text-sm md:text-base leading-relaxed mb-3">
             {description}
           </p>
 
-          {/* Bodový seznam konkrétních předmětů */}
-          <div className="mb-3 space-y-1.5">
+          {/* Bodový seznam */}
+          <div className="space-y-1.5">
             {items.map((item, index) => (
               <div key={index} className="flex items-start gap-2">
-                <FaCheckCircle className="text-emerald-500 text-xs mt-1 flex-shrink-0" />
-                <p className="text-zinc-700 text-base">{item.item}</p>
+                <FaCheckCircle className="text-emerald-500 text-base mt-1 shrink-0" />
+                <p className="text-zinc-700 text-base md:text-base">
+                  {item.item}
+                </p>
               </div>
             ))}
           </div>
-          <p className="text-secondary p-2 bg-secondary/15 rounded-md text-lg">
-            +{price} Kč/rok
-          </p>
         </div>
 
         <button
           className={`
-            flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300
+            shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center transition-all duration-200
             ${
               isSelected
                 ? "bg-secondary text-white"
@@ -63,9 +65,9 @@ export default function BusinessActivityItem({
           `}
         >
           {isSelected ? (
-            <FaCheck className="text-xl" />
+            <FaCheck className="text-lg md:text-xl" />
           ) : (
-            <FaPlus className="text-xl" />
+            <FaPlus className="text-lg md:text-xl" />
           )}
         </button>
       </div>

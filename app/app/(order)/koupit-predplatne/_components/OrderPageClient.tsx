@@ -93,54 +93,41 @@ export default function OrderPageClient(props: Props) {
     <SectionWrapper>
       <div className="max-w-wrapper flex flex-col items-center">
         {/* Hlavička */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-3xl text-zinc-800 mb-4">
-            Dokončit objednávku
-          </h1>
-          <p className="text-zinc-600 text-lg max-w-2xl mx-auto">
+        <div className="text-center mb-8 md:mb-10">
+          <h1 className="text-zinc-800 mb-3">Dokončit objednávku</h1>
+          <p className="text-zinc-600 text-base md:text-lg max-w-2xl mx-auto">
             Vyberte si základní předplatné a případně přidejte sledování
             specifických předmětů podnikání
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 md:gap-8">
           {/* Levá strana - Formulář */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6 md:space-y-8">
             {/* Box hlavní služby */}
             <MainServiceBox />
 
             {/* Sekce přidání předmětů podnikání */}
             <div
               id="business-activities-section"
-              className="bg-white rounded-2xl border border-zinc-200 p-6 md:p-8 shadow-lg"
+              className="bg-white rounded-xl border border-zinc-200 p-5 md:p-6 shadow-sm"
             >
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <h2 className="text-2xl md:text-3xl text-zinc-800">
-                    Přidat předměty podnikání
-                  </h2>
-                  <span className="px-3 py-1 text-xs font-semibold text-secondary bg-secondary/10 rounded-md uppercase">
+              <div className="mb-5 md:mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                  <h2 className="text-zinc-800">Přidat předměty podnikání</h2>
+                  <span className="inline-block w-fit px-2.5 py-1 text-xs font-semibold text-secondary bg-secondary/10 rounded-md uppercase">
                     Volitelné
                   </span>
                 </div>
-                <p className="text-zinc-600">
+                <p className="text-zinc-600 text-sm md:text-base">
                   To nejdůležitější je již v základním balíčku. Pokud ale chcete
                   detaily, můžete vybrat z nabídky skupiny předmětů. Nabídku
                   postupně doplňujeme dle zájmu.
                 </p>
               </div>
 
-              {/* Searchbar */}
-              {/* <div className="mb-6">
-                <SearchBar
-                  onSearch={setSearchQuery}
-                  placeholder="Hledat předmět podnikání..."
-                  debounceMs={300}
-                />
-              </div> */}
-
               {/* Výpis předmětů */}
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {businessActivities.length > 0 &&
                   businessActivities
                     .sort((a, b) => (a.order || 1000) - (b.order || 1000))

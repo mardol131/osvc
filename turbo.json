@@ -7,10 +7,21 @@
       "env": [
         "NEXT_PUBLIC_PAYMENT_LINK",
         "NEXT_PUBLIC_SUB_ACCOUNT_LINK",
+        "NEXT_PUBLIC_WEBSITE_URL",
+        "NEXT_PUBLIC_CMS_URL",
+        "CMS_URL",
+
+        "GENERAL_API_KEY",
+
+        "EMAIL_API_URL",
+        "SMTP2GO_API_KEY",
+
         "ECOMAIL_API_KEY",
         "STRIPE_KEY",
         "STRIPE_WEBHOOK_SECRET",
-        "NEXT_PUBLIC_WEBSITE_URL",
+
+        "CMS_SECRET",
+        "CMS_API_KEY",
 
         "STRIPE_MAIN_SERVICE_PRICE_ID",
 
@@ -28,7 +39,13 @@
 
         "STRIPE_EDUCATION_PRICE_ID",
 
-        "STRIPE_CULTURE_SPORT_PRICE_ID"
+        "STRIPE_CULTURE_SPORT_PRICE_ID",
+
+        "DATABASE_URL",
+        "PAYLOAD_SECRET",
+
+        "SMSMANAGER_API_KEY",
+        "SMSMANAGER_API_URL"
       ]
     },
     "check-types": {

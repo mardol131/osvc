@@ -138,11 +138,13 @@ export default function OrderSummaryMobile({
             )}
           </div>
 
-          <div className="h-px bg-gradient-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
+          {selectedActivities.length > 0 && (
+            <div className="h-px bg-gradient-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
+          )}
 
           {/* Kontaktní údaje */}
           <div className="space-y-4 mb-6">
-            <div className="text-sm font-semibold text-zinc-500 uppercase tracking-wide">
+            <div className="text-sm font-semibold uppercase tracking-wide">
               Kontaktní údaje
             </div>
 
@@ -246,10 +248,6 @@ export default function OrderSummaryMobile({
               htmlType="submit"
               className="w-full"
             />
-
-            <p className="text-zinc-500 text-xs text-center mt-4">
-              ✓ Funkce aktivní okamžitě po platbě
-            </p>
           </div>
         </div>
       </form>

@@ -96,11 +96,6 @@ export default function OrderSummaryDesktop({
 
       {/* Kontaktní údaje */}
       <div className="space-y-4 mb-6">
-        <p className="text-sm font-semibold uppercase  ">
-          Kontaktní údaje
-          <br /> (Nutné kvůli plnění služby)
-        </p>
-
         <div>
           <label
             htmlFor="email"
@@ -246,10 +241,6 @@ export default function OrderSummaryDesktop({
         variant="gold"
         className="w-full"
       />
-
-      <p className="text-zinc-500 text-base text-center mt-4">
-        ✓ Funkce aktivní okamžitě po platbě
-      </p>
     </form>
   );
 }
