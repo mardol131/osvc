@@ -82,8 +82,6 @@ export async function createGeneralNotificationEmail(messages: CustomMessage[], 
         })
         .join('')
 
-      console.log('notificationsList:', notificationsList)
-
       return `<h2 style="color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-size:18px;font-weight:bold;margin:40px 0;padding:0;margin-bottom:12px">
                         ${messageGroup.heading}
             </h2>

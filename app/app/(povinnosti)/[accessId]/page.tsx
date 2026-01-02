@@ -58,10 +58,12 @@ export default async function page({
       "sort=-createdAt&limit=1"
     );
   } catch (error) {
+    console.log("Error fetching access record:", error);
     return redirect("/");
   }
 
   if (!access) {
+    console.log("Access record not found");
     return redirect("/");
   }
 

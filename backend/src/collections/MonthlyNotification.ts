@@ -115,6 +115,7 @@ export const MonthlyNotification: CollectionConfig = {
     afterChange: [
       async ({ doc, req: { payload } }) => {
         if (doc._status === 'draft') {
+          console.log('Draft detected, skipping notifications sending.')
           return doc
         }
 
@@ -146,6 +147,8 @@ export const MonthlyNotification: CollectionConfig = {
                 },
               })
 
+              console.log('accessResponse:', accessResponse)
+
               if (!accessResponse || !accessResponse.id) {
                 console.error(`Failed to create access for subscribe ID ${subscribe.id}`)
                 return
@@ -174,12 +177,14 @@ export const MonthlyNotification: CollectionConfig = {
                 `${doc.month} ${doc.year}`,
               )
 
-              await sendEmail(
+              const res = await sendEmail(
                 'OSVČ365 <info@osvc365.cz>',
                 [email],
                 'Měsíční přehled změn',
                 emailBody,
               )
+
+              console.log(`Email sent to ${email}:`, res)
 
               const smsBody = await createGeneralNotificationSms(
                 customMessages,
@@ -187,7 +192,9 @@ export const MonthlyNotification: CollectionConfig = {
                 `${doc.month} ${doc.year}`,
               )
 
-              await sendSms(smsBody, `${subscribe.phonePrefix}${subscribe.phone}`)
+              const smsRes = await sendSms(smsBody, `${subscribe.phonePrefix}${subscribe.phone}`)
+
+              console.log(`SMS sent to ${subscribe.phone}:`, smsRes)
             } catch (error) {
               console.error(`Error sending notification to ${subscribe.email}:`, error)
             }
