@@ -10,6 +10,9 @@ import { Media } from './collections/Media'
 import { ActivityGroups } from './collections/ActivityGroups'
 import { Subscribes } from './collections/Subscribes'
 import { DraftSubscribes } from './collections/DraftSubscribes'
+import { Alerts } from './collections/Alerts'
+import { MonthlyNotification } from './collections/MonthlyNotification'
+import { Accesses } from './collections/Access'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -21,7 +24,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, ActivityGroups, Subscribes, DraftSubscribes],
+  collections: [Users, Media, ActivityGroups, Subscribes, Alerts, MonthlyNotification, Accesses],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

@@ -71,7 +71,9 @@ export interface Config {
     media: Media;
     'activity-groups': ActivityGroup;
     subscribes: Subscribe;
-    'draft-subscribes': DraftSubscribe;
+    alerts: Alert;
+    'monthly-notification': MonthlyNotification;
+    accesses: Access;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -83,7 +85,9 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'activity-groups': ActivityGroupsSelect<false> | ActivityGroupsSelect<true>;
     subscribes: SubscribesSelect<false> | SubscribesSelect<true>;
-    'draft-subscribes': DraftSubscribesSelect<false> | DraftSubscribesSelect<true>;
+    alerts: AlertsSelect<false> | AlertsSelect<true>;
+    'monthly-notification': MonthlyNotificationSelect<false> | MonthlyNotificationSelect<true>;
+    accesses: AccessesSelect<false> | AccessesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -184,6 +188,10 @@ export interface ActivityGroup {
    */
   name: string;
   /**
+   * Název skupiny obchodních činností
+   */
+  mobileName?: string | null;
+  /**
    * Popis skupiny činností
    */
   description: string;
@@ -219,11 +227,115 @@ export interface Subscribe {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "draft-subscribes".
+ * via the `definition` "alerts".
  */
-export interface DraftSubscribe {
+export interface Alert {
+  id: string;
+  date: string;
+  repeating?: boolean | null;
+  frequency?: ('daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly') | null;
+  day?: number | null;
+  month?: number | null;
+  name: string;
+  general?: boolean | null;
+  activityGroups?: (string | ActivityGroup)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "monthly-notification".
+ */
+export interface MonthlyNotification {
+  id: string;
+  month:
+    | 'Leden'
+    | 'Únor'
+    | 'Březen'
+    | 'Duben'
+    | 'Květen'
+    | 'Červen'
+    | 'Červenec'
+    | 'Srpen'
+    | 'Září'
+    | 'Říjen'
+    | 'Listopad'
+    | 'Prosinec';
+  year: '2023' | '2024' | '2025' | '2026' | '2027' | '2028';
+  data?: {
+    general?:
+      | {
+          text: string;
+          mobileText?: string | null;
+          description?: string | null;
+          link?: string | null;
+          date?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    it_services?:
+      | {
+          text: string;
+          mobileText?: string | null;
+          description?: string | null;
+          link?: string | null;
+          date?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    culture_sport?:
+      | {
+          text: string;
+          mobileText?: string | null;
+          description?: string | null;
+          link?: string | null;
+          date?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    education?:
+      | {
+          text: string;
+          mobileText?: string | null;
+          description?: string | null;
+          link?: string | null;
+          date?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    marketing?:
+      | {
+          text: string;
+          mobileText?: string | null;
+          description?: string | null;
+          link?: string | null;
+          date?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    consulting?:
+      | {
+          text: string;
+          mobileText?: string | null;
+          description?: string | null;
+          link?: string | null;
+          date?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accesses".
+ */
+export interface Access {
   id: string;
   activityGroups?: (string | ActivityGroup)[] | null;
+  monthlyNotification: string | MonthlyNotification;
   updatedAt: string;
   createdAt: string;
 }
@@ -268,8 +380,16 @@ export interface PayloadLockedDocument {
         value: string | Subscribe;
       } | null)
     | ({
-        relationTo: 'draft-subscribes';
-        value: string | DraftSubscribe;
+        relationTo: 'alerts';
+        value: string | Alert;
+      } | null)
+    | ({
+        relationTo: 'monthly-notification';
+        value: string | MonthlyNotification;
+      } | null)
+    | ({
+        relationTo: 'accesses';
+        value: string | Access;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -364,6 +484,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface ActivityGroupsSelect<T extends boolean = true> {
   slug?: T;
   name?: T;
+  mobileName?: T;
   description?: T;
   price?: T;
   items?:
@@ -392,10 +513,102 @@ export interface SubscribesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "draft-subscribes_select".
+ * via the `definition` "alerts_select".
  */
-export interface DraftSubscribesSelect<T extends boolean = true> {
+export interface AlertsSelect<T extends boolean = true> {
+  date?: T;
+  repeating?: T;
+  frequency?: T;
+  day?: T;
+  month?: T;
+  name?: T;
+  general?: T;
   activityGroups?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "monthly-notification_select".
+ */
+export interface MonthlyNotificationSelect<T extends boolean = true> {
+  month?: T;
+  year?: T;
+  data?:
+    | T
+    | {
+        general?:
+          | T
+          | {
+              text?: T;
+              mobileText?: T;
+              description?: T;
+              link?: T;
+              date?: T;
+              id?: T;
+            };
+        it_services?:
+          | T
+          | {
+              text?: T;
+              mobileText?: T;
+              description?: T;
+              link?: T;
+              date?: T;
+              id?: T;
+            };
+        culture_sport?:
+          | T
+          | {
+              text?: T;
+              mobileText?: T;
+              description?: T;
+              link?: T;
+              date?: T;
+              id?: T;
+            };
+        education?:
+          | T
+          | {
+              text?: T;
+              mobileText?: T;
+              description?: T;
+              link?: T;
+              date?: T;
+              id?: T;
+            };
+        marketing?:
+          | T
+          | {
+              text?: T;
+              mobileText?: T;
+              description?: T;
+              link?: T;
+              date?: T;
+              id?: T;
+            };
+        consulting?:
+          | T
+          | {
+              text?: T;
+              mobileText?: T;
+              description?: T;
+              link?: T;
+              date?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accesses_select".
+ */
+export interface AccessesSelect<T extends boolean = true> {
+  activityGroups?: T;
+  monthlyNotification?: T;
   updatedAt?: T;
   createdAt?: T;
 }

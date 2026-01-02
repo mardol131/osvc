@@ -27,6 +27,13 @@ export const ActivityGroups: CollectionConfig = {
       },
     },
     {
+      name: 'mobileName',
+      type: 'text',
+      admin: {
+        description: 'Název skupiny obchodních činností',
+      },
+    },
+    {
       name: 'description',
       type: 'textarea',
       required: true,

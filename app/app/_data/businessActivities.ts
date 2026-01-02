@@ -2,6 +2,7 @@ export type BusinessActivity = {
   id: string;
   slug: string;
   name: string;
+  mobileName?: string;
   description: string;
   price: number;
   items: { id: string; item: string }[];

@@ -1,21 +1,17 @@
-import { CustomMessage } from "../(api)/api/notifications/send-general-notification/route";
+import { CustomMessage } from '@/collections/MonthlyNotification'
+import { format } from 'date-fns'
 
-export async function sendEmail(
-  sender: string,
-  to: string[],
-  subject: string,
-  html_body: string
-) {
+export async function sendEmail(sender: string, to: string[], subject: string, html_body: string) {
   if (!process.env.EMAIL_API_URL || !process.env.SMTP2GO_API_KEY) {
-    throw new Error("Email API URL or SMTP2GO API Key is not defined");
+    throw new Error('Email API URL or SMTP2GO API Key is not defined')
   }
 
   const response = await fetch(`${process.env.EMAIL_API_URL}/email/send`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      "X-Smtp2go-Api-Key": process.env.SMTP2GO_API_KEY,
-      accept: "application/json",
+      'Content-Type': 'application/json',
+      'X-Smtp2go-Api-Key': process.env.SMTP2GO_API_KEY,
+      accept: 'application/json',
     },
     body: JSON.stringify({
       sender,
@@ -23,45 +19,39 @@ export async function sendEmail(
       subject,
       html_body,
     }),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`Failed to send email: ${response.statusText}`);
+    throw new Error(`Failed to send email: ${response.statusText}`)
   }
-  return response.json();
+  return response.json()
 }
 
 export async function sendSms(message: string, phoneNumber: string) {
-  if (!process.env.SMSMANAGER_API_KEY) {
-    throw new Error("SMS Manager API Key is not defined");
+  if (!process.env.SMSMANAGER_API_KEY || !process.env.SMSMANAGER_API_URL) {
+    throw new Error('SMS Manager API Key or URL is not defined')
   }
-  const resp = await fetch(
-    `https://api-ref.smsmanager.com/_mock/openapi/cs/json/jsonapi_v2/message`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.SMSMANAGER_API_KEY,
-      },
-      body: JSON.stringify({
-        body: message,
-        to: [
-          {
-            phone_number: phoneNumber,
-          },
-        ],
-      }),
-    }
-  );
+  const resp = await fetch(`${process.env.SMSMANAGER_API_URL}/message`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.SMSMANAGER_API_KEY,
+    },
+    body: JSON.stringify({
+      body: message,
+      to: [
+        {
+          phone_number: phoneNumber,
+        },
+      ],
+    }),
+  })
 
-  const data = await resp.json();
-  console.log(data);
+  const data = await resp.json()
+  return data
 }
 
-export async function createGeneralNotificationEmail(
-  messages: CustomMessage[]
-) {
-  console.log(messages);
+export async function createGeneralNotificationEmail(messages: CustomMessage[], dateLabel: string) {
   const messagesBody = messages
     .map((messageGroup) => {
       const notificationsList = messageGroup.notifications
@@ -69,28 +59,30 @@ export async function createGeneralNotificationEmail(
           return ` <li>
                           <p
                             style="font-size:14px;line-height:24px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin:24px 0;margin-top:24px;margin-right:0;margin-bottom:24px;margin-left:0">
-                            ${notification.text} -<!-- -->
+                            ${notification.text}
                             ${
-                              notification.link &&
-                              `<a style="font-weight:600;color:#f59f0a" href="${notification.link}"
+                              notification.link
+                                ? `<!-- -->-<!-- --><a style="font-weight:600;color:#f59f0a" href="${notification.link}"
                               >Odkaz</a
                             >`
+                                : ''
                             }
                             ${
-                              notification.date &&
-                              `<br
+                              notification.date
+                                ? `<br
                               style="color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-size:14px;margin:24px 0;white-space:nowrap;font-weight:700" />
                               Do <!-- --><span
                               style="font-weight:600"
-                              >${notification.date}</span
+                              >${format(new Date(notification.date), 'd.M.yyyy')}</span
                             >`
+                                : ''
                             }
                           </p>
-                        </li>`;
+                        </li>`
         })
-        .join("");
+        .join('')
 
-      console.log("notificationsList:", notificationsList);
+      console.log('notificationsList:', notificationsList)
 
       return `<h2 style="color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-size:18px;font-weight:bold;margin:40px 0;padding:0;margin-bottom:12px">
                         ${messageGroup.heading}
@@ -104,9 +96,9 @@ export async function createGeneralNotificationEmail(
                             V této kategorii není žádné upozornění.
                           </p>`
                 }
-            </ul>`;
+            </ul>`
     })
-    .join("");
+    .join('')
 
   const emailBody = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
@@ -133,7 +125,7 @@ export async function createGeneralNotificationEmail(
             <div
               style="display:none;overflow:hidden;line-height:1px;opacity:0;max-height:0;max-width:0"
               data-skip-in-text="true">
-              Měsíční přehled změn
+              Přehled změn a povinnosti na ${dateLabel}
             </div>
             <table
               align="center"
@@ -148,11 +140,11 @@ export async function createGeneralNotificationEmail(
                   <td>
                     <h1
                       style="color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-size:24px;font-weight:bold;margin:40px 0;padding:0">
-                      OSVČ365: Měsíční přehled změn
+                      OSVČ365: Přehled změn a povinností na ${dateLabel}
                     </h1>
                     <p
                       style="font-size:14px;line-height:24px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin:24px 0;margin-bottom:14px;margin-top:24px;margin-right:0;margin-left:0">
-                      Níže Vám posíláme přehled změn pro následující měsíc.
+                      Níže Vám posíláme přehled změn a povinností na ${dateLabel}.
                     </p>
                     ${messagesBody}
                     <p
@@ -197,37 +189,40 @@ export async function createGeneralNotificationEmail(
     <!--/$-->
   </body>
 </html>
-`;
+`
 
-  return emailBody;
+  return emailBody
 }
 
 export async function createGeneralNotificationSms(
   messages: CustomMessage[],
-  subId: string
+  accessId: string,
+  dateLabel: string,
 ) {
-  const notificaitonsCount = messages.reduce((count, group) => {
-    return count + group.notifications.length;
-  }, 0);
+  const notificationsCount = messages.reduce((count, group) => {
+    return count + group.notifications.length
+  }, 0)
 
-  if (notificaitonsCount === 0) {
-    return `OSVC365: V tomto měsíci nejsou žádné nové informace.`;
+  if (notificationsCount === 0) {
+    return `OSVC365: V tomto měsíci nejsou žádné nové informace.`
   }
 
   const content = messages.map((messageGroup, i) => {
-    const notificationsHeading = `\n${messageGroup.heading}:\n`;
+    const notificationsHeading = `${messageGroup.mobileHeading || messageGroup.heading}:\n`
     const notificationsText = messageGroup.notifications
       .map(
         (notification) =>
-          `${i > 0 && "\n"}- ${notification.text}${
-            notification.date ? ` do ${notification.date}` : ""
-          }`
+          `- ${notification.mobileText || notification.text}${notification.date ? ` do ${format(new Date(notification.date), 'd.M.yyyy')}` : ''}`,
       )
-      .join(" ");
-    return notificationsHeading + notificationsText;
-  });
+      .join('\n')
+    return notificationsHeading + notificationsText
+  })
 
-  const smsBody = `OSVC365: vse na unor 2026\n\n${content.join("")}`;
+  const smsBody = `OSVC365: ${dateLabel}\n\n${content.join('\n\n')}\n\nDetail: osvc365.cz/${accessId}`
 
-  return smsBody;
+  return removeDiacritics(smsBody)
+}
+
+export function removeDiacritics(text: string): string {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }

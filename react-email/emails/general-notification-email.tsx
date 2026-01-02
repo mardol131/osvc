@@ -60,6 +60,23 @@ export const NotionMagicLinkEmail = ({}: NotionMagicLinkEmailProps) => (
             </li>
           </ul>
         </div>
+        <Link href="LINK" target="_blank">
+          <button
+            style={{
+              backgroundColor: "#f59f0a",
+              border: "none",
+              padding: "10px 20px",
+              color: "#fff",
+              cursor: "pointer",
+              borderRadius: "5px",
+              fontWeight: "500",
+              textDecoration: "none",
+              fontSize: "18px",
+            }}
+          >
+            Detail na webu
+          </button>
+        </Link>
 
         <Text style={text}>
           S pozdravem,

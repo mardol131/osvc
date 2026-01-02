@@ -47,9 +47,9 @@ export default function BusinessActivityItem({
               </div>
             ))}
           </div>
-          <div className="text-secondary p-2 bg-secondary/15 rounded-md font-semibold text-lg">
+          <p className="text-secondary p-2 bg-secondary/15 rounded-md text-lg">
             +{price} Kč/rok
-          </div>
+          </p>
         </div>
 
         <button

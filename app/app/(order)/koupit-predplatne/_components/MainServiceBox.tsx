@@ -37,15 +37,21 @@ export default function MainServiceBox() {
         <div className="grid grid-cols-1 gap-3">
           <div className="flex items-start gap-2">
             <FaCheckCircle className="text-emerald-500 text-lg mt-1 flex-shrink-0" />
-            <p className="text-zinc-200 text-sm">Vše důležité hlídáme za Vás</p>
+            <p className="text-zinc-200 text-lg">Vše důležité hlídáme za Vás</p>
           </div>
           <div className="flex items-start gap-2">
             <FaCheckCircle className="text-emerald-500 text-lg mt-1 flex-shrink-0" />
-            <p className="text-zinc-200 text-sm">Připomínky e-mailem i SMS</p>
+            <p className="text-zinc-200 text-lg">Připomínky e-mailem i SMS</p>
           </div>
           <div className="flex items-start gap-2">
             <FaCheckCircle className="text-emerald-500 text-lg mt-1 flex-shrink-0" />
-            <p className="text-zinc-200 text-sm">Měsíční přehledy změn</p>
+            <p className="text-zinc-200 text-lg">Měsíční přehledy změn</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <FaCheckCircle className="text-emerald-500 text-lg mt-1 flex-shrink-0" />
+            <p className="text-zinc-200 text-lg">
+              Upozorňování na blížící se termíny
+            </p>
           </div>
         </div>
       </div>
