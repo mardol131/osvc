@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   const priceMap: { [key: string]: string } = {
-    main: process.env.STRIPE_MAIN_SERVICE_PRICE_ID!,
+    general: process.env.STRIPE_MAIN_SERVICE_PRICE_ID!,
     it_services: process.env.STRIPE_IT_SERVICES_PRICE_ID!,
     trading: process.env.STRIPE_TRADING_PRICE_ID!,
     hospitality: process.env.STRIPE_HOSPITALITY_PRICE_ID!,
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     consulting: process.env.STRIPE_CONSULTING_PRICE_ID!,
     marketing: process.env.STRIPE_MARKETING_PRICE_ID!,
     education: process.env.STRIPE_EDUCATION_PRICE_ID!,
-    culture_sports: process.env.STRIPE_CULTURE_SPORTS_PRICE_ID!,
+    culture_sport: process.env.STRIPE_CULTURE_SPORT_PRICE_ID!,
   };
 
   console.log(body);
@@ -38,8 +38,6 @@ export async function POST(request: Request) {
     );
   }
 
-  let subscribeId = "";
-
   console.log(body);
 
   const items = body.activityGroups.map((item: { slug: string }) => {
@@ -50,13 +48,15 @@ export async function POST(request: Request) {
     };
   });
 
+  console.log(items);
+
   try {
     const session = await stripe.checkout.sessions.create({
       success_url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/dekujeme`,
       line_items: [
         {
           quantity: 1,
-          price: priceMap.main,
+          price: priceMap.general,
         },
         ...items,
       ],
