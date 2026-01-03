@@ -1,6 +1,7 @@
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
 import NotificationGroup from "./_components/NotificationGroup";
+import LoadErrorState from "./_components/LoadErrorState";
 import { FiCheckCircle } from "react-icons/fi";
 import { BusinessActivity } from "@/app/_data/businessActivities";
 import { getSingleRecord } from "@/app/_functions/backend";
@@ -58,13 +59,21 @@ export default async function page({
       "sort=-createdAt&limit=1"
     );
   } catch (error) {
-    console.log("Error fetching access record:", error);
-    return redirect("/");
+    return (
+      <LoadErrorState
+        title="Zobrazit informace"
+        message="Klikněte na tlačítko níže pro načtení vašich informací."
+      />
+    );
   }
 
   if (!access) {
-    console.log("Access record not found");
-    return redirect("/");
+    return (
+      <LoadErrorState
+        title="Nepodařilo se načíst data"
+        message="Odkaz může být neplatný nebo vypršel. Zkuste prosím načíst stránku znovu."
+      />
+    );
   }
 
   // Přizpůsobení notifikací podle aktivit uživatele
@@ -73,19 +82,21 @@ export default async function page({
 
   const notificationsData = access?.monthlyNotification;
 
+  console.log(access);
+
   const customNotifications: CustomMessage[] = [];
 
   customNotifications.push({
     heading: "Obecné novinky a povinnosti",
-    notifications: notificationsData.data.general,
+    notifications: notificationsData?.data?.general ?? [],
   });
 
   customActivityGroups?.forEach((group) => {
     const groupNotifications =
-      notificationsData?.data[group.slug as keyof NotificationGroups] || [];
+      notificationsData?.data?.[group.slug as keyof NotificationGroups] ?? [];
     customNotifications.push({
       heading: group.name,
-      notifications: groupNotifications,
+      notifications: groupNotifications ?? [],
     });
   });
 
@@ -106,10 +117,7 @@ export default async function page({
 
   return (
     <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white">
-      <SectionWrapper
-        levelOne={{ className: "pt-32 pb-20" }}
-        levelTwo={{ className: "items-center" }}
-      >
+      <SectionWrapper levelTwo={{ className: "items-center" }}>
         {/* Hlavička */}
         <HeadingCenter
           subheading="Měsíční přehled"

@@ -1,11 +1,15 @@
 {
-	"devDependencies": {
-		"turbo": "^2.6.3"
-	},
-	"packageManager": "pnpm@10.0.0",
-	"dependencies": {
-		"@types/jsonwebtoken": "^9.0.10",
-		"date-fns": "^4.1.0",
-		"jsonwebtoken": "^9.0.3"
-	}
+  "devDependencies": {
+    "turbo": "^2.6.3"
+  },
+  "packageManager": "pnpm@10.0.0",
+  "dependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "date-fns": "^4.1.0",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "scripts": {
+    "backend:build": "cd backend && pnpm install && pnpm run build",
+    "backend:start": "cd backend && pnpm run start"
+  }
 }
