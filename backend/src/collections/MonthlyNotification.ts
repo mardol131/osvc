@@ -2,22 +2,31 @@ import { apiKeyAuth } from '@/functions/ACL'
 import {
   createGeneralNotificationEmail,
   createGeneralNotificationSms,
-  sendEmail,
-  sendSms,
 } from '@/functions/notifications'
 import { Subscribe } from '@/payload-types'
 import type { CollectionConfig, Field } from 'payload'
 
-const messagedField: Field[] = [
+export const notificationFields: Field[] = [
   { name: 'text', type: 'textarea', required: true },
-  { name: 'mobileText', type: 'textarea' },
-  { name: 'description', type: 'textarea' },
+  { name: 'mobileText', type: 'textarea', required: true },
+  { name: 'description', type: 'textarea', required: true },
   { name: 'link', type: 'text' },
   { name: 'date', type: 'date' },
 ]
 
-export const MonthlyNotification: CollectionConfig = {
-  slug: 'monthly-notification',
+const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+const ID_LENGTH = 18
+
+function generateAlphanumericId(length = ID_LENGTH) {
+  const array = new Uint8Array(length)
+  crypto.getRandomValues(array)
+  return Array.from(array)
+    .map((b) => ALPHABET[b % ALPHABET.length])
+    .join('')
+}
+
+export const MonthlyNotifications: CollectionConfig = {
+  slug: 'monthly-notifications',
   access: {
     read: ({ req }) => {
       if (req.user && req.user?.role.includes('admin')) return true
@@ -76,37 +85,37 @@ export const MonthlyNotification: CollectionConfig = {
           name: 'general',
           type: 'array',
           label: 'Obecné',
-          fields: messagedField,
+          fields: notificationFields,
         },
         {
           name: 'it_services',
           type: 'array',
           label: 'IT Services',
-          fields: messagedField,
+          fields: notificationFields,
         },
         {
           name: 'culture_sport',
           type: 'array',
           label: 'Culture & Sport',
-          fields: messagedField,
+          fields: notificationFields,
         },
         {
           name: 'education',
           type: 'array',
           label: 'Education',
-          fields: messagedField,
+          fields: notificationFields,
         },
         {
           name: 'marketing',
           type: 'array',
           label: 'Marketing',
-          fields: messagedField,
+          fields: notificationFields,
         },
         {
           name: 'consulting',
           type: 'array',
           label: 'Consulting',
-          fields: messagedField,
+          fields: notificationFields,
         },
       ],
     },
@@ -120,18 +129,54 @@ export const MonthlyNotification: CollectionConfig = {
         }
 
         try {
-          const response = await payload.find({ collection: 'subscribes' })
+          const response = await payload.find({
+            collection: 'subscribes',
+            where: { active: { equals: true } },
+          })
 
           const subscribes = response.docs
 
-          subscribes.forEach(async (subscribe: Subscribe) => {
-            try {
-              if (!subscribe.email) {
-                console.warn(`Skipping subscribe with ID ${subscribe.id} due to missing email`)
+          const data: GeneralNotificationMessages = doc.data
+
+          const notificationGroups = Object.entries(data).map(([key, notifications]) => {
+            return { key, notifications }
+          })
+
+          notificationGroups.forEach(async ({ key, notifications }) => {
+            if (notifications.length === 0) return
+
+            notifications.forEach(async (notification) => {
+              if (!notification.date) return
+
+              try {
+                await payload.jobs.queue({
+                  workflow: 'createObligationWorkflow',
+                  input: {
+                    text: notification.text,
+                    mobileText: notification.mobileText,
+                    link: notification.link,
+                    description: notification.description,
+                    date: notification.date,
+                    activityGroupKey: key,
+                  },
+                })
+              } catch (err) {
+                console.error('Error creating obligation for notification:', notification, err)
                 return
               }
+            })
 
-              const email = subscribe.email
+            return
+          })
+
+          subscribes.forEach(async (subscribe: Subscribe) => {
+            try {
+              if (!subscribe.email || !subscribe.phone || !subscribe.phonePrefix) {
+                console.warn(
+                  `Skipping subscribe with ID ${subscribe.id} due to missing contact info`,
+                )
+                return
+              }
 
               const customMessages: CustomMessage[] = []
 
@@ -139,28 +184,43 @@ export const MonthlyNotification: CollectionConfig = {
                 if (typeof group !== 'string') return group
               })
 
+              let accessId: string | undefined = undefined
+
+              for (let i = 0; i < 5; i++) {
+                const id = generateAlphanumericId()
+
+                const exists = await payload.find({
+                  collection: 'accesses',
+                  where: { accessId: { equals: id } },
+                  limit: 1,
+                })
+
+                console.log('Access ID check:', id, exists.docs)
+
+                if (exists.docs.length !== 0) continue
+
+                accessId = id
+                break
+              }
+
+              if (!accessId) {
+                console.error(`Failed to generate unique accessId for subscribe ID ${subscribe.id}`)
+                return
+              }
+
               const accessResponse = await payload.create({
                 collection: 'accesses',
                 data: {
                   activityGroups: subscribe.activityGroups || [],
-                  monthlyNotification: doc.id,
+                  monthlyNotifications: doc.id,
+                  subscribe: subscribe.id,
+                  accessId: accessId,
                 },
               })
-
-              console.log('accessResponse:', accessResponse)
 
               if (!accessResponse || !accessResponse.id) {
                 console.error(`Failed to create access for subscribe ID ${subscribe.id}`)
                 return
-              }
-
-              if (doc.data.general && doc.data.general.length > 0) {
-                customMessages.push({
-                  groupKey: 'general',
-                  heading: 'Obecné novinky a povinnosti',
-                  mobileHeading: 'Obecné',
-                  notifications: doc.data.general,
-                })
               }
 
               activityGroups?.map((ag) => {
@@ -175,26 +235,25 @@ export const MonthlyNotification: CollectionConfig = {
               const emailBody = await createGeneralNotificationEmail(
                 customMessages,
                 `${doc.month} ${doc.year}`,
+                `${process.env.WEBSITE_URL}/${accessResponse.accessId}`,
               )
-
-              const res = await sendEmail(
-                'OSVČ365 <info@osvc365.cz>',
-                [email],
-                'Měsíční přehled změn',
-                emailBody,
-              )
-
-              console.log(`Email sent to ${email}:`, res)
 
               const smsBody = await createGeneralNotificationSms(
                 customMessages,
-                accessResponse.id,
+                accessResponse.accessId,
                 `${doc.month} ${doc.year}`,
               )
 
-              const smsRes = await sendSms(smsBody, `${subscribe.phonePrefix}${subscribe.phone}`)
-
-              console.log(`SMS sent to ${subscribe.phone}:`, smsRes)
+              await payload.jobs.queue({
+                workflow: 'monthlyNotificationsWorkflow',
+                input: {
+                  email: subscribe.email,
+                  body: emailBody,
+                  phone: subscribe.phone,
+                  phonePrefix: subscribe.phonePrefix,
+                  smsBody: smsBody,
+                },
+              })
             } catch (error) {
               console.error(`Error sending notification to ${subscribe.email}:`, error)
             }
@@ -211,8 +270,9 @@ export const MonthlyNotification: CollectionConfig = {
 
 export type Notification = {
   text: string
-  mobileText?: string
+  mobileText: string
   link?: string
+  description: string
   date?: string
 }
 

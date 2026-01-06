@@ -64,11 +64,19 @@ export async function activateSusbscribe(subscribeId: string) {
   return response.json();
 }
 
-export async function getCollection(
-  collectionSlug: "activity-groups" | "subscribes" | "monthly-notifications",
-  apiKey?: string,
-  query?: string
-) {
+export async function getCollection({
+  collectionSlug,
+  apiKey,
+  query,
+}: {
+  collectionSlug:
+    | "activity-groups"
+    | "subscribes"
+    | "monthly-notifications"
+    | "accesses";
+  apiKey?: string;
+  query?: string;
+}) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}${
       query ? `?${query}` : ""
@@ -90,12 +98,17 @@ export async function getCollection(
   return response.json().then((data) => data.docs);
 }
 
-export async function getSingleRecord(
-  collectionSlug: "subscribes" | "monthly-notifications" | "accesses",
-  recordId: string,
-  apiKey?: string,
-  query?: string
-) {
+export async function getSingleRecord({
+  collectionSlug,
+  recordId,
+  apiKey,
+  query,
+}: {
+  collectionSlug: "subscribes" | "monthly-notifications" | "accesses";
+  recordId: string;
+  apiKey?: string;
+  query?: string;
+}) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}${
       query ? `?${query}` : ""

@@ -6,10 +6,11 @@ export default async function Page() {
   // const data = await fetch('...')
 
   try {
-    const response = await getCollection("activity-groups");
-    console.log("Fetched activity groups:", response);
+    const response = await getCollection({
+      collectionSlug: "activity-groups",
+    });
     return <OrderPageClient activitiesGroups={response} />;
   } catch (error) {
-    console.error("Error fetching activity groups:", error);
+    return <OrderPageClient activitiesGroups={[]} />;
   }
 }

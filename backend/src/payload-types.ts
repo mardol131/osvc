@@ -72,9 +72,11 @@ export interface Config {
     'activity-groups': ActivityGroup;
     subscribes: Subscribe;
     alerts: Alert;
-    'monthly-notification': MonthlyNotification;
+    'monthly-notifications': MonthlyNotification;
     accesses: Access;
+    obligations: Obligation;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -86,9 +88,11 @@ export interface Config {
     'activity-groups': ActivityGroupsSelect<false> | ActivityGroupsSelect<true>;
     subscribes: SubscribesSelect<false> | SubscribesSelect<true>;
     alerts: AlertsSelect<false> | AlertsSelect<true>;
-    'monthly-notification': MonthlyNotificationSelect<false> | MonthlyNotificationSelect<true>;
+    'monthly-notifications': MonthlyNotificationsSelect<false> | MonthlyNotificationsSelect<true>;
     accesses: AccessesSelect<false> | AccessesSelect<true>;
+    obligations: ObligationsSelect<false> | ObligationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -104,8 +108,21 @@ export interface Config {
     collection: 'users';
   };
   jobs: {
-    tasks: unknown;
-    workflows: unknown;
+    tasks: {
+      sendEmail: TaskSendEmail;
+      sendSms: TaskSendSms;
+      createObligation: TaskCreateObligation;
+      getRecord: TaskGetRecord;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
+    workflows: {
+      monthlyNotificationsWorkflow: WorkflowMonthlyNotificationsWorkflow;
+      createObligationWorkflow: WorkflowCreateObligationWorkflow;
+      alertNotificationWorkflow: WorkflowAlertNotificationWorkflow;
+    };
   };
 }
 export interface UserAuthOperations {
@@ -244,7 +261,7 @@ export interface Alert {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "monthly-notification".
+ * via the `definition` "monthly-notifications".
  */
 export interface MonthlyNotification {
   id: string;
@@ -266,8 +283,8 @@ export interface MonthlyNotification {
     general?:
       | {
           text: string;
-          mobileText?: string | null;
-          description?: string | null;
+          mobileText: string;
+          description: string;
           link?: string | null;
           date?: string | null;
           id?: string | null;
@@ -276,8 +293,8 @@ export interface MonthlyNotification {
     it_services?:
       | {
           text: string;
-          mobileText?: string | null;
-          description?: string | null;
+          mobileText: string;
+          description: string;
           link?: string | null;
           date?: string | null;
           id?: string | null;
@@ -286,8 +303,8 @@ export interface MonthlyNotification {
     culture_sport?:
       | {
           text: string;
-          mobileText?: string | null;
-          description?: string | null;
+          mobileText: string;
+          description: string;
           link?: string | null;
           date?: string | null;
           id?: string | null;
@@ -296,8 +313,8 @@ export interface MonthlyNotification {
     education?:
       | {
           text: string;
-          mobileText?: string | null;
-          description?: string | null;
+          mobileText: string;
+          description: string;
           link?: string | null;
           date?: string | null;
           id?: string | null;
@@ -306,8 +323,8 @@ export interface MonthlyNotification {
     marketing?:
       | {
           text: string;
-          mobileText?: string | null;
-          description?: string | null;
+          mobileText: string;
+          description: string;
           link?: string | null;
           date?: string | null;
           id?: string | null;
@@ -316,8 +333,8 @@ export interface MonthlyNotification {
     consulting?:
       | {
           text: string;
-          mobileText?: string | null;
-          description?: string | null;
+          mobileText: string;
+          description: string;
           link?: string | null;
           date?: string | null;
           id?: string | null;
@@ -335,7 +352,24 @@ export interface MonthlyNotification {
 export interface Access {
   id: string;
   activityGroups?: (string | ActivityGroup)[] | null;
-  monthlyNotification: string | MonthlyNotification;
+  monthlyNotifications: string | MonthlyNotification;
+  subscribe: string | Subscribe;
+  accessId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "obligations".
+ */
+export interface Obligation {
+  id: string;
+  text: string;
+  mobileText: string;
+  description: string;
+  link?: string | null;
+  date?: string | null;
+  activityGroups: (string | ActivityGroup)[];
   updatedAt: string;
   createdAt: string;
 }
@@ -355,6 +389,99 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: string;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  workflowSlug?: ('monthlyNotificationsWorkflow' | 'createObligationWorkflow' | 'alertNotificationWorkflow') | null;
+  taskSlug?: ('inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -384,12 +511,16 @@ export interface PayloadLockedDocument {
         value: string | Alert;
       } | null)
     | ({
-        relationTo: 'monthly-notification';
+        relationTo: 'monthly-notifications';
         value: string | MonthlyNotification;
       } | null)
     | ({
         relationTo: 'accesses';
         value: string | Access;
+      } | null)
+    | ({
+        relationTo: 'obligations';
+        value: string | Obligation;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -529,9 +660,9 @@ export interface AlertsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "monthly-notification_select".
+ * via the `definition` "monthly-notifications_select".
  */
-export interface MonthlyNotificationSelect<T extends boolean = true> {
+export interface MonthlyNotificationsSelect<T extends boolean = true> {
   month?: T;
   year?: T;
   data?:
@@ -608,7 +739,23 @@ export interface MonthlyNotificationSelect<T extends boolean = true> {
  */
 export interface AccessesSelect<T extends boolean = true> {
   activityGroups?: T;
-  monthlyNotification?: T;
+  monthlyNotifications?: T;
+  subscribe?: T;
+  accessId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "obligations_select".
+ */
+export interface ObligationsSelect<T extends boolean = true> {
+  text?: T;
+  mobileText?: T;
+  description?: T;
+  link?: T;
+  date?: T;
+  activityGroups?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -619,6 +766,38 @@ export interface AccessesSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  workflowSlug?: T;
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -651,6 +830,92 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSendEmail".
+ */
+export interface TaskSendEmail {
+  input: {
+    email: string;
+    body: string;
+    subject: string;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSendSms".
+ */
+export interface TaskSendSms {
+  input: {
+    phone: string;
+    phonePrefix: string;
+    smsBody: string;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateObligation".
+ */
+export interface TaskCreateObligation {
+  input: {
+    text: string;
+    mobileText?: string | null;
+    link?: string | null;
+    description?: string | null;
+    date?: string | null;
+    activityGroupKey: string;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskGetRecord".
+ */
+export interface TaskGetRecord {
+  input: {
+    id: string;
+    collection: string;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WorkflowMonthlyNotificationsWorkflow".
+ */
+export interface WorkflowMonthlyNotificationsWorkflow {
+  input: {
+    email: string;
+    body: string;
+    phone: string;
+    phonePrefix: string;
+    smsBody: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WorkflowCreateObligationWorkflow".
+ */
+export interface WorkflowCreateObligationWorkflow {
+  input: {
+    text: string;
+    mobileText?: string | null;
+    link?: string | null;
+    description?: string | null;
+    date?: string | null;
+    activityGroupKey: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WorkflowAlertNotificationWorkflow".
+ */
+export interface WorkflowAlertNotificationWorkflow {
+  input: {
+    obligationId: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

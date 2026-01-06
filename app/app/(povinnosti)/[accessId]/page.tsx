@@ -1,15 +1,16 @@
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
-import NotificationGroup from "./_components/NotificationGroup";
-import LoadErrorState from "./_components/LoadErrorState";
-import { FiCheckCircle } from "react-icons/fi";
 import { BusinessActivity } from "@/app/_data/businessActivities";
-import { getSingleRecord } from "@/app/_functions/backend";
-import { redirect } from "next/navigation";
+import { getCollection } from "@/app/_functions/backend";
+import { FiCheckCircle } from "react-icons/fi";
+import LoadErrorState from "./_components/LoadErrorState";
+import NotificationGroup from "./_components/NotificationGroup";
 
 export type CustomMessage = {
   heading: string;
   notifications: Notification[];
+  order?: number;
+  slug: string;
 };
 
 export type Notification = {
@@ -42,22 +43,21 @@ export default async function page({
 }) {
   const { accessId } = await params;
 
-  let access:
+  let accessResponse:
     | {
         createdAt: Date;
         updatedAt: Date;
         activityGroups: BusinessActivity[];
         monthlyNotification: MonthlyNotification;
-      }
+      }[]
     | undefined = undefined;
 
   try {
-    access = await getSingleRecord(
-      "accesses",
-      accessId,
-      process.env.CMS_API_KEY,
-      "sort=-createdAt&limit=1"
-    );
+    accessResponse = await getCollection({
+      collectionSlug: "accesses",
+      apiKey: process.env.CMS_API_KEY,
+      query: `where[accessId][equals]=${accessId}`,
+    });
   } catch (error) {
     return (
       <LoadErrorState
@@ -67,7 +67,7 @@ export default async function page({
     );
   }
 
-  if (!access) {
+  if (!accessResponse || accessResponse.length === 0) {
     return (
       <LoadErrorState
         title="Nepodařilo se načíst data"
@@ -78,18 +78,13 @@ export default async function page({
 
   // Přizpůsobení notifikací podle aktivit uživatele
 
+  const access = accessResponse[0];
+
   const customActivityGroups = access?.activityGroups;
 
   const notificationsData = access?.monthlyNotification;
 
-  console.log(access);
-
   const customNotifications: CustomMessage[] = [];
-
-  customNotifications.push({
-    heading: "Obecné novinky a povinnosti",
-    notifications: notificationsData?.data?.general ?? [],
-  });
 
   customActivityGroups?.forEach((group) => {
     const groupNotifications =
@@ -97,6 +92,8 @@ export default async function page({
     customNotifications.push({
       heading: group.name,
       notifications: groupNotifications ?? [],
+      order: group.order,
+      slug: group.slug,
     });
   });
 
@@ -111,9 +108,11 @@ export default async function page({
 
   // Seřazení skupin podle počtu notifikací sestupně
 
-  customNotifications.sort(
-    (a, b) => b.notifications.length - a.notifications.length
-  );
+  customNotifications.sort((a, b) => {
+    if (a.slug === "general") return -1;
+    if (b.slug === "general") return 1;
+    return b.notifications.length - a.notifications.length;
+  });
 
   return (
     <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white">

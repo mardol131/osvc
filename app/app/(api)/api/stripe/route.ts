@@ -43,10 +43,6 @@ export async function POST(request: Request) {
           true
         );
 
-        console.log("SOMETHING");
-
-        console.log("hell", subResponse);
-
         const nameArray = data.customer_name?.split(" ") || [];
 
         const response = await fetch(

@@ -1,8 +1,9 @@
 import { apiKeyAuth } from '@/functions/ACL'
 import type { CollectionConfig } from 'payload'
+import { notificationFields } from './MonthlyNotification'
 
-export const Accesses: CollectionConfig = {
-  slug: 'accesses',
+export const Obligations: CollectionConfig = {
+  slug: 'obligations',
   access: {
     read: ({ req }) => {
       if (req.user && req.user?.role.includes('admin')) return true
@@ -10,31 +11,21 @@ export const Accesses: CollectionConfig = {
       if (!apiKey) return false
       return apiKeyAuth(apiKey)
     },
+    delete: ({ req }) => {
+      if (req.user && req.user?.role.includes('admin')) return true
+      const apiKey = req.headers.get('authorization')
+      if (!apiKey) return false
+      return apiKeyAuth(apiKey)
+    },
   },
   fields: [
+    ...notificationFields,
     {
       name: 'activityGroups',
       type: 'relationship',
       relationTo: 'activity-groups',
       hasMany: true,
-    },
-    {
-      name: 'monthlyNotifications',
-      type: 'relationship',
-      relationTo: 'monthly-notifications',
       required: true,
-    },
-    {
-      name: 'subscribe',
-      type: 'relationship',
-      relationTo: 'subscribes',
-      required: true,
-    },
-    {
-      name: 'accessId',
-      type: 'text',
-      required: true,
-      unique: true,
     },
   ],
 }

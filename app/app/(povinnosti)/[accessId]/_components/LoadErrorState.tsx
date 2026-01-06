@@ -16,16 +16,9 @@ export default function LoadErrorState({ title, message }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white flex items-center justify-center">
+    <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white flex items-start justify-center">
       <SectionWrapper levelTwo={{ className: "items-center" }}>
         <div className="max-w-md mx-auto text-center">
-          {/* Ikona */}
-          <div className="mb-6 flex justify-center">
-            <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center">
-              <FiAlertCircle className="text-secondary text-4xl" />
-            </div>
-          </div>
-
           {/* Text */}
           <h2 className="text-primary mb-3">{title}</h2>
           <p className="text-textP text-base md:text-lg leading-relaxed mb-8">

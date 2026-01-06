@@ -57,10 +57,18 @@ export default function OrderPageClient(props: Props) {
             email: formData.email,
             phone: formData.phone,
             phonePrefix: formData.phonePrefix,
-            activityGroups: selectedActivityData.map((activity) => ({
-              slug: activity.slug,
-              id: activity.id,
-            })),
+            activityGroups: [
+              ...selectedActivityData.map((activity) => ({
+                slug: activity.slug,
+                id: activity.id,
+              })),
+              ...(props.activitiesGroups
+                ?.filter((ag) => ag.slug === "general")
+                .map((ag) => ({
+                  slug: ag.slug,
+                  id: ag.id,
+                })) || []),
+            ],
             terms: formData.terms,
           }),
         }
@@ -130,6 +138,7 @@ export default function OrderPageClient(props: Props) {
               <div className="space-y-3 md:space-y-4">
                 {businessActivities.length > 0 &&
                   businessActivities
+                    .filter((activity) => activity.slug !== "general")
                     .sort((a, b) => (a.order || 1000) - (b.order || 1000))
                     .map((activity) => (
                       <BusinessActivityItem

@@ -14,26 +14,29 @@ interface NotionMagicLinkEmailProps {
   loginCode?: string;
 }
 
-export const GeneralNotificationEmail = ({}: NotionMagicLinkEmailProps) => (
+const baseUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "";
+
+export const NotionMagicLinkEmail = ({}: NotionMagicLinkEmailProps) => (
   <Html>
     <Head />
     <Body style={main}>
-      <Preview>Měsíční přehled změn</Preview>
+      <Preview>Blížící se termín</Preview>
       <Container style={container}>
-        <Heading style={h1}>OSVČ365: Měsíční přehled změn</Heading>
-
+        <Heading style={h1}>OSVČ365: Blíží se termín</Heading>
         <Text style={{ ...text, marginBottom: "14px" }}>
-          Níže Vám posíláme přehled změn pro následující měsíc.
+          Blíží se termín jedné z povinností.
         </Text>
 
         <div>
           <Heading style={{ ...h1, fontSize: "18px", marginBottom: "12px" }}>
-            GROUP
+            HEADING
           </Heading>
           <ul style={{ marginTop: "12px", marginBottom: "24px" }}>
             <li>
               <Text style={{ ...text }}>
-                MESSAGE -{" "}
+                DESCRIPTION -{" "}
                 <a style={{ fontWeight: 600, color: "#f59f0a" }} href="/">
                   LINK
                 </a>{" "}
@@ -59,7 +62,7 @@ export const GeneralNotificationEmail = ({}: NotionMagicLinkEmailProps) => (
               fontSize: "16px",
             }}
           >
-            Detailní informace
+            Detail na webu
           </button>
         </Link>
 
@@ -96,11 +99,11 @@ export const GeneralNotificationEmail = ({}: NotionMagicLinkEmailProps) => (
   </Html>
 );
 
-GeneralNotificationEmail.PreviewProps = {
+NotionMagicLinkEmail.PreviewProps = {
   loginCode: "sparo-ndigo-amurt-secan",
 } as NotionMagicLinkEmailProps;
 
-export default GeneralNotificationEmail;
+export default NotionMagicLinkEmail;
 
 const main = {
   backgroundColor: "#ffffff",

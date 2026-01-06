@@ -53,13 +53,7 @@ export async function POST(request: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       success_url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/dekujeme`,
-      line_items: [
-        {
-          quantity: 1,
-          price: priceMap.general,
-        },
-        ...items,
-      ],
+      line_items: items,
       mode: "subscription",
       customer_email: body.email,
       subscription_data: {
