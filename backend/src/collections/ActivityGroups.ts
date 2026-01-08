@@ -19,6 +19,15 @@ export const ActivityGroups: CollectionConfig = {
       },
     },
     {
+      name: 'priceId',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        description: 'Unikátní identifikátor od Stripe - Price ID',
+      },
+    },
+    {
       name: 'name',
       type: 'text',
       required: true,
@@ -50,22 +59,6 @@ export const ActivityGroups: CollectionConfig = {
       },
       defaultValue: 199,
     },
-
-    // {
-    //   name: 'keywords',
-    //   type: 'array',
-    //   required: true,
-    //   fields: [
-    //     {
-    //       name: 'keyword',
-    //       type: 'text',
-    //       required: true,
-    //     },
-    //   ],
-    //   admin: {
-    //     description: 'Klíčová slova pro vyhledávání',
-    //   },
-    // },
     {
       name: 'items',
       type: 'array',

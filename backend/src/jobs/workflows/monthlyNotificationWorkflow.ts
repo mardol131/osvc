@@ -1,51 +1,226 @@
+import {
+  createGeneralNotificationEmail,
+  createGeneralNotificationSms,
+} from '@/functions/notifications'
+import { ActivityGroup } from '@/payload-types'
 import { WorkflowConfig } from 'payload'
+
+export type Notification = {
+  text: string
+  mobileText: string
+  link?: string | null
+  description: string
+  date?: string | null
+  activityGroups: (string | ActivityGroup)[]
+}
+
+export type CustomMessage = {
+  heading: string
+  mobileHeading?: string | null
+  notifications: Notification[]
+}
+
+const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+const ID_LENGTH = 18
+
+function generateAlphanumericId(length = ID_LENGTH) {
+  const array = new Uint8Array(length)
+  crypto.getRandomValues(array)
+  return Array.from(array)
+    .map((b) => ALPHABET[b % ALPHABET.length])
+    .join('')
+}
 
 export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
   slug: 'monthlyNotificationsWorkflow',
   inputSchema: [
     {
-      name: 'email',
+      name: 'monthlyNotificationId',
       type: 'text',
-      required: true,
-    },
-    {
-      name: 'body',
-      type: 'textarea',
-      required: true,
-    },
-    {
-      name: 'phone',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'phonePrefix',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'smsBody',
-      type: 'textarea',
       required: true,
     },
   ],
   queue: 'monthlyNotificationsQueue',
   retries: 3,
-  handler: async ({ job, tasks }) => {
-    await tasks.sendEmail('1', {
-      input: {
-        email: job.input.email,
-        body: job.input.body,
-        subject: 'Měsíční přehled změn a povinností',
+  handler: async ({ job, tasks, req: { payload }, inlineTask }) => {
+    const subscribes = await inlineTask('get-subscribes', {
+      task: async ({ req: { payload } }) => {
+        const subscribes = await payload.find({
+          collection: 'subscribes',
+          where: {
+            active: { equals: true },
+          },
+        })
+
+        return { output: subscribes.docs }
       },
     })
-    await tasks.sendSms('2', {
-      input: {
-        phone: job.input.phone,
-        phonePrefix: job.input.phonePrefix,
-        smsBody: job.input.smsBody,
+
+    const monthlyNotification = await inlineTask('get-monthly-notification', {
+      task: async ({ req: { payload } }) => {
+        const monthlyNotification = await payload.findByID({
+          collection: 'monthly-notifications',
+          id: job.input.monthlyNotificationId,
+        })
+        return { output: monthlyNotification }
       },
     })
+
+    const activityGroupsMap = await inlineTask('get-activity-groups', {
+      task: async ({ req: { payload } }) => {
+        const activityGroups = await payload.find({
+          collection: 'activity-groups',
+        })
+
+        const activityGroupsMap = new Map(activityGroups.docs.map((g) => [g.id, g]))
+        return { output: activityGroupsMap }
+      },
+    })
+
+    const data = monthlyNotification.data
+
+    if (!data) {
+      console.log('No notifications data found, skipping.')
+      return
+    }
+
+    await Promise.all(
+      data
+        .filter((n) => n.date)
+        .map(async (notification) => {
+          try {
+            await tasks.createObligation('create-obligation-task', {
+              input: {
+                text: notification.text,
+                mobileText: notification.mobileText,
+                link: notification.link,
+                description: notification.description,
+                date: notification.date,
+                activityGroups: notification.activityGroups.map((group) => ({
+                  activityGroupId: typeof group === 'string' ? group : group.id,
+                })),
+              },
+            })
+          } catch (error) {
+            console.error(
+              `Error creating obligation for notification with date ${notification.date}:`,
+              error,
+            )
+          }
+        }),
+    )
+
+    for (const subscribe of subscribes) {
+      try {
+        if (!subscribe.email || !subscribe.phone || !subscribe.phonePrefix) {
+          console.warn(`Skipping subscribe with ID ${subscribe.id} due to missing contact info`)
+          continue
+        }
+
+        const accessResponse = await inlineTask(
+          `create-access-for-subscribeId-${subscribe.id}-monthlyNotification-${monthlyNotification.id}`,
+          {
+            task: async ({ req: { payload } }) => {
+              let accessId: string | undefined = undefined
+
+              for (let i = 0; i < 5; i++) {
+                const id = generateAlphanumericId()
+
+                const exists = await payload.find({
+                  collection: 'accesses',
+                  where: { accessId: { equals: id } },
+                  limit: 1,
+                })
+
+                if (exists.docs.length !== 0) continue
+
+                accessId = id
+                break
+              }
+
+              if (!accessId) {
+                throw new Error('Failed to generate unique access ID after 5 attempts')
+              }
+
+              const accessResponse = await payload.create({
+                collection: 'accesses',
+                data: {
+                  activityGroups: subscribe.activityGroups || [],
+                  monthlyNotifications: monthlyNotification.id,
+                  subscribe: subscribe.id,
+                  accessId: accessId,
+                },
+              })
+              return { output: accessResponse }
+            },
+          },
+        )
+
+        const customMessages: CustomMessage[] = []
+
+        for (const ag of subscribe.activityGroups || []) {
+          const activityGroup =
+            typeof ag === 'string' ? activityGroupsMap.get(ag) : activityGroupsMap.get(ag.id)
+          if (!activityGroup) continue
+
+          if (typeof ag === 'string') {
+            customMessages.push({
+              heading: activityGroup.name,
+              mobileHeading: activityGroup.mobileName || activityGroup.name,
+              notifications:
+                data.filter((notification) =>
+                  notification.activityGroups?.some((group) =>
+                    typeof group === 'string'
+                      ? group === activityGroup.id
+                      : group.id === activityGroup.id,
+                  ),
+                ) || [],
+            })
+
+            continue
+          }
+          customMessages.push({
+            heading: ag.name,
+            mobileHeading: ag.mobileName || ag.name,
+            notifications:
+              data.filter((notification) =>
+                notification.activityGroups?.some((group) =>
+                  typeof group === 'string' ? group === ag.id : group.id === ag.id,
+                ),
+              ) || [],
+          })
+        }
+
+        const emailBody = createGeneralNotificationEmail({
+          messages: customMessages,
+          dateLabel: `${monthlyNotification.month} ${monthlyNotification.year}`,
+          accessLink: `${process.env.WEBSITE_URL}/${accessResponse.accessId}`,
+        })
+
+        const smsBody = createGeneralNotificationSms({
+          messages: customMessages,
+          accessId: accessResponse.accessId,
+          dateLabel: `${monthlyNotification.month} ${monthlyNotification.year}`,
+        })
+
+        await tasks.sendEmail(`send-monthly-notification-email-for-subId-${subscribe.id}`, {
+          input: {
+            email: subscribe.email,
+            body: emailBody,
+            subject: 'Měsíční přehled změn a povinností',
+          },
+        })
+        await tasks.sendSms(`send-monthly-notification-sms-for-subId-${subscribe.id}`, {
+          input: {
+            phone: subscribe.phone,
+            phonePrefix: subscribe.phonePrefix,
+            smsBody: smsBody,
+          },
+        })
+      } catch (error) {
+        console.error(`Error sending notification to ${subscribe.email}:`, error)
+      }
+    }
 
     console.log('Monthly notification successfully send')
   },

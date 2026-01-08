@@ -8,9 +8,16 @@ import { FiAlertCircle } from "react-icons/fi";
 type Props = {
   title: string;
   message: string;
+  buttonText?: string;
+  buttonLink?: string;
 };
 
-export default function LoadErrorState({ title, message }: Props) {
+export default function LoadErrorState({
+  title,
+  message,
+  buttonText,
+  buttonLink,
+}: Props) {
   const handleReload = () => {
     window.location.reload();
   };
@@ -28,8 +35,9 @@ export default function LoadErrorState({ title, message }: Props) {
           {/* Tlačítko */}
           <div className="flex justify-center">
             <Button
-              text="Načíst informace"
-              onClick={handleReload}
+              href={buttonLink}
+              text={buttonText || "Načíst znovu"}
+              onClick={buttonLink ? undefined : handleReload}
               variant="gold"
             />
           </div>

@@ -24,9 +24,16 @@ export const createObligationInputSchema: Field[] = [
     type: 'text',
   },
   {
-    name: 'activityGroupKey',
-    type: 'text',
+    name: 'activityGroups',
+    type: 'array',
     required: true,
+    fields: [
+      {
+        name: 'activityGroupId',
+        type: 'text',
+        required: true,
+      },
+    ],
   },
 ]
 
@@ -53,7 +60,7 @@ export const createObligationTask: TaskConfig<any> = {
           link: input.link,
           description: input.description,
           date: input.date,
-          activityGroups: activityGroups.map((group) => group.id),
+          activityGroups: input.activityGroups,
         },
       })
 

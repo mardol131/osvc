@@ -201,6 +201,10 @@ export interface ActivityGroup {
    */
   slug: string;
   /**
+   * Unikátní identifikátor od Stripe - Price ID
+   */
+  priceId: string;
+  /**
    * Název skupiny obchodních činností
    */
   name: string;
@@ -236,7 +240,7 @@ export interface Subscribe {
   email: string;
   phone?: string | null;
   phonePrefix?: string | null;
-  activityGroups?: (string | ActivityGroup)[] | null;
+  activityGroups: (string | ActivityGroup)[];
   terms: boolean;
   active?: boolean | null;
   updatedAt: string;
@@ -279,68 +283,17 @@ export interface MonthlyNotification {
     | 'Listopad'
     | 'Prosinec';
   year: '2023' | '2024' | '2025' | '2026' | '2027' | '2028';
-  data?: {
-    general?:
-      | {
-          text: string;
-          mobileText: string;
-          description: string;
-          link?: string | null;
-          date?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    it_services?:
-      | {
-          text: string;
-          mobileText: string;
-          description: string;
-          link?: string | null;
-          date?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    culture_sport?:
-      | {
-          text: string;
-          mobileText: string;
-          description: string;
-          link?: string | null;
-          date?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    education?:
-      | {
-          text: string;
-          mobileText: string;
-          description: string;
-          link?: string | null;
-          date?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    marketing?:
-      | {
-          text: string;
-          mobileText: string;
-          description: string;
-          link?: string | null;
-          date?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    consulting?:
-      | {
-          text: string;
-          mobileText: string;
-          description: string;
-          link?: string | null;
-          date?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
+  data?:
+    | {
+        text: string;
+        mobileText: string;
+        description: string;
+        link?: string | null;
+        date?: string | null;
+        activityGroups: (string | ActivityGroup)[];
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -614,6 +567,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ActivityGroupsSelect<T extends boolean = true> {
   slug?: T;
+  priceId?: T;
   name?: T;
   mobileName?: T;
   description?: T;
@@ -668,66 +622,13 @@ export interface MonthlyNotificationsSelect<T extends boolean = true> {
   data?:
     | T
     | {
-        general?:
-          | T
-          | {
-              text?: T;
-              mobileText?: T;
-              description?: T;
-              link?: T;
-              date?: T;
-              id?: T;
-            };
-        it_services?:
-          | T
-          | {
-              text?: T;
-              mobileText?: T;
-              description?: T;
-              link?: T;
-              date?: T;
-              id?: T;
-            };
-        culture_sport?:
-          | T
-          | {
-              text?: T;
-              mobileText?: T;
-              description?: T;
-              link?: T;
-              date?: T;
-              id?: T;
-            };
-        education?:
-          | T
-          | {
-              text?: T;
-              mobileText?: T;
-              description?: T;
-              link?: T;
-              date?: T;
-              id?: T;
-            };
-        marketing?:
-          | T
-          | {
-              text?: T;
-              mobileText?: T;
-              description?: T;
-              link?: T;
-              date?: T;
-              id?: T;
-            };
-        consulting?:
-          | T
-          | {
-              text?: T;
-              mobileText?: T;
-              description?: T;
-              link?: T;
-              date?: T;
-              id?: T;
-            };
+        text?: T;
+        mobileText?: T;
+        description?: T;
+        link?: T;
+        date?: T;
+        activityGroups?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -866,7 +767,9 @@ export interface TaskCreateObligation {
     link?: string | null;
     description?: string | null;
     date?: string | null;
-    activityGroupKey: string;
+    activityGroups: {
+      activityGroupId: string;
+    }[];
   };
   output?: unknown;
 }
@@ -887,11 +790,7 @@ export interface TaskGetRecord {
  */
 export interface WorkflowMonthlyNotificationsWorkflow {
   input: {
-    email: string;
-    body: string;
-    phone: string;
-    phonePrefix: string;
-    smsBody: string;
+    monthlyNotificationId: string;
   };
 }
 /**
@@ -905,7 +804,9 @@ export interface WorkflowCreateObligationWorkflow {
     link?: string | null;
     description?: string | null;
     date?: string | null;
-    activityGroupKey: string;
+    activityGroups: {
+      activityGroupId: string;
+    }[];
   };
 }
 /**

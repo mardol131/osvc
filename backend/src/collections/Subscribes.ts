@@ -47,6 +47,7 @@ export const Subscribes: CollectionConfig = {
       type: 'relationship',
       relationTo: 'activity-groups',
       hasMany: true,
+      required: true,
     },
     {
       name: 'terms',

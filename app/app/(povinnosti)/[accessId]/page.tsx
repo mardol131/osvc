@@ -1,10 +1,11 @@
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
-import { BusinessActivity } from "@/app/_data/businessActivities";
+import { ActivityGroup } from "@/app/_data/businessActivities";
 import { getCollection } from "@/app/_functions/backend";
 import { FiCheckCircle } from "react-icons/fi";
 import LoadErrorState from "./_components/LoadErrorState";
 import NotificationGroup from "./_components/NotificationGroup";
+import { notFound } from "next/navigation";
 
 export type CustomMessage = {
   heading: string;
@@ -47,7 +48,7 @@ export default async function page({
     | {
         createdAt: Date;
         updatedAt: Date;
-        activityGroups: BusinessActivity[];
+        activityGroups: ActivityGroup[];
         monthlyNotification: MonthlyNotification;
       }[]
     | undefined = undefined;
@@ -59,19 +60,16 @@ export default async function page({
       query: `where[accessId][equals]=${accessId}`,
     });
   } catch (error) {
-    return (
-      <LoadErrorState
-        title="Zobrazit informace"
-        message="Klikněte na tlačítko níže pro načtení vašich informací."
-      />
-    );
+    return notFound();
   }
+
+  console.log(accessResponse);
 
   if (!accessResponse || accessResponse.length === 0) {
     return (
       <LoadErrorState
         title="Nepodařilo se načíst data"
-        message="Odkaz může být neplatný nebo vypršel. Zkuste prosím načíst stránku znovu."
+        message="Odkaz může být neplatný nebo vypršel. Zkuste prosím načíst stránku znovu, případně nás kontaktujte."
       />
     );
   }

@@ -6,17 +6,17 @@ import SearchBar from "@/app/(hub)/_hub/_components/SearchBar";
 import BusinessActivityItem from "./BusinessActivityItem";
 import OrderSummary, { OrderFormData } from "./OrderSummary";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
-import { BusinessActivity } from "@/app/_data/businessActivities";
+import { ActivityGroup } from "@/app/_data/businessActivities";
 import Button from "@/app/_components/atoms/Button";
 
 type Props = {
-  activitiesGroups?: BusinessActivity[];
+  activitiesGroups?: ActivityGroup[];
 };
 
 export default function OrderPageClient(props: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
-  const [businessActivities] = useState<BusinessActivity[]>(
+  const [businessActivities] = useState<ActivityGroup[]>(
     props.activitiesGroups || []
   );
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(false);
@@ -35,16 +35,23 @@ export default function OrderPageClient(props: Props) {
   // Připravení dat pro summary
   const selectedActivityData = businessActivities
     .filter((activity) => selectedActivities.includes(activity.slug))
-    .map((activity) => ({
-      name: activity.name,
-      price: activity.price,
-      slug: activity.slug,
-      id: activity.id,
-    }));
+    .map((activity) => activity);
 
   // Handler pro checkout
   const handleCheckout = async (formData: OrderFormData) => {
     // TODO: Implementovat přesměrování na platební bránu
+
+    const generalGroup = props.activitiesGroups?.find(
+      (ag) => ag.slug === "general"
+    );
+
+    if (!generalGroup) {
+      console.error(
+        "Chyba: Obecná skupina předmětů podnikání nebyla nalezena."
+      );
+      return;
+    }
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/stripe/create-checkout-session`,
@@ -58,16 +65,8 @@ export default function OrderPageClient(props: Props) {
             phone: formData.phone,
             phonePrefix: formData.phonePrefix,
             activityGroups: [
-              ...selectedActivityData.map((activity) => ({
-                slug: activity.slug,
-                id: activity.id,
-              })),
-              ...(props.activitiesGroups
-                ?.filter((ag) => ag.slug === "general")
-                .map((ag) => ({
-                  slug: ag.slug,
-                  id: ag.id,
-                })) || []),
+              generalGroup,
+              ...selectedActivityData.map((activity) => activity),
             ],
             terms: formData.terms,
           }),

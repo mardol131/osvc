@@ -1,13 +1,13 @@
 "use client";
 
-import { BusinessActivity } from "@/app/_data/businessActivities";
+import { ActivityGroup } from "@/app/_data/businessActivities";
 import React from "react";
 import { FaPlus, FaCheck, FaCheckCircle } from "react-icons/fa";
 
 type Props = {
   isSelected: boolean;
   onToggle: () => void;
-} & BusinessActivity;
+} & ActivityGroup;
 
 export default function BusinessActivityItem({
   name,

@@ -76,13 +76,13 @@ export default function Comparison({}: Props) {
                     negative
                   />
                   <CostItem
-                    label="Hledání informací (2h × 500 Kč/h)"
-                    value="1 000 Kč"
+                    label="Hledání informací (2h × 400 Kč/h)"
+                    value="800 Kč"
                     negative
                   />
                   <CostItem
                     label="Stres a nejistota"
-                    value="Nevyčíslitelné"
+                    value="Nelze vyyčíslit"
                     negative
                   />
                   <div className="border-t-2 border-zinc-200 pt-4 mt-6">
@@ -91,7 +91,7 @@ export default function Comparison({}: Props) {
                         Náklady:
                       </span>
                       <span className="text-2xl font-bold text-zinc-700">
-                        od 1 000 Kč Kč
+                        od 800 Kč Kč
                       </span>
                     </div>
                   </div>
@@ -152,7 +152,7 @@ export default function Comparison({}: Props) {
 
             <div className="relative z-10">
               <h4 className="text-textLight mb-4 text-center font-bebas">
-                Návratnost investice
+                Vrátí se to i kdyby se nic nestalo
               </h4>
               <p className="text-zinc-200 text-lg text-center mb-8 leading-relaxed">
                 Pokud vám služba pomůže{" "}
@@ -160,8 +160,8 @@ export default function Comparison({}: Props) {
                   vyhnout se jediné pokutě
                 </strong>{" "}
                 nebo ušetří jen{" "}
-                <strong className="text-secondary">2 hodiny vašeho času</strong>
-                , už se vám vrátí!
+                <strong className="text-secondary">1 hodinu vašeho času</strong>
+                , už se vám zaplatí!
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-300">
@@ -169,7 +169,7 @@ export default function Comparison({}: Props) {
                     1×
                   </div>
                   <p className="text-sm text-zinc-200 leading-relaxed">
-                    Vyhnete se jedné pokutě a jste v zisku
+                    Vyhnete se jedné pokutě a jste v plusu
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-300">
@@ -181,7 +181,7 @@ export default function Comparison({}: Props) {
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-300">
-                  <div className="text-4xl font-bold text-secondary mb-3">
+                  <div className="text-5xl font-bold text-secondary mb-3">
                     ∞
                   </div>
                   <p className="text-sm text-zinc-200 leading-relaxed">

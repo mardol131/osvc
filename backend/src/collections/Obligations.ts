@@ -18,14 +18,5 @@ export const Obligations: CollectionConfig = {
       return apiKeyAuth(apiKey)
     },
   },
-  fields: [
-    ...notificationFields,
-    {
-      name: 'activityGroups',
-      type: 'relationship',
-      relationTo: 'activity-groups',
-      hasMany: true,
-      required: true,
-    },
-  ],
+  fields: [...notificationFields],
 }

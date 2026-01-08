@@ -34,12 +34,12 @@ export async function POST(request: Request) {
 
         console.log("METADATA", data.parent?.subscription_details?.metadata);
 
-        const subResponse = await createSubscribe(
+        await createSubscribe(
           data.parent.subscription_details.metadata.email,
           data.parent.subscription_details.metadata.phone,
           data.parent.subscription_details.metadata.phonePrefix,
           JSON.parse(data.parent.subscription_details.metadata.activityGroups),
-          data.parent.subscription_details.metadata.terms === "true",
+          JSON.parse(data.parent.subscription_details.metadata.terms),
           true
         );
 
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
             },
             body: JSON.stringify({
               name: nameArray[0],
-              surname: nameArray[1],
+              surname: nameArray[nameArray.length - 1],
               email: data.customer_email,
               phone: data.customer_phone,
             }),

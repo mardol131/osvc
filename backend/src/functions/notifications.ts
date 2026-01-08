@@ -1,4 +1,4 @@
-import { CustomMessage, Notification } from '@/collections/MonthlyNotification'
+import { CustomMessage, Notification } from '@/jobs/workflows/monthlyNotificationWorkflow'
 import { format } from 'date-fns'
 
 export async function sendEmail(sender: string, to: string[], subject: string, html_body: string) {
@@ -51,22 +51,30 @@ export async function sendSms(message: string, phoneNumber: string) {
   return data
 }
 
-export async function createGeneralNotificationEmail(
-  messages: CustomMessage[],
-  dateLabel: string,
-  accessLink: string,
-) {
+export type CreateGeneralNotificationEmailParams = {
+  messages: CustomMessage[]
+  dateLabel: string
+  accessLink: string
+}
+
+export function createGeneralNotificationEmail({
+  messages,
+  dateLabel,
+  accessLink,
+}: CreateGeneralNotificationEmailParams) {
   const messagesBody = messages
     .map((messageGroup) => {
       const notificationsList = messageGroup.notifications
         .map((notification) => {
+          if (!notification) return ''
+
           return ` <li>
                           <p
                             style="font-size:14px;line-height:24px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin:24px 0;margin-top:24px;margin-right:0;margin-bottom:24px;margin-left:0">
                             ${notification.text}
                             ${
                               notification.link
-                                ? `<!-- -->-<!-- --><a style="font-weight:600;color:#f59f0a" href="${notification.link}"
+                                ? `&nbsp;-&nbsp;<a style="font-weight:600;color:#f59f0a" href="${notification.link}"
                               >Odkaz</a
                             >`
                                 : ''
@@ -75,7 +83,7 @@ export async function createGeneralNotificationEmail(
                               notification.date
                                 ? `<br
                               style="color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-size:14px;margin:24px 0;white-space:nowrap;font-weight:700" />
-                              Do <!-- --><span
+                              Do &nbsp;<span
                               style="font-weight:600"
                               >${format(new Date(notification.date), 'd.M.yyyy')}</span
                             >`
@@ -180,7 +188,7 @@ export async function createGeneralNotificationEmail(
                     <p
                       style="font-size:12px;line-height:22px;color:#898989;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin-top:0;margin-bottom:24px">
                       ©
-                      <!-- -->2025<!-- -->
+                      &nbsp;2025&nbsp;
                       OSVČ365. Všechna práva vyhrazena.
                     </p>
                     <p
@@ -205,11 +213,18 @@ export async function createGeneralNotificationEmail(
   return emailBody
 }
 
-export function createGeneralNotificationSms(
-  messages: CustomMessage[],
-  accessId: string,
-  dateLabel: string,
-) {
+export type createGeneralNotificationSmsParams = {
+  messages: CustomMessage[]
+  accessId: string
+  dateLabel: string
+}
+
+export function createGeneralNotificationSms({
+  messages,
+  accessId,
+  dateLabel,
+}: createGeneralNotificationSmsParams) {
+  console.log(messages)
   const notificationsCount = messages.reduce((count, group) => {
     return count + group.notifications.length
   }, 0)
@@ -234,12 +249,7 @@ export function createGeneralNotificationSms(
   return removeDiacritics(smsBody)
 }
 
-export function createAlertNotificationEmail(messages: {
-  text: string
-  description: string
-  link?: string
-  date?: string
-}) {
+export function createAlertNotificationEmail(notification: Omit<Notification, 'mobileText'>) {
   const emailBody = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
   <head>
@@ -289,26 +299,26 @@ export function createAlertNotificationEmail(messages: {
                     <div>
                       <h1
                         style="color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-size:18px;font-weight:bold;margin:40px 0;padding:0;margin-bottom:12px">
-                        ${messages.text}
+                        ${notification.text}
                       </h1>
                       <ul style="margin-top:12px;margin-bottom:24px">
                         <li>
                           <p
                             style="font-size:14px;line-height:24px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin:24px 0;margin-top:24px;margin-right:0;margin-bottom:24px;margin-left:0">
-                            ${messages.description} -<!-- -->
+                            ${notification.description} -&nbsp;
                             ${
-                              messages.link
+                              notification.link
                                 ? `<a style="font-weight:600;color:#f59f0a" href="/"
-                              >${messages.link}</a
+                              >${notification.link}</a
                             >`
                                 : ''
                             }
                            ${
-                             messages.date
+                             notification.date
                                ? ` <br
                               style="color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-size:14px;margin:24px 0;white-space:nowrap;font-weight:700" /><span
                               style="font-weight:600"
-                              >Do ${format(messages.date, 'dd.MM.yyyy')}</span
+                              >Do ${format(notification.date, 'dd.MM.yyyy')}</span
                             >`
                                : ''
                            }
@@ -338,7 +348,7 @@ export function createAlertNotificationEmail(messages: {
                     <p
                       style="font-size:12px;line-height:22px;color:#898989;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin-top:0;margin-bottom:24px">
                       ©
-                      <!-- -->2026<!-- -->
+                      &nbsp;2026&nbsp;
                       OSVČ365. Všechna práva vyhrazena.
                     </p>
                     <p

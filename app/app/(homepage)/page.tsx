@@ -8,7 +8,7 @@ import Fines from "./_components/Fines";
 import SMS from "./_components/SMS";
 import About from "./_components/About";
 import Faq from "../_components/sections/faq/Faq";
-import SaleCodeBanner from "../_components/sections/banners/SaleCodeBanner";
+import DetailedActivitiesBanner from "../_components/sections/banners/DetailedActivitiesBanner";
 import Comparison from "../_components/sections/Comparison";
 
 export default function Home() {
@@ -41,7 +41,7 @@ export default function Home() {
 
       <Comparison />
       <div className="mt-20">
-        <SaleCodeBanner />
+        <DetailedActivitiesBanner />
       </div>
 
       <About />

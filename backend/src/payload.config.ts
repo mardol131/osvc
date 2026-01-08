@@ -42,14 +42,14 @@ export default buildConfig({
         cron: '* * * * *',
         queue: getQueueName('monthlyNotificationsQueue'),
       },
-      {
-        cron: '* * * * *',
-        queue: getQueueName('createObligationQueue'),
-      },
-      {
-        cron: '* * * * *',
-        queue: getQueueName('alertNotificationsQueue'),
-      },
+      //   {
+      //     cron: '* * * * *',
+      //     queue: getQueueName('createObligationQueue'),
+      //   },
+      //   {
+      //     cron: '* * * * *',
+      //     queue: getQueueName('alertNotificationsQueue'),
+      //   },
     ],
     tasks: [sendEmailTask, sendSmsTask, createObligationTask, getRecordTask],
     workflows: [monthlyNotificationsWorkflow, createObligationWorkflow, alertNotificationWorkflow],

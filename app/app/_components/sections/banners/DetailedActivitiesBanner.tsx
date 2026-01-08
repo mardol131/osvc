@@ -1,9 +1,9 @@
 import React from "react";
-import { IoGift, IoCheckmarkCircle } from "react-icons/io5";
+import { IoTicketOutline } from "react-icons/io5";
 
 type Props = {};
 
-export default function SaleCodeBanner({}: Props) {
+export default function DetailedActivitiesBanner({}: Props) {
   return (
     <section className="relative py-16 md:px-10 px-4 overflow-hidden bg-linear-to-br from-primary via-zinc-800 to-zinc-900">
       {/* Dekorativní pozadí */}
@@ -14,21 +14,20 @@ export default function SaleCodeBanner({}: Props) {
           <div className="flex flex-col md:flex-row justify-center items-center gap-8">
             {/* Ikona */}
             <div className="w-20 h-20 shrink-0 bg-linear-to-br from-secondary to-tertiary rounded-lg flex items-center justify-center shadow-xl">
-              <IoGift className="text-4xl md:text-5xl text-white" />
+              <IoTicketOutline className="text-4xl md:text-5xl text-white" />
             </div>
 
             {/* Obsah */}
             <div className="flex-1 text-center flex flex-col justify-center md:text-left">
               <h3 className="text-textLight mb-3 font-bebas">
-                Pomozte sobě nebo ostatním!
+                Slevový kód pro známé
               </h3>
               <p className="text-lg text-zinc-300 leading-relaxed">
-                Při koupi předplatného získáte{" "}
+                Po zakoupení předplatného obdržíte do emailu{" "}
                 <span className="text-secondary font-semibold">
-                  slevový kód 20 %
+                  10% slevový kód
                 </span>
-                , který můžete předat přátelům, rodině nebo komukoliv jinému.
-                Ušetřete starosti a peníze!
+                , který můžete předat přátelům, rodině nebo kolegům.
               </p>
             </div>
           </div>
