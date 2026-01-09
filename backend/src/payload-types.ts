@@ -122,6 +122,7 @@ export interface Config {
       monthlyNotificationsWorkflow: WorkflowMonthlyNotificationsWorkflow;
       createObligationWorkflow: WorkflowCreateObligationWorkflow;
       alertNotificationWorkflow: WorkflowAlertNotificationWorkflow;
+      subscriptionCreatedWorkflow: WorkflowSubscriptionCreatedWorkflow;
     };
   };
 }
@@ -243,6 +244,7 @@ export interface Subscribe {
   activityGroups: (string | ActivityGroup)[];
   terms: boolean;
   active?: boolean | null;
+  promotionCode?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -289,8 +291,8 @@ export interface MonthlyNotification {
         mobileText: string;
         description: string;
         link?: string | null;
-        date?: string | null;
         activityGroups: (string | ActivityGroup)[];
+        date?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -305,7 +307,7 @@ export interface MonthlyNotification {
 export interface Access {
   id: string;
   activityGroups?: (string | ActivityGroup)[] | null;
-  monthlyNotifications: string | MonthlyNotification;
+  monthlyNotification: string | MonthlyNotification;
   subscribe: string | Subscribe;
   accessId: string;
   updatedAt: string;
@@ -321,8 +323,8 @@ export interface Obligation {
   mobileText: string;
   description: string;
   link?: string | null;
-  date?: string | null;
   activityGroups: (string | ActivityGroup)[];
+  date: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -428,7 +430,14 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  workflowSlug?: ('monthlyNotificationsWorkflow' | 'createObligationWorkflow' | 'alertNotificationWorkflow') | null;
+  workflowSlug?:
+    | (
+        | 'monthlyNotificationsWorkflow'
+        | 'createObligationWorkflow'
+        | 'alertNotificationWorkflow'
+        | 'subscriptionCreatedWorkflow'
+      )
+    | null;
   taskSlug?: ('inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord') | null;
   queue?: string | null;
   waitUntil?: string | null;
@@ -593,6 +602,7 @@ export interface SubscribesSelect<T extends boolean = true> {
   activityGroups?: T;
   terms?: T;
   active?: T;
+  promotionCode?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -626,8 +636,8 @@ export interface MonthlyNotificationsSelect<T extends boolean = true> {
         mobileText?: T;
         description?: T;
         link?: T;
-        date?: T;
         activityGroups?: T;
+        date?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -640,7 +650,7 @@ export interface MonthlyNotificationsSelect<T extends boolean = true> {
  */
 export interface AccessesSelect<T extends boolean = true> {
   activityGroups?: T;
-  monthlyNotifications?: T;
+  monthlyNotification?: T;
   subscribe?: T;
   accessId?: T;
   updatedAt?: T;
@@ -655,8 +665,8 @@ export interface ObligationsSelect<T extends boolean = true> {
   mobileText?: T;
   description?: T;
   link?: T;
-  date?: T;
   activityGroups?: T;
+  date?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -816,6 +826,16 @@ export interface WorkflowCreateObligationWorkflow {
 export interface WorkflowAlertNotificationWorkflow {
   input: {
     obligationId: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WorkflowSubscriptionCreatedWorkflow".
+ */
+export interface WorkflowSubscriptionCreatedWorkflow {
+  input: {
+    promotionCode?: string | null;
+    email: string;
   };
 }
 /**

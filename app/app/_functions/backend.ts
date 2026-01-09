@@ -16,14 +16,23 @@ export async function createDraftSubscribe(activityGroups: string[]) {
   return response.json();
 }
 
-export async function createSubscribe(
-  email: string,
-  phone: string,
-  phonePrefix: string,
-  activityGroups: string[],
-  terms: boolean,
-  active?: boolean
-) {
+export async function createSubscribe({
+  email,
+  phone,
+  phonePrefix,
+  activityGroups,
+  terms,
+  active,
+  promotionCode,
+}: {
+  email: string;
+  phone: string;
+  phonePrefix: string;
+  activityGroups: string[];
+  terms: boolean;
+  active?: boolean;
+  promotionCode?: string;
+}) {
   const response = await fetch(`${process.env.CMS_URL}/api/subscribes`, {
     method: "POST",
     headers: {
@@ -37,30 +46,13 @@ export async function createSubscribe(
       activityGroups: activityGroups,
       terms: terms ? "true" : "false",
       active: active ? "true" : "false",
+      promotionCode: promotionCode ? promotionCode : undefined,
     }),
   });
 
   if (!response.ok) {
     throw new Error(`Failed to create customer: ${response.statusText}`);
   }
-  return response.json();
-}
-
-export async function activateSusbscribe(subscribeId: string) {
-  const response = await fetch(
-    `${process.env.CMS_URL}/api/subscribes/${subscribeId}`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `users API-Key ${process.env.CMS_API_KEY}`,
-      },
-      body: JSON.stringify({
-        active: true,
-      }),
-    }
-  );
-
   return response.json();
 }
 

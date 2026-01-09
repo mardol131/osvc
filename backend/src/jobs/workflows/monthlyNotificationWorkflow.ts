@@ -101,6 +101,10 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
                 })),
               },
             })
+
+            console.log(
+              `Obligation created for notification ${notification.id} with date ${notification.date}`,
+            )
           } catch (error) {
             console.error(
               `Error creating obligation for notification with date ${notification.date}:`,
@@ -146,11 +150,13 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
                 collection: 'accesses',
                 data: {
                   activityGroups: subscribe.activityGroups || [],
-                  monthlyNotifications: monthlyNotification.id,
+                  monthlyNotification: monthlyNotification.id,
                   subscribe: subscribe.id,
                   accessId: accessId,
                 },
               })
+
+              console.log(`Access created with ID ${accessId} for subscribe ID ${subscribe.id}`)
               return { output: accessResponse }
             },
           },

@@ -11,7 +11,6 @@ export const notificationFields: Field[] = [
   { name: 'mobileText', type: 'textarea', required: true },
   { name: 'description', type: 'textarea', required: true },
   { name: 'link', type: 'text' },
-  { name: 'date', type: 'date' },
   {
     name: 'activityGroups',
     type: 'relationship',
@@ -76,7 +75,7 @@ export const MonthlyNotifications: CollectionConfig = {
     {
       name: 'data',
       type: 'array',
-      fields: notificationFields,
+      fields: [...notificationFields, { name: 'date', type: 'date' }],
     },
   ],
   hooks: {

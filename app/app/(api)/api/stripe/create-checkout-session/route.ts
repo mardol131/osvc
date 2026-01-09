@@ -1,18 +1,13 @@
 import { ActivityGroup } from "@/app/_data/businessActivities";
-import {
-  createDraftSubscribe,
-  createSubscribe,
-} from "@/app/_functions/backend";
+
 import Stripe from "stripe";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
   const body = await request.json();
 
-  console.log(body);
-
   if (
-    !("activityGroups" in body) ||
+    (!("activityGroups" in body) && body.activityGroups.length === 0) ||
     !("email" in body) ||
     !("phone" in body) ||
     !("phonePrefix" in body) ||
@@ -27,8 +22,6 @@ export async function POST(request: Request) {
     );
   }
 
-  console.log(body);
-
   const items = body.activityGroups.map((group: ActivityGroup) => {
     const priceId = group.priceId;
     return {
@@ -36,8 +29,6 @@ export async function POST(request: Request) {
       price: priceId,
     };
   });
-
-  console.log(items);
 
   try {
     const promotionCode = await stripe.promotionCodes.create({
@@ -76,13 +67,12 @@ export async function POST(request: Request) {
       }
     );
   } catch (err) {
-    console.error(`Error processing event: ${err}`);
+    return new Response(
+      JSON.stringify({ error: `Unable to create checkout session: ${err}` }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
-  return new Response(
-    JSON.stringify({ error: "Unable to create checkout session" }),
-    {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    }
-  );
 }

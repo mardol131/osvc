@@ -1,5 +1,6 @@
 import {
   Body,
+  CodeBlock,
   Container,
   Head,
   Heading,
@@ -10,58 +11,56 @@ import {
   Text,
 } from "@react-email/components";
 
-interface NotionMagicLinkEmailProps {
-  dayString?: string;
+interface Props {
+  code?: string;
 }
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "";
-
-export const NotionMagicLinkEmail = ({}: NotionMagicLinkEmailProps) => (
+export const ConfirmationEmail = ({ code }: Props) => (
   <Html>
     <Head />
     <Body style={main}>
-      <Preview>Blížící se termín</Preview>
+      <Preview>Potvrzujeme přihlášení k odběru služeb</Preview>
       <Container style={container}>
-        <Heading style={h1}>Zbývá DAYSTRING pro splnění povinnosti</Heading>
+        <Heading style={h1}>OSVČ365: Potvrzení nákupu</Heading>
 
-        <div>
-          <Heading style={{ ...h1, fontSize: "18px", marginBottom: "12px" }}>
-            HEADING
-          </Heading>
-          <ul style={{ marginTop: "12px", marginBottom: "24px" }}>
-            <li>
-              <Text style={{ ...text }}>
-                DESCRIPTION -{" "}
-                <a style={{ fontWeight: 600, color: "#f59f0a" }} href="/">
-                  LINK
-                </a>{" "}
-                <br
-                  style={{ ...text, whiteSpace: "nowrap", fontWeight: 700 }}
-                />
-                <span style={{ fontWeight: 600 }}>Do DATE</span>
+        <Text style={{ ...text, marginBottom: "14px" }}>
+          Děkujeme, že jste se přihlásili k odběru služeb OSVČ365. Od této
+          chvíle Vám budeme pravidelně zasílat užitečné informace, povinnosti a
+          novinky týkající se živností v České republice.
+        </Text>
+        {code && (
+          <>
+            <Text style={{ ...text, marginBottom: "14px" }}>
+              Níže naleznete slevový kód, který můžete darovat svým známým nebo
+              využít pro svůj další nákup.
+            </Text>
+
+            <div>
+              <Heading
+                style={{ ...h1, fontSize: "18px", marginBottom: "12px" }}
+              >
+                Slevový kód
+              </Heading>
+              <Text
+                style={{
+                  backgroundColor: "orange",
+                  color: "white",
+                  borderRadius: "5px",
+                  border: "1px solid #eee",
+                  padding: "16px 4.5%",
+                  width: "90.5%",
+                  fontFamily:
+                    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+                  textAlign: "center",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                }}
+              >
+                {code}
               </Text>
-            </li>
-          </ul>
-        </div>
-        <Link href="LINK" target="_blank">
-          <button
-            style={{
-              backgroundColor: "#f59f0a",
-              border: "none",
-              padding: "10px 20px",
-              color: "#fff",
-              cursor: "pointer",
-              borderRadius: "5px",
-              fontWeight: "500",
-              textDecoration: "none",
-              fontSize: "14px",
-            }}
-          >
-            Měsíční souhrn
-          </button>
-        </Link>
+            </div>
+          </>
+        )}
 
         <Text style={text}>
           S pozdravem,
@@ -96,12 +95,11 @@ export const NotionMagicLinkEmail = ({}: NotionMagicLinkEmailProps) => (
   </Html>
 );
 
-NotionMagicLinkEmail.PreviewProps = {
-  loginCode: "sparo-ndigo-amurt-secan",
-} as NotionMagicLinkEmailProps;
+ConfirmationEmail.PreviewProps = {
+  code: "sparo-ndigo-amurt-secan",
+} as Props;
 
-export default NotionMagicLinkEmail;
-
+export default ConfirmationEmail;
 const main = {
   backgroundColor: "#ffffff",
 };

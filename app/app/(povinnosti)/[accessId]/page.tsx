@@ -20,19 +20,11 @@ export type Notification = {
   description?: string;
   date?: Date;
   link?: string;
-};
-
-export type NotificationGroups = {
-  general: Notification[];
-  it_services: Notification[];
-  consulting: Notification[];
-  marketing: Notification[];
-  education: Notification[];
-  culture_sport: Notification[];
+  activityGroups: ActivityGroup[];
 };
 
 export type MonthlyNotification = {
-  data: NotificationGroups;
+  data: Notification[];
   month?: string;
   year?: string;
 };
@@ -63,8 +55,6 @@ export default async function page({
     return notFound();
   }
 
-  console.log(accessResponse);
-
   if (!accessResponse || accessResponse.length === 0) {
     return (
       <LoadErrorState
@@ -80,13 +70,19 @@ export default async function page({
 
   const customActivityGroups = access?.activityGroups;
 
-  const notificationsData = access?.monthlyNotification;
+  const notificationsData = access?.monthlyNotification.data;
 
   const customNotifications: CustomMessage[] = [];
 
+  console.log("HERE", notificationsData);
+
   customActivityGroups?.forEach((group) => {
-    const groupNotifications =
-      notificationsData?.data?.[group.slug as keyof NotificationGroups] ?? [];
+    const groupNotifications = notificationsData.filter((notification) =>
+      notification.activityGroups.some((ag) =>
+        typeof group === "string" ? ag.id === group : ag.id === group.id
+      )
+    );
+
     customNotifications.push({
       heading: group.name,
       notifications: groupNotifications ?? [],

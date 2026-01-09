@@ -1,6 +1,11 @@
-import { createAlertNotificationEmail } from '@/functions/notifications'
+import {
+  createAlertNotificationEmail,
+  createAlertNotificationSms,
+  removeDiacritics,
+} from '@/functions/notifications'
 import { Obligation } from '@/payload-types'
 import { getQueueName } from '@/payload.config'
+import { differenceInDays } from 'date-fns/fp/differenceInDays'
 import { WorkflowConfig } from 'payload'
 
 export const alertNotificationWorkflow: WorkflowConfig<any> = {
@@ -26,6 +31,11 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
       throw new Error(`Obligation with ID ${job.input.obligationId} not found`)
     }
 
+    if (!obligation.date) {
+      console.warn(`Obligation with ID ${obligation.id} has no date, skipping notifications`)
+      return
+    }
+
     console.log(`Processing alert notifications for obligation ID ${obligation.id}`)
 
     const subscribes = await inlineTask('get-subscribes', {
@@ -34,9 +44,9 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
           collection: 'subscribes',
           where: {
             activityGroups: {
-              in: obligation.activityGroups
-                .filter((group) => typeof group !== 'string')
-                .map((group) => group.id),
+              in: obligation.activityGroups.map((group) =>
+                typeof group === 'string' ? group : group.id,
+              ),
             },
             active: { equals: true },
           },
@@ -57,14 +67,50 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
         continue
       }
 
+      const access = await inlineTask('get-latest-user-access', {
+        task: async ({ req: { payload } }) => {
+          const accesses = await payload.find({
+            collection: 'accesses',
+            where: {
+              subscribe: {
+                equals: subscribe.id,
+              },
+            },
+            sort: '-createdAt',
+            limit: 1,
+          })
+          return { output: accesses.docs[0] || null }
+        },
+      })
+
+      const obligationDate = new Date(obligation.date)
+      const now = new Date()
+
+      const dayGap = differenceInDays(new Date(obligation.date), new Date())
+      const isTodayOrPast = obligationDate <= now
+
+      let header: string = ''
+
+      if (isTodayOrPast && dayGap <= 0) {
+        header = 'Dnes je poslední den pro splnění povinnosti'
+      } else {
+        header = `Zbývá ${dayGap} ${dayGap === 1 ? 'den' : dayGap <= 4 ? 'dny' : 'dní'} pro splnění povinnosti`
+      }
+
       const emailBody = createAlertNotificationEmail({
         text: obligation.text,
         description: obligation.description,
-        date: obligation.date || undefined,
+        date: obligation.date,
         link: obligation.link || undefined,
+        accessLink: access && `${process.env.WEBSITE_URL}/${access.accessId}`,
+        header: header,
       })
 
-      const smsBody = `Připomínáme Vám nadcházející povinnost: ${obligation.text}. Termín: ${obligation.date}. Více info na OSVC365.cz.`
+      const smsBody = createAlertNotificationSms({
+        mobileText: obligation.mobileText || obligation.text,
+        date: obligation.date,
+        accessId: access && access.accessId,
+      })
 
       await tasks.sendEmail('send-alert-notification-email', {
         input: {
@@ -78,7 +124,7 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
         input: {
           phone: subscribe.phone,
           phonePrefix: subscribe.phonePrefix,
-          smsBody: smsBody,
+          smsBody: removeDiacritics(smsBody),
         },
       })
 

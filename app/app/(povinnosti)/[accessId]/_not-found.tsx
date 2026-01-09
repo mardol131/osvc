@@ -6,7 +6,7 @@ type Props = {};
 export default function NotFound({}: Props) {
   return (
     <LoadErrorState
-      title="Něco se nepovedlo"
+      title="Přístup neexistuje"
       message="Omlouváme se, chyba je na naší straně. Zkuste to prosím později."
     />
   );

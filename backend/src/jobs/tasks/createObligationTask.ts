@@ -1,6 +1,13 @@
 import { set, subDays } from 'date-fns'
 import { Field, TaskConfig } from 'payload'
 
+const daysMatrix = [
+  { substractDays: 21 },
+  { substractDays: 14 },
+  { substractDays: 7 },
+  { substractDays: 1 },
+]
+
 export const createObligationInputSchema: Field[] = [
   {
     name: 'text',
@@ -43,15 +50,6 @@ export const createObligationTask: TaskConfig<any> = {
   inputSchema: createObligationInputSchema,
   handler: async ({ input, req: { payload } }) => {
     try {
-      const activityGroups = await payload
-        .find({
-          collection: 'activity-groups',
-          where: {
-            slug: { equals: input.activityGroupKey },
-          },
-        })
-        .then((res) => res.docs)
-
       const resp = await payload.create({
         collection: 'obligations',
         data: {
@@ -60,28 +58,59 @@ export const createObligationTask: TaskConfig<any> = {
           link: input.link,
           description: input.description,
           date: input.date,
-          activityGroups: input.activityGroups,
+          activityGroups: input.activityGroups.map(
+            (ag: { activityGroupId: string }) => ag.activityGroupId,
+          ),
         },
       })
 
-      const waitUntilDate = set(subDays(new Date(input.date), 1), {
-        hours: 8,
-        minutes: 0,
-        seconds: 0,
-        milliseconds: 0,
-      })
+      const dueDate = new Date(input.date)
+      const now = new Date()
+      let hasAtleastOneTask = false
 
-      const res = await payload.jobs.queue({
-        workflow: 'alertNotificationWorkflow',
-        waitUntil: waitUntilDate,
-        input: {
-          obligationId: resp.id,
-        },
-      })
+      for (const { substractDays } of daysMatrix) {
+        const milestoneDate = set(subDays(dueDate, substractDays), {
+          hours: 8,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        })
 
-      console.log(res)
+        if (milestoneDate <= now) continue
+        if (milestoneDate >= dueDate) continue
+
+        await payload.jobs.queue({
+          workflow: 'alertNotificationWorkflow',
+          waitUntil: milestoneDate,
+          input: {
+            obligationId: resp.id,
+          },
+        })
+
+        hasAtleastOneTask = true
+      }
+
+      // Fallback: if obligation is created too late,
+      // schedule last alert even if it runs immediately
+
+      if (!hasAtleastOneTask) {
+        const milestoneDate = set(subDays(dueDate, 1), {
+          hours: 8,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        })
+
+        await payload.jobs.queue({
+          workflow: 'alertNotificationWorkflow',
+          waitUntil: milestoneDate,
+          input: {
+            obligationId: resp.id,
+          },
+        })
+      }
     } catch (error) {
-      console.error(`Error sending monthly notification to ${input.email}:`, error)
+      console.error('Error creating obligation or scheduling workflows:', error)
       throw error
     }
     return {

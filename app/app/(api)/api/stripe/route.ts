@@ -1,8 +1,5 @@
 import Stripe from "stripe";
-import {
-  activateSusbscribe,
-  createSubscribe,
-} from "../../../_functions/backend";
+import { createSubscribe } from "../../../_functions/backend";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
@@ -26,22 +23,25 @@ export async function POST(request: Request) {
     switch (event.type) {
       case "invoice.payment_succeeded": {
         const data = event.data.object;
-        console.log("Invoice payment succeeded:", data);
 
         if (!data.parent?.subscription_details?.metadata) {
           throw new Error("Missing subscribe metadata");
         }
 
-        console.log("METADATA", data.parent?.subscription_details?.metadata);
+        console.log("META", data.parent.subscription_details.metadata);
 
-        await createSubscribe(
-          data.parent.subscription_details.metadata.email,
-          data.parent.subscription_details.metadata.phone,
-          data.parent.subscription_details.metadata.phonePrefix,
-          JSON.parse(data.parent.subscription_details.metadata.activityGroups),
-          JSON.parse(data.parent.subscription_details.metadata.terms),
-          true
-        );
+        await createSubscribe({
+          email: data.parent.subscription_details.metadata.email,
+          phone: data.parent.subscription_details.metadata.phone,
+          phonePrefix: data.parent.subscription_details.metadata.phonePrefix,
+          activityGroups: JSON.parse(
+            data.parent.subscription_details.metadata.activityGroups
+          ),
+          terms: JSON.parse(data.parent.subscription_details.metadata.terms),
+          active: true,
+          promotionCode:
+            data.parent.subscription_details.metadata.promotionCode,
+        });
 
         const nameArray = data.customer_name?.split(" ") || [];
 

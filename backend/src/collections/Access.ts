@@ -19,7 +19,7 @@ export const Accesses: CollectionConfig = {
       hasMany: true,
     },
     {
-      name: 'monthlyNotifications',
+      name: 'monthlyNotification',
       type: 'relationship',
       relationTo: 'monthly-notifications',
       required: true,

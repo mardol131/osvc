@@ -18,5 +18,5 @@ export const Obligations: CollectionConfig = {
       return apiKeyAuth(apiKey)
     },
   },
-  fields: [...notificationFields],
+  fields: [...notificationFields, { name: 'date', type: 'date', required: true }],
 }

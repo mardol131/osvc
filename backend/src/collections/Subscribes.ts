@@ -54,12 +54,44 @@ export const Subscribes: CollectionConfig = {
       type: 'checkbox',
       label: 'Souhlasím s obchodními podmínkami a zpracováním osobních údajů',
       required: true,
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'active',
       type: 'checkbox',
       label: 'Aktivní předplatné',
       defaultValue: false,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'promotionCode',
+      type: 'text',
+      admin: {
+        readOnly: true,
+      },
     },
   ],
+  hooks: {
+    afterChange: [
+      async ({ doc, req: { payload }, operation }) => {
+        if (operation === 'create') {
+          await payload.jobs.queue({
+            workflow: 'subscriptionCreatedWorkflow',
+            input: {
+              promotionCode: doc.promotionCode,
+              email: doc.email,
+            },
+          })
+
+          console.log(`Activating subscribe for ${doc.email}`)
+        }
+
+        return doc
+      },
+    ],
+  },
 }
