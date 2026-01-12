@@ -16,6 +16,7 @@ export const createObligationWorkflow: WorkflowConfig<any> = {
         description: job.input.description,
         date: job.input.date,
         activityGroups: job.input.activityGroups,
+        monthlyNotificationId: job.input.monthlyNotificationId,
       },
     })
 
