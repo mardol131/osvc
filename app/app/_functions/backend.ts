@@ -60,6 +60,7 @@ export async function getCollection({
   collectionSlug,
   apiKey,
   query,
+  cache,
 }: {
   collectionSlug:
     | "activity-groups"
@@ -68,6 +69,7 @@ export async function getCollection({
     | "accesses";
   apiKey?: string;
   query?: string;
+  cache?: RequestCache;
 }) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}${
@@ -79,6 +81,7 @@ export async function getCollection({
         "Content-Type": "application/json",
         Authorization: apiKey ? `users API-Key ${apiKey}` : "",
       },
+      cache: cache,
     }
   );
 

@@ -6,6 +6,7 @@ export default async function Page() {
   try {
     const response = await getCollection({
       collectionSlug: "activity-groups",
+      cache: "no-store",
     });
     return <OrderPageClient activitiesGroups={response} />;
   } catch (error) {
