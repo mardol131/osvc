@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const variantClasses = {
   gold: "bg-gradient-to-r from-secondary to-colorTo text-white",
@@ -18,6 +19,7 @@ type Props = {
   variant?: keyof typeof variantClasses;
   className?: string;
   disabled?: boolean;
+  loading?: boolean;
 };
 
 export default function Button({
@@ -30,6 +32,7 @@ export default function Button({
   variant = "gold",
   className = "",
   disabled = false,
+  loading = false,
 }: Props) {
   const sizeClasses = {
     xs: "text-sm py-2 px-4",
@@ -44,27 +47,24 @@ export default function Button({
 
   const combinedClassName = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
 
-  if (href) {
-    return (
-      <Link
-        target={target}
-        href={href}
-        className={combinedClassName}
-        onClick={onClick}
-      >
-        {text}
-      </Link>
-    );
-  }
-
-  return (
+  const content = (
     <button
       disabled={disabled}
       onClick={onClick}
       className={combinedClassName}
       type={htmlType}
     >
-      {text}
+      {loading ? <AiOutlineLoading className="animate-spin text-2xl" /> : text}
     </button>
   );
+
+  if (href) {
+    return (
+      <Link target={target} href={href}>
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 }

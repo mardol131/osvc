@@ -8,11 +8,13 @@ import Button from "@/app/_components/atoms/Button";
 type Props = {
   selectedActivities: Array<{ name: string; price: number }>;
   onSubmit: (data: OrderFormData) => void;
+  isSubmitting?: boolean;
 };
 
 export default function OrderSummaryDesktop({
   selectedActivities,
   onSubmit,
+  isSubmitting = false,
 }: Props) {
   const [phonePrefix, setPhonePrefix] = useState("420");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -240,6 +242,7 @@ export default function OrderSummaryDesktop({
         text="Přejít k platbě"
         variant="gold"
         className="w-full"
+        loading={isSubmitting}
       />
     </form>
   );

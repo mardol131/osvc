@@ -16,6 +16,7 @@ type Props = {
   onSubmit: (data: OrderFormData) => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  isSubmitting?: boolean;
 };
 
 export default function OrderSummary({
@@ -23,6 +24,7 @@ export default function OrderSummary({
   onSubmit,
   isOpen,
   onOpenChange,
+  isSubmitting = false,
 }: Props) {
   return (
     <>
@@ -31,6 +33,7 @@ export default function OrderSummary({
         <OrderSummaryDesktop
           selectedActivities={selectedActivities}
           onSubmit={onSubmit}
+          isSubmitting={isSubmitting}
         />
       </div>
 
@@ -41,6 +44,7 @@ export default function OrderSummary({
           onSubmit={onSubmit}
           isOpen={isOpen}
           onOpenChange={onOpenChange}
+          isSubmitting={isSubmitting}
         />
       </div>
     </>

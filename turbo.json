@@ -5,9 +5,20 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
       "env": [
+        "DATABASE_URL",
+
+        "PAYLOAD_SECRET",
+
+        "CMS_API_KEY",
+
+        "NEXT_PUBLIC_WEBSITE_URL",
+        "WEBSITE_URL",
+
+        "SMSMANAGER_API_KEY",
+        "SMSMANAGER_API_URL",
+
         "NEXT_PUBLIC_PAYMENT_LINK",
         "NEXT_PUBLIC_SUB_ACCOUNT_LINK",
-        "NEXT_PUBLIC_WEBSITE_URL",
         "NEXT_PUBLIC_CMS_URL",
         "CMS_URL",
 
@@ -16,36 +27,14 @@
         "EMAIL_API_URL",
         "SMTP2GO_API_KEY",
 
+        "EMAIL_NOTIFICATIONS",
+        "EMAIL_INFO",
+
         "ECOMAIL_API_KEY",
+
         "STRIPE_KEY",
         "STRIPE_WEBHOOK_SECRET",
-
-        "CMS_SECRET",
-        "CMS_API_KEY",
-
-        "STRIPE_MAIN_SERVICE_PRICE_ID",
-
-        "STRIPE_IT_SERVICES_PRICE_ID",
-
-        "STRIPE_TRADING_PRICE_ID",
-
-        "STRIPE_HOSPITALITY_PRICE_ID",
-
-        "STRIPE_REAL_ESTATE_PRICE_ID",
-
-        "STRIPE_CONSULTING_PRICE_ID",
-
-        "STRIPE_MARKETING_PRICE_ID",
-
-        "STRIPE_EDUCATION_PRICE_ID",
-
-        "STRIPE_CULTURE_SPORT_PRICE_ID",
-
-        "DATABASE_URL",
-        "PAYLOAD_SECRET",
-
-        "SMSMANAGER_API_KEY",
-        "SMSMANAGER_API_URL"
+        "STRIPE_COUPON_ID"
       ]
     },
     "check-types": {

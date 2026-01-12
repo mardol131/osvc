@@ -10,6 +10,7 @@ type Props = {
   onSubmit: (data: OrderFormData) => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  isSubmitting?: boolean;
 };
 
 export default function OrderSummaryMobile({
@@ -17,6 +18,7 @@ export default function OrderSummaryMobile({
   onSubmit,
   isOpen,
   onOpenChange,
+  isSubmitting = false,
 }: Props) {
   const activitiesTotal = selectedActivities.reduce(
     (sum, activity) => sum + activity.price,
@@ -247,6 +249,7 @@ export default function OrderSummaryMobile({
               text="Přejít k platbě"
               htmlType="submit"
               className="w-full"
+              loading={isSubmitting}
             />
           </div>
         </div>

@@ -20,6 +20,7 @@ export default function OrderPageClient(props: Props) {
     props.activitiesGroups || []
   );
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Filtrování předmětů podnikání podle vyhledávání
 
@@ -40,6 +41,7 @@ export default function OrderPageClient(props: Props) {
   // Handler pro checkout
   const handleCheckout = async (formData: OrderFormData) => {
     // TODO: Implementovat přesměrování na platební bránu
+    setIsSubmitting(true);
 
     const generalGroup = props.activitiesGroups?.find(
       (ag) => ag.slug === "general"
@@ -86,6 +88,8 @@ export default function OrderPageClient(props: Props) {
     } catch (error) {
       console.error("Chyba při přesměrování na platební bránu:", error);
     }
+
+    setIsSubmitting(false);
   };
 
   // Smooth scroll na předměty podnikání
@@ -162,6 +166,7 @@ export default function OrderPageClient(props: Props) {
               onSubmit={handleCheckout}
               isOpen={isOrderSummaryOpen}
               onOpenChange={setIsOrderSummaryOpen}
+              isSubmitting={isSubmitting}
             />
           </div>
         </div>
