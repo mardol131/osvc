@@ -284,8 +284,8 @@ export interface MonthlyNotification {
     | 'Říjen'
     | 'Listopad'
     | 'Prosinec';
-  year: '2023' | '2024' | '2025' | '2026' | '2027' | '2028';
-  data?:
+  year: string;
+  notifications?:
     | {
         text: string;
         mobileText: string;
@@ -325,6 +325,7 @@ export interface Obligation {
   link?: string | null;
   activityGroups: (string | ActivityGroup)[];
   date: string;
+  monthlyNotificationId: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -629,7 +630,7 @@ export interface AlertsSelect<T extends boolean = true> {
 export interface MonthlyNotificationsSelect<T extends boolean = true> {
   month?: T;
   year?: T;
-  data?:
+  notifications?:
     | T
     | {
         text?: T;
@@ -667,6 +668,7 @@ export interface ObligationsSelect<T extends boolean = true> {
   link?: T;
   activityGroups?: T;
   date?: T;
+  monthlyNotificationId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -780,6 +782,7 @@ export interface TaskCreateObligation {
     activityGroups: {
       activityGroupId: string;
     }[];
+    monthlyNotificationId: string;
   };
   output?: unknown;
 }
@@ -817,6 +820,7 @@ export interface WorkflowCreateObligationWorkflow {
     activityGroups: {
       activityGroupId: string;
     }[];
+    monthlyNotificationId: string;
   };
 }
 /**

@@ -120,7 +120,7 @@ export default function Benefits({ benefitsData }: Props) {
                 <ul className="flex flex-col gap-4">
                   {benefitsData.audience.points.map((item) => {
                     return (
-                      <li className="flex items-start gap-3" key={item}>
+                      <li className="flex items-center gap-3" key={item}>
                         <span className="text-secondary text-2xl flex-shrink-0 mt-1">
                           ✓
                         </span>

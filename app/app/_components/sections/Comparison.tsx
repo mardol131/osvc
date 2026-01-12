@@ -177,7 +177,7 @@ export default function Comparison({}: Props) {
                     1 hod.
                   </div>
                   <p className="text-sm text-zinc-200 leading-relaxed">
-                    Ušetřený čas hledáním = okamžitý zisk
+                    Ušetřený čas hledáním to zaplatí okamžitě
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-300">

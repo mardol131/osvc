@@ -24,7 +24,7 @@ export type Notification = {
 };
 
 export type MonthlyNotification = {
-  data: Notification[];
+  notifications: Notification[];
   month?: string;
   year?: string;
 };
@@ -70,7 +70,7 @@ export default async function page({
 
   const customActivityGroups = access?.activityGroups;
 
-  const notificationsData = access?.monthlyNotification.data;
+  const notificationsData = access?.monthlyNotification.notifications;
 
   const customNotifications: CustomMessage[] = [];
 

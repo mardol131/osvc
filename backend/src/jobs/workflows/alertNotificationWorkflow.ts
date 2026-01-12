@@ -5,7 +5,7 @@ import {
 } from '@/functions/notifications'
 import { Obligation } from '@/payload-types'
 import { getQueueName } from '@/payload.config'
-import { differenceInDays } from 'date-fns/fp/differenceInDays'
+import { differenceInDays } from 'date-fns'
 import { WorkflowConfig } from 'payload'
 
 export const alertNotificationWorkflow: WorkflowConfig<any> = {
@@ -75,23 +75,23 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
               subscribe: {
                 equals: subscribe.id,
               },
+              monthlyNotification: {
+                equals: obligation.monthlyNotificationId,
+              },
             },
-            sort: '-createdAt',
             limit: 1,
           })
-          return { output: accesses.docs[0] || null }
+          return {
+            output: accesses.docs[0] || { success: false },
+          }
         },
       })
 
-      const obligationDate = new Date(obligation.date)
-      const now = new Date()
-
       const dayGap = differenceInDays(new Date(obligation.date), new Date())
-      const isTodayOrPast = obligationDate <= now
 
       let header: string = ''
 
-      if (isTodayOrPast && dayGap <= 0) {
+      if (dayGap <= 0) {
         header = 'Dnes je poslední den pro splnění povinnosti'
       } else {
         header = `Zbývá ${dayGap} ${dayGap === 1 ? 'den' : dayGap <= 4 ? 'dny' : 'dní'} pro splnění povinnosti`

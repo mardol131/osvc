@@ -18,6 +18,7 @@ export type CustomMessage = {
   heading: string
   mobileHeading?: string | null
   notifications: Notification[]
+  order?: number | null
 }
 
 const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -77,7 +78,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
       },
     })
 
-    const data = monthlyNotification.data
+    const data = monthlyNotification.notifications
 
     if (!data) {
       console.log('No notifications data found, skipping.')
@@ -99,6 +100,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
                 activityGroups: notification.activityGroups.map((group) => ({
                   activityGroupId: typeof group === 'string' ? group : group.id,
                 })),
+                monthlyNotificationId: monthlyNotification.id,
               },
             })
 
@@ -169,33 +171,31 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
             typeof ag === 'string' ? activityGroupsMap.get(ag) : activityGroupsMap.get(ag.id)
           if (!activityGroup) continue
 
-          if (typeof ag === 'string') {
-            customMessages.push({
-              heading: activityGroup.name,
-              mobileHeading: activityGroup.mobileName || activityGroup.name,
-              notifications:
-                data.filter((notification) =>
-                  notification.activityGroups?.some((group) =>
-                    typeof group === 'string'
-                      ? group === activityGroup.id
-                      : group.id === activityGroup.id,
-                  ),
-                ) || [],
-            })
+          const notifications = data.filter((notification) =>
+            notification.activityGroups?.some((group) =>
+              typeof group === 'string'
+                ? group === activityGroup.id
+                : group.id === activityGroup.id,
+            ),
+          )
 
-            continue
-          }
           customMessages.push({
-            heading: ag.name,
-            mobileHeading: ag.mobileName || ag.name,
-            notifications:
-              data.filter((notification) =>
-                notification.activityGroups?.some((group) =>
-                  typeof group === 'string' ? group === ag.id : group.id === ag.id,
-                ),
-              ) || [],
+            heading: activityGroup.name,
+            mobileHeading: activityGroup.mobileName || activityGroup.name,
+            order: activityGroup.order,
+            notifications,
           })
         }
+
+        customMessages.sort((a, b) => {
+          const orderA = a.order || 0
+          const orderB = b.order || 0
+
+          // Položky s order: 1 jsou vždy první
+          if (orderA === 1 && orderB !== 1) return -1
+          if (orderB === 1 && orderA !== 1) return 1
+          return (b.notifications.length || 0) - (a.notifications.length || 0)
+        })
 
         const emailBody = createGeneralNotificationEmail({
           messages: customMessages,
@@ -204,7 +204,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
         })
 
         const smsBody = createGeneralNotificationSms({
-          messages: customMessages,
+          messages: customMessages.filter((msg) => msg.notifications.length > 0),
           accessId: accessResponse.accessId,
           dateLabel: `${monthlyNotification.month} ${monthlyNotification.year}`,
         })

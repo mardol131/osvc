@@ -1,12 +1,7 @@
 import { set, subDays } from 'date-fns'
 import { Field, TaskConfig } from 'payload'
 
-const daysMatrix = [
-  { substractDays: 21 },
-  { substractDays: 14 },
-  { substractDays: 7 },
-  { substractDays: 1 },
-]
+const daysMatrix = [{ substractDays: 7 }, { substractDays: 2 }, { substractDays: 0 }]
 
 export const createObligationInputSchema: Field[] = [
   {
@@ -42,6 +37,11 @@ export const createObligationInputSchema: Field[] = [
       },
     ],
   },
+  {
+    name: 'monthlyNotificationId',
+    type: 'text',
+    required: true,
+  },
 ]
 
 export const createObligationTask: TaskConfig<any> = {
@@ -61,53 +61,55 @@ export const createObligationTask: TaskConfig<any> = {
           activityGroups: input.activityGroups.map(
             (ag: { activityGroupId: string }) => ag.activityGroupId,
           ),
+          monthlyNotificationId: input.monthlyNotificationId,
         },
       })
 
       const dueDate = new Date(input.date)
       const now = new Date()
-      let hasAtleastOneTask = false
 
-      for (const { substractDays } of daysMatrix) {
-        const milestoneDate = set(subDays(dueDate, substractDays), {
-          hours: 8,
-          minutes: 0,
-          seconds: 0,
-          milliseconds: 0,
-        })
+      const dueDateOnly = set(dueDate, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 })
+      const nowDateOnly = set(now, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 })
 
-        if (milestoneDate <= now) continue
-        if (milestoneDate >= dueDate) continue
-
+      if (dueDateOnly <= nowDateOnly) {
+        console.log(
+          `For obligation with ID ${resp.id} is due date ${dueDate.toISOString()} is today or in the past, scheduling alert notification workflow immediately.`,
+        )
         await payload.jobs.queue({
           workflow: 'alertNotificationWorkflow',
-          waitUntil: milestoneDate,
+          waitUntil: now,
           input: {
             obligationId: resp.id,
           },
         })
+      } else {
+        for (const { substractDays } of daysMatrix) {
+          const milestoneDate = set(subDays(dueDate, substractDays), {
+            hours: 8,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+          })
 
-        hasAtleastOneTask = true
-      }
+          if (milestoneDate <= now || milestoneDate > dueDate) {
+            console.log(
+              `Skipping scheduling alert notification workflow for obligation ID ${resp.id} at ${milestoneDate.toISOString()} as the date is in the past or after due date.`,
+            )
+            continue
+          }
 
-      // Fallback: if obligation is created too late,
-      // schedule last alert even if it runs immediately
+          await payload.jobs.queue({
+            workflow: 'alertNotificationWorkflow',
+            waitUntil: milestoneDate,
+            input: {
+              obligationId: resp.id,
+            },
+          })
 
-      if (!hasAtleastOneTask) {
-        const milestoneDate = set(subDays(dueDate, 1), {
-          hours: 8,
-          minutes: 0,
-          seconds: 0,
-          milliseconds: 0,
-        })
-
-        await payload.jobs.queue({
-          workflow: 'alertNotificationWorkflow',
-          waitUntil: milestoneDate,
-          input: {
-            obligationId: resp.id,
-          },
-        })
+          console.log(
+            `Scheduled alert notification workflow for obligation ID ${resp.id} at ${milestoneDate.toISOString()}`,
+          )
+        }
       }
     } catch (error) {
       console.error('Error creating obligation or scheduling workflows:', error)

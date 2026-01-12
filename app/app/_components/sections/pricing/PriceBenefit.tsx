@@ -25,7 +25,7 @@ export function UpsellBenefit({ text, badge }: UpsellBenefitProps) {
   return (
     <div className="mt-4 p-5 rounded-xl bg-gradient-to-br from-secondary/10 via-secondary/5 to-transparent border-2 border-secondary/30 hover:border-secondary/50 transition-all duration-300">
       {badge && (
-        <span className="inline-block px-3 py-1 text-xs font-bold text-white bg-secondary rounded-md mb-3 uppercase">
+        <span className="inline-block px-3 py-1 text-xs text-primary bg-white rounded-md mb-3 uppercase">
           {badge}
         </span>
       )}
@@ -36,8 +36,9 @@ export function UpsellBenefit({ text, badge }: UpsellBenefitProps) {
         <div className="flex-1">
           <p className="text-zinc-50 text-base leading-relaxed">{text}</p>
           <p className="text-zinc-400 text-sm mt-2">
-            Sledování povinností specifických pro váš obor (IT služby,
-            marketing, obchodní činnost, výroba a další).{" "}
+            Sledování povinností specifických pro váš obor (IT služby, marketing
+            a další).
+            <br />
             <span className="text-white">Lze přidat v průběhu platby.</span>
           </p>
         </div>
@@ -50,11 +51,10 @@ export const BenefitsPoints = (
   <>
     <PriceBenefit text="Vše důležité hlídáme za Vás" />
     <PriceBenefit text="Připomínky e-mailem i SMS" />
-    <PriceBenefit text="Měsíční přehledy změn" />
-    <PriceBenefit text="Odkazy na formuláře a oficiální zdroje" />
-    <PriceBenefit text="Sdílený kalendář s důležitými termíny" />
+    <PriceBenefit text="Měsíční přehledy změn." />
+    <PriceBenefit text="Odkazy na formuláře a oficiální zdroje." />
     <UpsellBenefit
-      text="Sledování specifického předmětu podnikání"
+      text="Nabízíme i sledování povinností specifických pro různé obory podnikání."
       badge="Chcete být konkrétní?"
     />
   </>

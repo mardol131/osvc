@@ -9,7 +9,6 @@ type Props = {};
 export default function HeroButtons({}: Props) {
   return (
     <>
-      {" "}
       <Button
         variant="gold"
         text={`Koupit za ${servicePrice} Kč na rok`}

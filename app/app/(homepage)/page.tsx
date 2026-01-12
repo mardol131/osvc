@@ -25,7 +25,7 @@ export default function Home() {
 
       <Benefits benefitsData={benefitsData} />
       <PricingTextAndBubble
-        text=" Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,
+        text="Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,
               když se něco změní. Už žádné pokuty ani stres z neznámých
               povinností."
         heading={
@@ -34,7 +34,7 @@ export default function Home() {
             <br /> Celý rok ochrany.
           </>
         }
-        subheading="Ceník"
+        subheading="Kolik to stojí"
         direction="horizontal"
       />
       <SMS />

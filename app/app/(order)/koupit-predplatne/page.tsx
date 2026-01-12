@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import OrderPageClient from "./_components/OrderPageClient";
 import { getCollection } from "@/app/_functions/backend";
 
@@ -8,6 +9,6 @@ export default async function Page() {
     });
     return <OrderPageClient activitiesGroups={response} />;
   } catch (error) {
-    return <OrderPageClient activitiesGroups={[]} />;
+    return notFound();
   }
 }

@@ -52,13 +52,17 @@ export default function Hero() {
         </div>
 
         {/* Social proof */}
-        <NumberOfClients />
+        {/* <NumberOfClients /> */}
 
         {/* Trust indicators */}
         <div className="flex flex-wrap justify-center gap-6 mt-6 text-sm text-textP">
           <div className="flex items-center gap-2">
             <span className="text-secondary text-lg">✓</span>
             <span>Okamžitý přístup</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-secondary text-lg">✓</span>
+            <span>Podstatné informace</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-secondary text-lg">✓</span>

@@ -30,13 +30,12 @@ export default function About() {
           </p>
           <p>
             <span className="text-xl text-primary">
-              Pokud něco nestihnete nebo nevíte, čeká vás pokuta v řádu tisíců
-              až statisíců korun.
+              Pokud něco nestihnete nebo nevíte, můžeš vás čekat pokuta i v
+              řádech desetitisíců korun.
             </span>{" "}
             Ne proto, že byste chtěli něco obejít, ale protože vám to prostě
             nikdo nepřipomněl. Žádný úřad vám nenapíše: „Pozor, máte odevzdat
-            přehled, zbývá 5 dní.“ Už je jedno, jestli jde jen o cílenou
-            neschopnost, nebo o záměr směřující k vybírání peněz.
+            přehled, zbývá 5 dní.“
           </p>
         </div>
         <h5>A tady začínáme my...</h5>
@@ -45,16 +44,11 @@ export default function About() {
           <p>
             <span className="text-xl text-primary">
               {" "}
-              Tento systém už se nám nelíbí hodně dlouho. Rozhodli jsme se proto
-              založit jednoduchou službu, která hlídá zákonné povinnosti za Vás.
+              Státní systém už se nám nelíbí hodně dlouho. Chtěli jsme proto
+              nabídnout službu, která hlídá zákonné povinnosti za Vás.
             </span>{" "}
             Sledování změn, připomínky termínů, upozornění e-mailem i SMS. Žádné
-            zbytečné úřadování, žádné nepodstatné informace. Jen klid, že na nic
-            nezapomenete a že nebudete muset platit zbytečné pokuty.
-          </p>
-          <p className="text-xl text-tertiary">
-            Tenhle projekt vznikl proto, že stát selhává v úplném základu -
-            srozumitelně informovat občany.
+            zbytečné úřadování, žádné nepodstatné informace.
           </p>
         </div>
       </div>

@@ -20,7 +20,9 @@ export const GeneralNotificationEmail = ({}: NotionMagicLinkEmailProps) => (
     <Body style={main}>
       <Preview>Měsíční přehled změn</Preview>
       <Container style={container}>
-        <Heading style={h1}>OSVČ365: Měsíční přehled změn</Heading>
+        <Heading style={h1}>
+          OSVČ365: Měsíční přehled změn na MONTH YEAR
+        </Heading>
 
         <Text style={{ ...text, marginBottom: "14px" }}>
           Níže Vám posíláme přehled změn pro následující měsíc.

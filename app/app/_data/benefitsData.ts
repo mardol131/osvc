@@ -14,7 +14,7 @@ export const benefitsData = {
     {
       icon: "email",
       title: "Měsíční přehledy změn",
-      text: "Žádný marketing, pouze praktické informace. Každý měsíc vám pošleme jasně vysvětlené shrnutí toho nejdůležitějšího pro OSVČ. Změny, nové povinnosti, tipy.",
+      text: "Žádný marketing, pouze praktické informace. Každý měsíc vám pošleme jasně vysvětlené shrnutí toho nejdůležitějšího pro OSVČ.",
     },
 
     {

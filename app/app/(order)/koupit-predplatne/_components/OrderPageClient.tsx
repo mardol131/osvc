@@ -96,6 +96,10 @@ export default function OrderPageClient(props: Props) {
     }
   };
 
+  const generalGroup = useMemo(() => {
+    return businessActivities.find((ag) => ag.slug === "general");
+  }, [businessActivities]);
+
   return (
     <SectionWrapper>
       <div className="max-w-wrapper flex flex-col items-center">
@@ -112,7 +116,7 @@ export default function OrderPageClient(props: Props) {
           {/* Levá strana - Formulář */}
           <div className="lg:col-span-2 space-y-6 md:space-y-8">
             {/* Box hlavní služby */}
-            <MainServiceBox />
+            {generalGroup && <MainServiceBox {...generalGroup} />}
 
             {/* Sekce přidání předmětů podnikání */}
             <div

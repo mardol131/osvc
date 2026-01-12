@@ -50,7 +50,7 @@ export default function SMS() {
                   Připomínka termínu
                 </p>
                 <p className="text-textP text-sm">
-                  &ldquo;Do 15 dnů je třeba podat daňové přiznání&rdquo;
+                  &ldquo;Nutné nahlášení ke koncesionářskému poplatku&rdquo;
                 </p>
               </div>
             </div>
@@ -62,8 +62,7 @@ export default function SMS() {
                   Změna legislativy
                 </p>
                 <p className="text-textP text-sm">
-                  &ldquo;Od příštího měsíce se mění sazby sociálního
-                  pojištění&rdquo;
+                  &ldquo;Změna příjmových hranic pro pásma paušální daně&rdquo;
                 </p>
               </div>
             </div>

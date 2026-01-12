@@ -4,7 +4,8 @@ import {
   createGeneralNotificationSms,
 } from '@/functions/notifications'
 import { ActivityGroup, Subscribe } from '@/payload-types'
-import type { CollectionConfig, Field } from 'payload'
+import { format } from 'date-fns'
+import type { CollectionConfig, Field, Option } from 'payload'
 
 export const notificationFields: Field[] = [
   { name: 'text', type: 'textarea', required: true },
@@ -18,6 +19,21 @@ export const notificationFields: Field[] = [
     hasMany: true,
     required: true,
   },
+]
+
+const monthsArray = [
+  'Leden',
+  'Únor',
+  'Březen',
+  'Duben',
+  'Květen',
+  'Červen',
+  'Červenec',
+  'Srpen',
+  'Září',
+  'Říjen',
+  'Listopad',
+  'Prosinec',
 ]
 
 export const MonthlyNotifications: CollectionConfig = {
@@ -35,47 +51,66 @@ export const MonthlyNotifications: CollectionConfig = {
   },
   fields: [
     {
-      name: 'month',
-      type: 'select',
-      options: [
-        { label: 'Leden', value: 'Leden' },
-        { label: 'Únor', value: 'Únor' },
-        { label: 'Březen', value: 'Březen' },
-        { label: 'Duben', value: 'Duben' },
-        { label: 'Květen', value: 'Květen' },
-        { label: 'Červen', value: 'Červen' },
-        { label: 'Červenec', value: 'Červenec' },
-        { label: 'Srpen', value: 'Srpen' },
-        { label: 'Září', value: 'Září' },
-        { label: 'Říjen', value: 'Říjen' },
-        { label: 'Listopad', value: 'Listopad' },
-        { label: 'Prosinec', value: 'Prosinec' },
-      ],
+      type: 'collapsible',
+      label: 'Měsíc a rok, na který notifikace cílí',
       admin: {
         position: 'sidebar',
+        initCollapsed: false,
       },
-      required: true,
-    },
-    {
-      name: 'year',
-      type: 'select',
-      required: true,
-      options: [
-        { label: '2023', value: '2023' },
-        { label: '2024', value: '2024' },
-        { label: '2025', value: '2025' },
-        { label: '2026', value: '2026' },
-        { label: '2027', value: '2027' },
-        { label: '2028', value: '2028' },
+      fields: [
+        {
+          name: 'month',
+          type: 'select',
+          options: [
+            { label: 'Leden', value: 'Leden' },
+            { label: 'Únor', value: 'Únor' },
+            { label: 'Březen', value: 'Březen' },
+            { label: 'Duben', value: 'Duben' },
+            { label: 'Květen', value: 'Květen' },
+            { label: 'Červen', value: 'Červen' },
+            { label: 'Červenec', value: 'Červenec' },
+            { label: 'Srpen', value: 'Srpen' },
+            { label: 'Září', value: 'Září' },
+            { label: 'Říjen', value: 'Říjen' },
+            { label: 'Listopad', value: 'Listopad' },
+            { label: 'Prosinec', value: 'Prosinec' },
+          ],
+          defaultValue: () => {
+            const monthIndex = new Date().getMonth()
+            if (monthIndex === 11) {
+              return monthsArray[0]
+            }
+            return monthsArray[monthIndex + 1]
+          },
+          admin: {
+            position: 'sidebar',
+          },
+          required: true,
+        },
+        {
+          name: 'year',
+          type: 'text',
+          required: true,
+          defaultValue: () => {
+            if (new Date().getMonth() === 11) {
+              return (new Date().getFullYear() + 1).toString()
+            }
+            return new Date().getFullYear().toString()
+          },
+          admin: {
+            position: 'sidebar',
+          },
+        },
       ],
-      admin: {
-        position: 'sidebar',
-      },
     },
     {
-      name: 'data',
+      name: 'notifications',
+      label: 'Notifikace',
       type: 'array',
-      fields: [...notificationFields, { name: 'date', type: 'date' }],
+      fields: [
+        ...notificationFields,
+        { name: 'date', type: 'date', label: 'Poslední možné datum pro vyplnění' },
+      ],
     },
   ],
   hooks: {

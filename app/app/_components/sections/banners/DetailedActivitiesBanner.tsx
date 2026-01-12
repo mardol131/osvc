@@ -20,7 +20,7 @@ export default function DetailedActivitiesBanner({}: Props) {
             {/* Obsah */}
             <div className="flex-1 text-center flex flex-col justify-center md:text-left">
               <h3 className="text-textLight mb-3 font-bebas">
-                Slevový kód pro známé
+                Pomožte i ostatním. Slevový kód za každý první nákup.
               </h3>
               <p className="text-lg text-zinc-300 leading-relaxed">
                 Po zakoupení předplatného obdržíte do emailu{" "}

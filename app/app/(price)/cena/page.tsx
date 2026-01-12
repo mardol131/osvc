@@ -5,6 +5,8 @@ import HeroMidAlign from "../../_components/sections/hero/HeroMidAlign";
 import PricingTextAndBubble from "../../_components/sections/pricing/PricingTextAndBubble";
 import HeroButtons from "../_components/HeroButtons";
 import Comparison from "@/app/_components/sections/Comparison";
+import Button from "@/app/_components/atoms/Button";
+import { servicePrice } from "@/app/_data/pricing";
 
 export default function page() {
   return (
@@ -17,10 +19,20 @@ export default function page() {
           buttonsColumns: 1,
           buttons: (
             <>
-              <HeroButtons />
+              <Button
+                variant="gold"
+                text={`Koupit za ${servicePrice} Kč na rok`}
+                size="md"
+                href={"/koupit-predplatne"}
+              />
+              <Button
+                text="Jak to funguje"
+                variant="black"
+                size="md"
+                href="/#benefitsSection"
+              />
             </>
           ),
-          socialProof: <NumberOfClients />,
         }}
       />
       <PricingTextAndBubble
