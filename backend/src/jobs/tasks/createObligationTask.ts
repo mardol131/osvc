@@ -1,7 +1,7 @@
 import { set, subDays } from 'date-fns'
 import { Field, TaskConfig } from 'payload'
 
-const daysMatrix = [{ substractDays: 7 }, { substractDays: 2 }, { substractDays: 0 }]
+const daysMatrix = [{ substractDays: 5 }, { substractDays: 0 }]
 
 export const createObligationInputSchema: Field[] = [
   {
