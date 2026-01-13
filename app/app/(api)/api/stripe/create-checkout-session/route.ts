@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       max_redemptions: 1,
       promotion: {
         type: "coupon",
-        coupon: process.env.STRIPE_COUPON_ID,
+        coupon: process.env.STRIPE_GIFT_COUPON_ID,
       },
     });
 

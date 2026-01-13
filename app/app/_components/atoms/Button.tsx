@@ -51,7 +51,7 @@ export default function Button({
     <button
       disabled={disabled}
       onClick={onClick}
-      className={combinedClassName}
+      className={!href ? combinedClassName : "cursor-pointer"}
       type={htmlType}
     >
       {loading ? <AiOutlineLoading className="animate-spin text-2xl" /> : text}
@@ -60,7 +60,7 @@ export default function Button({
 
   if (href) {
     return (
-      <Link target={target} href={href}>
+      <Link className={combinedClassName} target={target} href={href}>
         {content}
       </Link>
     );

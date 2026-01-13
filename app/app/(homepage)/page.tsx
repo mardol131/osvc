@@ -22,7 +22,9 @@ export default function Home() {
         }}
       /> */}
       <Fines />
-
+      <div className="mt-20">
+        <DetailedActivitiesBanner />
+      </div>
       <Benefits benefitsData={benefitsData} />
       <PricingTextAndBubble
         text="Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,
@@ -40,9 +42,6 @@ export default function Home() {
       <SMS />
 
       <Comparison />
-      <div className="mt-20">
-        <DetailedActivitiesBanner />
-      </div>
 
       <About />
       <Faq />

@@ -34,7 +34,7 @@
 
         "STRIPE_KEY",
         "STRIPE_WEBHOOK_SECRET",
-        "STRIPE_COUPON_ID"
+        "STRIPE_GIFT_COUPON_ID"
       ]
     },
     "check-types": {
