@@ -8,6 +8,7 @@ export default async function Page() {
       collectionSlug: "activity-groups",
       cache: "no-store",
     });
+
     return <OrderPageClient activitiesGroups={response} />;
   } catch (error) {
     return notFound();

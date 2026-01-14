@@ -15,14 +15,12 @@ export default function DetailedActivitiesBanner({}: Props) {
 
             {/* Obsah */}
             <div className="flex-1 text-center md:text-left">
-              <h3 className="text-3xl md:text-4xl text-primary mb-4 font-bold">
+              <h3 className="text-3xl md:text-4xl text-primary mb-4">
                 Pomožte i ostatním. Slevový kód za každý první nákup.
               </h3>
               <p className="text-xl text-textP leading-relaxed">
                 Po zakoupení předplatného obdržíte do emailu{" "}
-                <span className="font-bold text-secondary text-2xl">
-                  10% slevový kód
-                </span>
+                <span className="text-secondary text-2xl">10% slevový kód</span>
                 , který můžete předat přátelům, rodině nebo kolegům.
               </p>
             </div>
