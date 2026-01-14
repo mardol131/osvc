@@ -74,6 +74,14 @@ export const Subscribes: CollectionConfig = {
         readOnly: true,
       },
     },
+    {
+      name: 'stripeSubscribeId',
+      type: 'text',
+      admin: {
+        readOnly: true,
+      },
+      required: true,
+    },
   ],
   hooks: {
     afterChange: [
@@ -86,8 +94,6 @@ export const Subscribes: CollectionConfig = {
               email: doc.email,
             },
           })
-
-          console.log(`Activating subscribe for ${doc.email}`)
         }
 
         return doc

@@ -245,6 +245,7 @@ export interface Subscribe {
   terms: boolean;
   active?: boolean | null;
   promotionCode?: string | null;
+  stripeSubscribeId: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -604,6 +605,7 @@ export interface SubscribesSelect<T extends boolean = true> {
   terms?: T;
   active?: T;
   promotionCode?: T;
+  stripeSubscribeId?: T;
   updatedAt?: T;
   createdAt?: T;
 }

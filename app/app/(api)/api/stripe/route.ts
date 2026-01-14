@@ -30,6 +30,11 @@ export async function POST(request: Request) {
 
         console.log("META", data.parent.subscription_details.metadata);
 
+        const stripeSubscribeId =
+          typeof data.parent.subscription_details.subscription === "string"
+            ? data.parent.subscription_details.subscription
+            : data.parent.subscription_details.subscription.id;
+
         await createSubscribe({
           email: data.parent.subscription_details.metadata.email,
           phone: data.parent.subscription_details.metadata.phone,
@@ -41,6 +46,7 @@ export async function POST(request: Request) {
           active: true,
           promotionCode:
             data.parent.subscription_details.metadata.promotionCode,
+          stripeSubscribeId: stripeSubscribeId,
         });
 
         const nameArray = data.customer_name?.split(" ") || [];

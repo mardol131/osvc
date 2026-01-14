@@ -25,7 +25,7 @@ export const subscriptionCreatedWorkflow: WorkflowConfig<any> = {
     await tasks.sendEmail('send-confirmation-email', {
       input: {
         email: job.input.email,
-        subject: 'Subscription Confirmation',
+        subject: 'Potvrzení aktivace předplatného',
         body: emailBody,
       },
     })

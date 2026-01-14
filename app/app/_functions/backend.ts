@@ -24,6 +24,7 @@ export async function createSubscribe({
   terms,
   active,
   promotionCode,
+  stripeSubscribeId,
 }: {
   email: string;
   phone: string;
@@ -32,6 +33,7 @@ export async function createSubscribe({
   terms: boolean;
   active?: boolean;
   promotionCode?: string;
+  stripeSubscribeId: string;
 }) {
   const response = await fetch(`${process.env.CMS_URL}/api/subscribes`, {
     method: "POST",
@@ -47,6 +49,7 @@ export async function createSubscribe({
       terms: terms ? "true" : "false",
       active: active ? "true" : "false",
       promotionCode: promotionCode ? promotionCode : undefined,
+      stripeSubscribeId: stripeSubscribeId,
     }),
   });
 
