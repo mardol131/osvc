@@ -22,6 +22,7 @@ export async function createSubscribe({
   phonePrefix,
   activityGroups,
   terms,
+  marketing,
   active,
   promotionCode,
   stripeSubscribeId,
@@ -32,6 +33,7 @@ export async function createSubscribe({
   phonePrefix: string;
   activityGroups: string[];
   terms: boolean;
+  marketing?: boolean;
   active?: boolean;
   promotionCode?: string;
   stripeSubscribeId: string;
@@ -49,6 +51,7 @@ export async function createSubscribe({
       phonePrefix: phonePrefix,
       activityGroups: activityGroups,
       terms: terms ? "true" : "false",
+      marketing: marketing ? "true" : "false",
       active: active ? "true" : "false",
       promotionCode: promotionCode ? promotionCode : undefined,
       stripeSubscribeId: stripeSubscribeId,

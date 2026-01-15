@@ -36,12 +36,12 @@ export const Subscribes: CollectionConfig = {
     {
       name: 'phone',
       type: 'text',
-      required: false,
+      required: true,
     },
     {
       name: 'phonePrefix',
       type: 'text',
-      required: false,
+      required: true,
     },
     {
       name: 'activityGroups',
@@ -55,6 +55,15 @@ export const Subscribes: CollectionConfig = {
       type: 'checkbox',
       label: 'Souhlasím s obchodními podmínkami a zpracováním osobních údajů',
       required: true,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'marketing',
+      type: 'checkbox',
+      label: 'Souhlas s marketingem',
+      required: false,
       admin: {
         readOnly: true,
       },
@@ -109,6 +118,13 @@ export const Subscribes: CollectionConfig = {
             input: {
               promotionCode: doc.promotionCode,
               email: doc.email,
+            },
+          })
+
+          await payload.jobs.queue({
+            workflow: 'addMarketingContactWorkflow',
+            input: {
+              subscriptionId: doc.id,
             },
           })
         }

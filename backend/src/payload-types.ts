@@ -123,7 +123,7 @@ export interface Config {
       createObligationWorkflow: WorkflowCreateObligationWorkflow;
       alertNotificationWorkflow: WorkflowAlertNotificationWorkflow;
       subscriptionCreatedWorkflow: WorkflowSubscriptionCreatedWorkflow;
-      checkSubscriptionValidityWorkflow: WorkflowCheckSubscriptionValidityWorkflow;
+      addMarketingContactWorkflow: WorkflowAddMarketingContactWorkflow;
     };
   };
 }
@@ -240,10 +240,11 @@ export interface ActivityGroup {
 export interface Subscribe {
   id: string;
   email: string;
-  phone?: string | null;
-  phonePrefix?: string | null;
+  phone: string;
+  phonePrefix: string;
   activityGroups: (string | ActivityGroup)[];
   terms: boolean;
+  marketing?: boolean | null;
   active?: boolean | null;
   promotionCode?: string | null;
   stripeSubscribeId: string;
@@ -440,7 +441,7 @@ export interface PayloadJob {
         | 'createObligationWorkflow'
         | 'alertNotificationWorkflow'
         | 'subscriptionCreatedWorkflow'
-        | 'checkSubscriptionValidityWorkflow'
+        | 'addMarketingContactWorkflow'
       )
     | null;
   taskSlug?: ('inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord') | null;
@@ -606,6 +607,7 @@ export interface SubscribesSelect<T extends boolean = true> {
   phonePrefix?: T;
   activityGroups?: T;
   terms?: T;
+  marketing?: T;
   active?: T;
   promotionCode?: T;
   stripeSubscribeId?: T;
@@ -850,9 +852,9 @@ export interface WorkflowSubscriptionCreatedWorkflow {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "WorkflowCheckSubscriptionValidityWorkflow".
+ * via the `definition` "WorkflowAddMarketingContactWorkflow".
  */
-export interface WorkflowCheckSubscriptionValidityWorkflow {
+export interface WorkflowAddMarketingContactWorkflow {
   input: {
     subscriptionId: string;
   };

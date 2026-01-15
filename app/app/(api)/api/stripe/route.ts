@@ -49,6 +49,8 @@ export async function POST(request: Request) {
           subscriptionId
         );
 
+        console.log("Subscription metadata:", subscription.metadata);
+
         const customer = !subscription.customer
           ? undefined
           : typeof subscription.customer === "string"
@@ -62,6 +64,7 @@ export async function POST(request: Request) {
           activityGroups: JSON.parse(subscription.metadata.activityGroups),
           terms: JSON.parse(subscription.metadata.terms),
           active: true,
+          marketing: JSON.parse(subscription.metadata.marketing),
           promotionCode: subscription.metadata.promotionCode,
           stripeSubscribeId: subscription.id,
           customerId: customer,

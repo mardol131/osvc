@@ -8,7 +8,8 @@ export type OrderFormData = {
   email: string;
   phone: string;
   phonePrefix: string;
-  terms?: boolean;
+  terms: boolean;
+  marketing?: boolean;
 };
 
 type Props = {

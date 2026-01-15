@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import logo from "@/public/logo-osvc.png";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function MobileHeader() {
   const [toggle, setToggle] = useState<boolean>(false);
@@ -32,13 +33,15 @@ export default function MobileHeader() {
     <header className="lg:hidden bg-white/80 backdrop-blur-xl flex items-center justify-center md:px-10 px-4 py-4 sticky top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
       <div className="max-w-wrapper w-full flex flex-col">
         <div className="w-full flex justify-between items-center">
-          <Image
-            src={logo}
-            width={100}
-            height={100}
-            alt="logo"
-            className="h-12 w-auto"
-          />
+          <Link href={"/"}>
+            <Image
+              src={logo}
+              width={100}
+              height={100}
+              alt="logo"
+              className="h-12 w-auto"
+            />
+          </Link>
           <button
             onClick={(e) => {
               e.stopPropagation();

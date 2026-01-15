@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { servicePrice } from "@/app/_data/pricing";
 import { OrderFormData } from "./OrderSummary";
 import Button from "@/app/_components/atoms/Button";
+import CustomCheckbox from "@/app/_components/atoms/CustomCheckbox";
 
 type Props = {
   selectedActivities: Array<{ name: string; price: number }>;
@@ -20,6 +21,9 @@ export default function OrderSummaryMobile({
   onOpenChange,
   isSubmitting = false,
 }: Props) {
+  const [termsChecked, setTermsChecked] = React.useState(false);
+  const [marketingChecked, setMarketingChecked] = React.useState(false);
+
   const activitiesTotal = selectedActivities.reduce(
     (sum, activity) => sum + activity.price,
     0
@@ -35,6 +39,7 @@ export default function OrderSummaryMobile({
       phone: formData.get("phone") as string,
       phonePrefix: formData.get("phonePrefix") as string,
       terms: formData.get("terms") === "true",
+      marketing: formData.get("marketing") === "true",
     });
   };
 
@@ -212,35 +217,44 @@ export default function OrderSummaryMobile({
           </div>
 
           {/* Checkbox pro obchodní podmínky a GDPR */}
-          <div className="mb-6">
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                name="terms"
-                value="true"
-                required
-                className="mt-0.5 w-5 h-5 rounded border-2 border-zinc-300 text-secondary focus:ring-2 focus:ring-secondary/20 cursor-pointer transition-all"
-              />
-              <span className="text-sm text-zinc-600 leading-relaxed">
-                Souhlasím s{" "}
-                <a
-                  href="/obchodni-podminky"
-                  target="_blank"
-                  className="text-secondary hover:underline font-medium"
-                >
-                  obchodními podmínkami
-                </a>{" "}
-                a{" "}
-                <a
-                  href="/gdpr"
-                  target="_blank"
-                  className="text-secondary hover:underline font-medium"
-                >
-                  zpracováním osobních údajů
-                </a>
-                .
-              </span>
-            </label>
+          <div className="mb-6 flex flex-col gap-3">
+            <CustomCheckbox
+              name="terms"
+              checked={termsChecked}
+              onChange={setTermsChecked}
+              required
+              label={
+                <span className="text-sm text-zinc-600 leading-relaxed">
+                  Souhlasím s{" "}
+                  <a
+                    href="/obchodni-podminky"
+                    target="_blank"
+                    className="text-secondary hover:underline font-medium"
+                  >
+                    obchodními podmínkami
+                  </a>{" "}
+                  a{" "}
+                  <a
+                    href="/gdpr"
+                    target="_blank"
+                    className="text-secondary hover:underline font-medium"
+                  >
+                    zpracováním osobních údajů
+                  </a>
+                  .
+                </span>
+              }
+            />
+            <CustomCheckbox
+              name="marketing"
+              checked={marketingChecked}
+              onChange={setMarketingChecked}
+              label={
+                <span className="text-sm text-zinc-600 leading-relaxed">
+                  Chci dostávat marketingovou komunikaci
+                </span>
+              }
+            />
           </div>
 
           <div className="bg-white w-full pt-4 rounded-b-2xl border-t pb-5 border-zinc-100">

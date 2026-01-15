@@ -54,6 +54,7 @@ export async function POST(request: Request) {
             body.activityGroups.map((item: { id: string }) => item.id)
           ),
           terms: body.terms,
+          marketing: body.marketing || false,
           promotionCode: promotionCode.code,
         },
       },

@@ -21,18 +21,16 @@ export default function EntitiesWithoutLegalAdvice({}: Props) {
         <div className="flex flex-col gap-8">
           {/* Vizuální graf */}
           <div className="relative">
-            {/* Hlavní bar */}
-            <div className="w-full h-24 md:h-32 flex rounded-xl overflow-hidden shadow-xl">
+            {/* Hlavní bar - desktop verze (horizontální) */}
+            <div className="hidden md:flex w-full h-32 rounded-xl overflow-hidden shadow-xl">
               {/* OSVČ bez účetního */}
               <div
                 className="h-full bg-gradient-to-r from-tertiary via-secondary to-tertiary flex items-center justify-center relative"
                 style={{ width: "38.4%" }}
               >
                 <div className="text-center">
-                  <h4 className="text-white font-semibold text-2xl md:text-4xl">
-                    770 000
-                  </h4>
-                  <p className="text-white/90 text-xs md:text-sm uppercase   hidden md:block">
+                  <p className="text-white font-semibold text-xl">770 000</p>
+                  <p className="text-white/90 text-sm uppercase">
                     bez účetního
                   </p>
                 </div>
@@ -44,12 +42,8 @@ export default function EntitiesWithoutLegalAdvice({}: Props) {
                 style={{ width: "16.4%" }}
               >
                 <div className="text-center">
-                  <p className="text-primary font-semibold text-sm md:text-xl">
-                    330 000
-                  </p>
-                  <p className="text-primary/70 text-[10px] md:text-xs uppercase hidden md:block">
-                    s účetním
-                  </p>
+                  <p className="text-primary font-semibold text-xl">330 000</p>
+                  <p className="text-primary/70 text-xs uppercase">s účetním</p>
                 </div>
               </div>
 
@@ -59,12 +53,46 @@ export default function EntitiesWithoutLegalAdvice({}: Props) {
                 style={{ width: "45.2%" }}
               >
                 <div className="text-center">
-                  <p className="text-zinc-600 font-semibold text-sm md:text-xl">
-                    900 000
+                  <p className="text-zinc-600 font-semibold text-xl">900 000</p>
+                  <p className="text-zinc-500 text-xs uppercase">neaktivních</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobilní verze (vertikální bary s různými délkami) */}
+            <div className="flex md:hidden flex-col gap-4">
+              {/* Neaktivních OSVČ - 900 000 (nejdelší - 100%) */}
+              <div
+                className="h-20 bg-zinc-200 flex items-center justify-center rounded-xl shadow-xl"
+                style={{ width: "100%" }}
+              >
+                <div className="text-center">
+                  <p className="text-zinc-600 font-semibold text-sm">900 000</p>
+                  <p className="text-zinc-500 text-xs uppercase">neaktivních</p>
+                </div>
+              </div>
+
+              {/* OSVČ bez účetního - 770 000 (střední - 85.6%) */}
+              <div
+                className="h-20 bg-gradient-to-r from-tertiary via-secondary to-tertiary flex items-center justify-center rounded-xl shadow-xl"
+                style={{ width: "85.6%" }}
+              >
+                <div className="text-center">
+                  <p className="text-white font-semibold text-sm">770 000</p>
+                  <p className="text-white/90 text-xs uppercase">
+                    bez účetního
                   </p>
-                  <p className="text-zinc-500 text-[10px] md:text-xs uppercase hidden md:block">
-                    neaktivních
-                  </p>
+                </div>
+              </div>
+
+              {/* Aktivních OSVČ s účetním - 330 000 (nejkratší - 36.7%) */}
+              <div
+                className="h-20 bg-gradient-to-r from-secondary/30 via-secondary/50 to-tertiary/30 flex items-center justify-center rounded-xl shadow-xl"
+                style={{ width: "36.7%" }}
+              >
+                <div className="text-center">
+                  <p className="text-primary font-semibold text-sm">330 000</p>
+                  <p className="text-primary/70 text-xs uppercase">s účetním</p>
                 </div>
               </div>
             </div>

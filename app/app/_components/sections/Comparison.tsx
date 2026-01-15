@@ -100,8 +100,8 @@ export default function Comparison({}: Props) {
             </div>
 
             {/* Se službou */}
-            <div className="group relative bg-gradient-to-br from-secondary/10 to-tertiary/10 p-8 rounded-xl border-2 border-secondary shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-tertiary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="group relative bg-gradient-to-br from-secondary/10 via-white to-tertiary/10 p-8 rounded-xl border-2 border-secondary/30 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-secondary/20 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
               <div className="relative z-10">
                 <div className="flex items-center justify-center gap-2 mb-6">

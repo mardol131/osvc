@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { servicePrice } from "@/app/_data/pricing";
 import { OrderFormData } from "./OrderSummary";
 import Button from "@/app/_components/atoms/Button";
+import CustomCheckbox from "@/app/_components/atoms/CustomCheckbox";
 
 type Props = {
   selectedActivities: Array<{ name: string; price: number }>;
@@ -18,6 +19,8 @@ export default function OrderSummaryDesktop({
 }: Props) {
   const [phonePrefix, setPhonePrefix] = useState("420");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [termsChecked, setTermsChecked] = useState(false);
+  const [marketingChecked, setMarketingChecked] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const activitiesTotal = selectedActivities.reduce(
@@ -35,6 +38,7 @@ export default function OrderSummaryDesktop({
       phone: formData.get("phone") as string,
       phonePrefix: phonePrefix,
       terms: formData.get("terms") === "true",
+      marketing: formData.get("marketing") === "true",
     });
   };
 
@@ -206,35 +210,40 @@ export default function OrderSummaryDesktop({
       </div>
 
       {/* Checkbox pro obchodní podmínky a GDPR */}
-      <div className="mb-6">
-        <label className="flex items-start gap-3 cursor-pointer group">
-          <input
-            value="true"
-            type="checkbox"
-            name="terms"
-            required
-            className="mt-0.5 w-5 h-5 flex-1 rounded border-2 border-zinc-300 text-secondary focus:ring-2 focus:ring-secondary/20 cursor-pointer transition-all"
-          />
-          <p className="text-base text-zinc-600 leading-relaxed">
-            Souhlasím s{" "}
-            <a
-              href="/obchodni-podminky.pdf"
-              target="_blank"
-              className="text-secondary hover:underline font-medium"
-            >
-              obchodními podmínkami
-            </a>{" "}
-            a{" "}
-            <a
-              href="/gdpr.pdf"
-              target="_blank"
-              className="text-secondary hover:underline font-medium"
-            >
-              zpracováním osobních údajů
-            </a>
-            .
-          </p>
-        </label>
+      <div className="mb-6 flex flex-col gap-3">
+        <CustomCheckbox
+          name="terms"
+          checked={termsChecked}
+          onChange={setTermsChecked}
+          required
+          label={
+            <>
+              Souhlasím s{" "}
+              <a
+                href="/obchodni-podminky.pdf"
+                target="_blank"
+                className="text-secondary hover:underline font-medium"
+              >
+                obchodními podmínkami
+              </a>{" "}
+              a{" "}
+              <a
+                href="/gdpr.pdf"
+                target="_blank"
+                className="text-secondary hover:underline font-medium"
+              >
+                zpracováním osobních údajů
+              </a>
+              .
+            </>
+          }
+        />
+        <CustomCheckbox
+          name="marketing"
+          checked={marketingChecked}
+          onChange={setMarketingChecked}
+          label="Chci dostávat marketingovou komunikaci"
+        />
       </div>
 
       <Button

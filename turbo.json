@@ -32,6 +32,9 @@
 
         "ECOMAIL_API_KEY",
 
+        "BREVO_API_KEY",
+        "BREVO_API_URL",
+
         "STRIPE_KEY",
         "STRIPE_WEBHOOK_SECRET",
         "STRIPE_GIFT_COUPON_ID"

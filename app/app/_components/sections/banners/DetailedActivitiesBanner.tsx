@@ -20,8 +20,8 @@ export default function DetailedActivitiesBanner({}: Props) {
               </h3>
               <p className="text-xl text-textP leading-relaxed">
                 Po zakoupení předplatného obdržíte do emailu{" "}
-                <span className="text-secondary text-2xl">10% slevový kód</span>
-                , který můžete předat přátelům, rodině nebo kolegům.
+                <span className="text-secondary">10% slevový kód</span>, který
+                můžete předat přátelům, rodině nebo kolegům.
               </p>
             </div>
           </div>
