@@ -58,7 +58,7 @@ export default buildConfig({
         queue: getQueueName('subscriptionCreatedQueue'),
       },
       {
-        cron: '* * * * *',
+        cron: '0 1 * * *',
         queue: getQueueName('addMarketingContactQueue'),
       },
     ],
