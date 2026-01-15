@@ -8,7 +8,7 @@ import Comparison from "@/app/_components/sections/Comparison";
 import Button from "@/app/_components/atoms/Button";
 import { servicePrice } from "@/app/_data/pricing";
 
-export default function page() {
+export default async function page() {
   return (
     <>
       <HeroMidAlign
