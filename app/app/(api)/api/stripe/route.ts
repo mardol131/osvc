@@ -1,5 +1,11 @@
 import Stripe from "stripe";
-import { createSubscribe } from "../../../_functions/backend";
+import {
+  createSubscribe,
+  getCollection,
+  getSingleRecord,
+  updateRecord,
+} from "../../../_functions/backend";
+import { get } from "http";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
@@ -21,54 +27,71 @@ export async function POST(request: Request) {
 
   try {
     switch (event.type) {
-      case "invoice.payment_succeeded": {
+      case "checkout.session.completed": {
         const data = event.data.object;
 
-        if (!data.parent?.subscription_details?.metadata) {
+        if (data.mode !== "subscription") break;
+        if (data.payment_status !== "paid") break;
+        if (!data.metadata) {
           throw new Error("Missing subscribe metadata");
         }
 
-        console.log("META", data.parent.subscription_details.metadata);
+        const subscriptionId =
+          typeof data.subscription === "string"
+            ? data.subscription
+            : data.subscription?.id;
 
-        const stripeSubscribeId =
-          typeof data.parent.subscription_details.subscription === "string"
-            ? data.parent.subscription_details.subscription
-            : data.parent.subscription_details.subscription.id;
+        if (!subscriptionId) {
+          throw new Error("Missing subscription ID");
+        }
 
-        await createSubscribe({
-          email: data.parent.subscription_details.metadata.email,
-          phone: data.parent.subscription_details.metadata.phone,
-          phonePrefix: data.parent.subscription_details.metadata.phonePrefix,
-          activityGroups: JSON.parse(
-            data.parent.subscription_details.metadata.activityGroups
-          ),
-          terms: JSON.parse(data.parent.subscription_details.metadata.terms),
-          active: true,
-          promotionCode:
-            data.parent.subscription_details.metadata.promotionCode,
-          stripeSubscribeId: stripeSubscribeId,
-        });
-
-        const nameArray = data.customer_name?.split(" ") || [];
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/ecomail/subscribe`!,
-          {
-            method: "POST",
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: nameArray[0],
-              surname: nameArray[nameArray.length - 1],
-              email: data.customer_email,
-              phone: data.customer_phone,
-            }),
-          }
+        const subscription = await stripe.subscriptions.retrieve(
+          subscriptionId
         );
 
-        await response.json();
+        const customer = !subscription.customer
+          ? undefined
+          : typeof subscription.customer === "string"
+          ? subscription.customer
+          : subscription.customer.id;
+
+        const subscriptionResponse = await createSubscribe({
+          email: subscription.metadata.email,
+          phone: subscription.metadata.phone,
+          phonePrefix: subscription.metadata.phonePrefix,
+          activityGroups: JSON.parse(subscription.metadata.activityGroups),
+          terms: JSON.parse(subscription.metadata.terms),
+          active: true,
+          promotionCode: subscription.metadata.promotionCode,
+          stripeSubscribeId: subscription.id,
+          customerId: customer,
+        });
+
+        await stripe.subscriptions.update(subscription.id, {
+          metadata: {
+            cmsSubscribeId: subscriptionResponse.id,
+          },
+        });
+
+        break;
+      }
+
+      case "customer.subscription.deleted": {
+        const data = event.data.object;
+
+        if (!data.metadata) {
+          throw new Error("Missing subscribe metadata");
+        }
+
+        await updateRecord({
+          collectionSlug: "subscribes",
+          recordId: data.metadata.cmsSubscribeId,
+          apiKey: process.env.CMS_API_KEY,
+          body: {
+            active: false,
+          },
+        });
+
         break;
       }
       default:

@@ -28,10 +28,15 @@ export default function Page() {
           {/* Hlavní nadpis */}
           <h1 className="text-4xl md:text-5xl  text-zinc-800 mb-4">
             Děkujeme za vaši objednávku!
+            <br />
+            Služba je teď aktivní.
           </h1>
 
           <p className="text-xl text-zinc-600 mb-8">
-            Vaše předplatné bylo úspěšně aktivováno
+            Pro správné fungování jděte prosím do emailové schránky a adresu, ze
+            které jsme vám poslali potvrzovací zprávu, zařaďte do běžné pošty,
+            případně zaškrtněte, že nejde o spam. Pokud email nevidíte, zkuste
+            ještě chvilku vyčkat, nebo se podívejte do složky spamu.
           </p>
 
           {/* Informační box */}

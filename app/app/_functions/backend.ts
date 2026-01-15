@@ -25,6 +25,7 @@ export async function createSubscribe({
   active,
   promotionCode,
   stripeSubscribeId,
+  customerId,
 }: {
   email: string;
   phone: string;
@@ -34,6 +35,7 @@ export async function createSubscribe({
   active?: boolean;
   promotionCode?: string;
   stripeSubscribeId: string;
+  customerId?: string;
 }) {
   const response = await fetch(`${process.env.CMS_URL}/api/subscribes`, {
     method: "POST",
@@ -50,13 +52,15 @@ export async function createSubscribe({
       active: active ? "true" : "false",
       promotionCode: promotionCode ? promotionCode : undefined,
       stripeSubscribeId: stripeSubscribeId,
+      customerId: customerId ? customerId : undefined,
     }),
   });
 
   if (!response.ok) {
     throw new Error(`Failed to create customer: ${response.statusText}`);
   }
-  return response.json();
+  const data = await response.json();
+  return data.doc;
 }
 
 export async function getCollection({
@@ -93,7 +97,8 @@ export async function getCollection({
       `Failed to fetch collection ${collectionSlug}: ${response.statusText}`
     );
   }
-  return response.json().then((data) => data.docs);
+  const data = await response.json();
+  return data.docs;
 }
 
 export async function getSingleRecord({
@@ -124,7 +129,39 @@ export async function getSingleRecord({
       `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`
     );
   }
-  return response.json();
+  const data = await response.json();
+  return data.doc;
+}
+
+export async function updateRecord({
+  collectionSlug,
+  recordId,
+  apiKey,
+  body,
+}: {
+  collectionSlug: "subscribes" | "monthly-notifications" | "accesses";
+  recordId: string;
+  apiKey?: string;
+  body: Record<string, any>;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`
+    );
+  }
+  const data = await response.json();
+  return data.doc;
 }
 
 export async function login(email: string, password: string) {
@@ -146,5 +183,6 @@ export async function login(email: string, password: string) {
   if (!response.ok) {
     throw new Error(`Login failed: ${response.statusText}`);
   }
-  return response.json();
+  const data = await response.json();
+  return data;
 }

@@ -21,6 +21,7 @@ import { alertNotificationWorkflow } from './jobs/workflows/alertNotificationWor
 import { createObligationWorkflow } from './jobs/workflows/createObligationWorkflow'
 import { monthlyNotificationsWorkflow } from './jobs/workflows/monthlyNotificationWorkflow'
 import { subscriptionCreatedWorkflow } from './jobs/workflows/subscriptionCreatedWorkflow'
+import { checkSubscriptionValidityWorkflow } from './jobs/workflows/checkSubscriptionValidityWorkflow'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -30,7 +31,8 @@ export const getQueueName = (
     | 'monthlyNotificationsQueue'
     | 'createObligationQueue'
     | 'alertNotificationsQueue'
-    | 'subscriptionCreatedQueue',
+    | 'subscriptionCreatedQueue'
+    | 'checkSubscriptionValidityQueue',
 ) => {
   return name
 }
@@ -62,6 +64,7 @@ export default buildConfig({
       createObligationWorkflow,
       alertNotificationWorkflow,
       subscriptionCreatedWorkflow,
+      checkSubscriptionValidityWorkflow,
     ],
   },
   admin: {

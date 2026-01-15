@@ -106,7 +106,9 @@ export default function Footer() {
 
           {/* Bottom bar */}
           <div className="flex md:flex-row flex-col md:justify-between items-center gap-4 text-zinc-400 text-sm">
-            <p>© 2025 OSVČ365. Všechna práva vyhrazena.</p>
+            <p>
+              © {new Date().getFullYear()} OSVČ365. Všechna práva vyhrazena.
+            </p>
             <p className="text-zinc-500">
               Pomáháme živnostníkům zvládat byrokracii
             </p>

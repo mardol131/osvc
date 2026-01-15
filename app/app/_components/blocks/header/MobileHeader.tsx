@@ -111,7 +111,7 @@ export default function MobileHeader() {
             </li>
             <li className="mt-4">
               <a
-                href={process.env.PAYMENT_LINK}
+                href="/koupit-predplatne"
                 className="block text-center shadow-lg text-base font-semibold py-3 px-6 bg-gradient-to-r from-secondary to-tertiary text-white rounded-xl font-oswald hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out"
               >
                 Koupit roční předplatné

@@ -123,6 +123,7 @@ export interface Config {
       createObligationWorkflow: WorkflowCreateObligationWorkflow;
       alertNotificationWorkflow: WorkflowAlertNotificationWorkflow;
       subscriptionCreatedWorkflow: WorkflowSubscriptionCreatedWorkflow;
+      checkSubscriptionValidityWorkflow: WorkflowCheckSubscriptionValidityWorkflow;
     };
   };
 }
@@ -246,6 +247,7 @@ export interface Subscribe {
   active?: boolean | null;
   promotionCode?: string | null;
   stripeSubscribeId: string;
+  customerId?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -438,6 +440,7 @@ export interface PayloadJob {
         | 'createObligationWorkflow'
         | 'alertNotificationWorkflow'
         | 'subscriptionCreatedWorkflow'
+        | 'checkSubscriptionValidityWorkflow'
       )
     | null;
   taskSlug?: ('inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord') | null;
@@ -606,6 +609,7 @@ export interface SubscribesSelect<T extends boolean = true> {
   active?: T;
   promotionCode?: T;
   stripeSubscribeId?: T;
+  customerId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -842,6 +846,15 @@ export interface WorkflowSubscriptionCreatedWorkflow {
   input: {
     promotionCode?: string | null;
     email: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WorkflowCheckSubscriptionValidityWorkflow".
+ */
+export interface WorkflowCheckSubscriptionValidityWorkflow {
+  input: {
+    subscriptionId: string;
   };
 }
 /**

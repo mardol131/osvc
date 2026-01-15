@@ -1,4 +1,5 @@
 import { apiKeyAuth } from '@/functions/ACL'
+import { addYears } from 'date-fns'
 import type { CollectionConfig } from 'payload'
 
 export const Subscribes: CollectionConfig = {
@@ -82,8 +83,24 @@ export const Subscribes: CollectionConfig = {
       },
       required: true,
     },
+    {
+      name: 'customerId',
+      type: 'text',
+      admin: {
+        readOnly: true,
+      },
+    },
   ],
   hooks: {
+    beforeChange: [
+      async ({ data, operation }) => {
+        if (operation === 'create') {
+          data.subscriptionPeriodEnd = addYears(new Date(), 1)
+        }
+
+        return data
+      },
+    ],
     afterChange: [
       async ({ doc, req: { payload }, operation }) => {
         if (operation === 'create') {
