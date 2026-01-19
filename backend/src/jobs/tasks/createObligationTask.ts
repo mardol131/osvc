@@ -68,12 +68,27 @@ export const createObligationTask: TaskConfig<any> = {
       const dueDate = new Date(input.date)
       const now = new Date()
 
-      const dueDateOnly = set(dueDate, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 })
-      const nowDateOnly = set(now, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 })
+      // Připravit všechny milestones a zjistit, které jsou v budoucnosti
+      const milestones = daysMatrix.map(({ substractDays }) => {
+        const milestoneDate = set(subDays(dueDate, substractDays), {
+          hours: 8,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        })
+        return {
+          date: milestoneDate,
+          substractDays,
+          isFuture: milestoneDate > now,
+        }
+      })
 
-      if (dueDateOnly <= nowDateOnly) {
+      const futureMilestones = milestones.filter((m) => m.isFuture)
+
+      // Pokud nejsou žádné budoucí milestones, vytvořit okamžitou notifikaci
+      if (futureMilestones.length === 0) {
         console.log(
-          `For obligation with ID ${resp.id} is due date ${dueDate.toISOString()} is today or in the past, scheduling alert notification workflow immediately.`,
+          `All milestones for obligation ID ${resp.id} are in the past, scheduling immediate notification.`,
         )
         await payload.jobs.queue({
           workflow: 'alertNotificationWorkflow',
@@ -82,32 +97,20 @@ export const createObligationTask: TaskConfig<any> = {
             obligationId: resp.id,
           },
         })
+        console.log(`Scheduled immediate alert notification workflow for obligation ID ${resp.id}`)
       } else {
-        for (const { substractDays } of daysMatrix) {
-          const milestoneDate = set(subDays(dueDate, substractDays), {
-            hours: 8,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          })
-
-          if (milestoneDate <= now || milestoneDate > dueDate) {
-            console.log(
-              `Skipping scheduling alert notification workflow for obligation ID ${resp.id} at ${milestoneDate.toISOString()} as the date is in the past or after due date.`,
-            )
-            continue
-          }
-
+        // Vytvořit notifikace jen pro budoucí milestones
+        for (const milestone of futureMilestones) {
           await payload.jobs.queue({
             workflow: 'alertNotificationWorkflow',
-            waitUntil: milestoneDate,
+            waitUntil: milestone.date,
             input: {
               obligationId: resp.id,
             },
           })
 
           console.log(
-            `Scheduled alert notification workflow for obligation ID ${resp.id} at ${milestoneDate.toISOString()}`,
+            `Scheduled alert notification workflow for obligation ID ${resp.id} at ${milestone.date.toISOString()} (${milestone.substractDays} days before due date)`,
           )
         }
       }

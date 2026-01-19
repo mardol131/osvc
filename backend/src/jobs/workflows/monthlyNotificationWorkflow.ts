@@ -52,10 +52,15 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
             active: { equals: true },
           },
         })
-
         return { output: subscribes.docs }
       },
     })
+
+    if (subscribes.length === 0) {
+      console.log('No active subscribes found, skipping.')
+      return
+    }
+    console.log(`Found ${subscribes.length} active subscribes.`)
 
     const monthlyNotification = await inlineTask('get-monthly-notification', {
       task: async ({ req: { payload } }) => {
@@ -63,6 +68,12 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
           collection: 'monthly-notifications',
           id: job.input.monthlyNotificationId,
         })
+
+        if (monthlyNotification) {
+          console.log(
+            `Monthly notification for ${monthlyNotification.month} ${monthlyNotification.year} retrieved.`,
+          )
+        }
         return { output: monthlyNotification }
       },
     })
@@ -74,6 +85,9 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
         })
 
         const activityGroupsMap = new Map(activityGroups.docs.map((g) => [g.id, g]))
+        if (activityGroups.docs.length > 0) {
+          console.log(`Fetched ${activityGroups.docs.length} activity groups.`)
+        }
         return { output: activityGroupsMap }
       },
     })

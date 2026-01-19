@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url'
 
 import { Accesses } from './collections/Access'
 import { ActivityGroups } from './collections/ActivityGroups'
-import { Alerts } from './collections/Alerts'
 import { Media } from './collections/Media'
 import { MonthlyNotifications } from './collections/MonthlyNotification'
 import { Obligations } from './collections/Obligations'
@@ -18,7 +17,6 @@ import { getRecordTask } from './jobs/tasks/getRecordTask'
 import { sendEmailTask } from './jobs/tasks/sendEmailTask'
 import { sendSmsTask } from './jobs/tasks/sendSmsTask'
 import { alertNotificationWorkflow } from './jobs/workflows/alertNotificationWorkflow'
-import { createObligationWorkflow } from './jobs/workflows/createObligationWorkflow'
 import { monthlyNotificationsWorkflow } from './jobs/workflows/monthlyNotificationWorkflow'
 import { subscriptionCreatedWorkflow } from './jobs/workflows/subscriptionCreatedWorkflow'
 import { addMarketingContactWorkflow } from './jobs/workflows/addMarketingContactWorkflow'
@@ -29,7 +27,6 @@ const dirname = path.dirname(filename)
 export const getQueueName = (
   name:
     | 'monthlyNotificationsQueue'
-    | 'createObligationQueue'
     | 'alertNotificationsQueue'
     | 'subscriptionCreatedQueue'
     | 'addMarketingContactQueue',
@@ -42,15 +39,11 @@ export default buildConfig({
     shouldAutoRun: () => true,
     autoRun: [
       {
-        cron: '* * * * *',
+        cron: '0 16 * * *',
         queue: getQueueName('monthlyNotificationsQueue'),
       },
       {
-        cron: '* * * * *',
-        queue: getQueueName('createObligationQueue'),
-      },
-      {
-        cron: '* * * * *',
+        cron: '30 16 * * *',
         queue: getQueueName('alertNotificationsQueue'),
       },
       {
@@ -58,14 +51,13 @@ export default buildConfig({
         queue: getQueueName('subscriptionCreatedQueue'),
       },
       {
-        cron: '0 1 * * *',
+        cron: '0 15 * * *',
         queue: getQueueName('addMarketingContactQueue'),
       },
     ],
     tasks: [sendEmailTask, sendSmsTask, createObligationTask, getRecordTask],
     workflows: [
       monthlyNotificationsWorkflow,
-      createObligationWorkflow,
       alertNotificationWorkflow,
       subscriptionCreatedWorkflow,
       addMarketingContactWorkflow,
@@ -82,7 +74,6 @@ export default buildConfig({
     Media,
     ActivityGroups,
     Subscribes,
-    Alerts,
     MonthlyNotifications,
     Accesses,
     Obligations,

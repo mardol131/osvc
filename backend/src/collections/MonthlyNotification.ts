@@ -4,7 +4,7 @@ import {
   createGeneralNotificationSms,
 } from '@/functions/notifications'
 import { ActivityGroup, Subscribe } from '@/payload-types'
-import { format } from 'date-fns'
+import { format, set, setDate } from 'date-fns'
 import type { CollectionConfig, Field, Option } from 'payload'
 
 export const notificationFields: Field[] = [
@@ -121,8 +121,17 @@ export const MonthlyNotifications: CollectionConfig = {
           return doc
         }
 
+        const waitUntil = set(new Date(), {
+          date: 20,
+          hours: 16,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        })
+
         await payload.jobs.queue({
           workflow: 'monthlyNotificationsWorkflow',
+          waitUntil: waitUntil,
           input: {
             monthlyNotificationId: doc.id,
           },

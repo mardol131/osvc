@@ -87,11 +87,11 @@ export default function Comparison({}: Props) {
                   />
                   <div className="border-t-2 border-zinc-200 pt-4 mt-6">
                     <div className="flex justify-between items-end">
-                      <span className="font-bold text-lg text-primary">
+                      <span className="font-semibold text-lg text-primary">
                         Náklady:
                       </span>
-                      <span className="text-2xl font-bold text-zinc-700">
-                        od 800 Kč Kč
+                      <span className="text-2xl font-semibold text-zinc-700">
+                        od 800 Kč
                       </span>
                     </div>
                   </div>
@@ -156,16 +156,14 @@ export default function Comparison({}: Props) {
               </h4>
               <p className="text-zinc-200 text-lg text-center mb-8 leading-relaxed">
                 Pokud vám služba pomůže{" "}
-                <strong className="text-secondary">
-                  vyhnout se jediné pokutě
-                </strong>{" "}
+                <span className="text-secondary">vyhnout se jediné pokutě</span>{" "}
                 nebo ušetří jen{" "}
-                <strong className="text-secondary">1 hodinu vašeho času</strong>
-                , už se vám zaplatí!
+                <span className="text-secondary">1 hodinu vašeho času</span>, už
+                se vám zaplatí!
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-300">
-                  <div className="text-4xl font-bold text-secondary mb-3">
+                  <div className="text-4xl font-semibold text-secondary mb-3">
                     1×
                   </div>
                   <p className="text-sm text-zinc-200 leading-relaxed">
@@ -173,7 +171,7 @@ export default function Comparison({}: Props) {
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-300">
-                  <div className="text-4xl font-bold text-secondary mb-3">
+                  <div className="text-4xl font-semibold text-secondary mb-3">
                     1 hod.
                   </div>
                   <p className="text-sm text-zinc-200 leading-relaxed">
@@ -181,7 +179,7 @@ export default function Comparison({}: Props) {
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-300">
-                  <div className="text-5xl font-bold text-secondary mb-3">
+                  <div className="text-5xl font-semibold text-secondary mb-3">
                     ∞
                   </div>
                   <p className="text-sm text-zinc-200 leading-relaxed">

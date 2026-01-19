@@ -101,15 +101,6 @@ export const Subscribes: CollectionConfig = {
     },
   ],
   hooks: {
-    beforeChange: [
-      async ({ data, operation }) => {
-        if (operation === 'create') {
-          data.subscriptionPeriodEnd = addYears(new Date(), 1)
-        }
-
-        return data
-      },
-    ],
     afterChange: [
       async ({ doc, req: { payload }, operation }) => {
         if (operation === 'create') {

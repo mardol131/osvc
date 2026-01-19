@@ -9,7 +9,7 @@ export default function ScrollToTopButton() {
       onClick={() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }}
-      className="p-1 fixed bottom-10 right-10 rounded-lg bg-primary flex items-center justify-center cursor-pointer hover:bg-secondary transition-all ease-in-out z-40"
+      className="p-1 fixed bottom-10 right-10  max-md:bottom-3 max-md:right-3 rounded-lg bg-primary flex items-center justify-center cursor-pointer hover:bg-secondary transition-all ease-in-out z-40"
     >
       <FaCaretSquareUp className="text-textLight text-3xl" />
     </div>

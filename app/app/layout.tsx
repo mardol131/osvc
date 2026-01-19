@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import "./_css/globals.css";
-import Header from "./_components/blocks/header/Header";
 import ScrollToTopButton from "./_components/atoms/ScrollToTopbutton";
 import Footer from "./_components/blocks/footer/Footer";
-import { Suspense } from "react";
-import Loading from "./loading";
+import Header from "./_components/blocks/header/Header";
+import "./_css/globals.css";
+import BuyButton from "./_components/atoms/BuyButton";
 
 export const metadata: Metadata = {
   title: "OSVČ365: Vy podnikáte, my hlídáme byrokracii.",

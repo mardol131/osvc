@@ -1,6 +1,8 @@
 import Image from "next/image";
 import React from "react";
 import sms from "@/public/SMS.png";
+import { MdNotifications, MdGavel, MdPayment } from "react-icons/md";
+import MessageCard from "@/app/_components/molecules/MessageCard";
 
 export default function SMS() {
   return (
@@ -43,41 +45,23 @@ export default function SMS() {
           <div className="flex flex-col gap-3 mt-4">
             <h5 className="text-primary mb-2">Co vám přijde:</h5>
 
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-zinc-200 shadow-sm">
-              <span className="text-secondary text-2xl flex-shrink-0">✓</span>
-              <div>
-                <p className="text-primary font-semibold text-sm mb-1">
-                  Připomínka termínu
-                </p>
-                <p className="text-textP text-sm">
-                  &ldquo;Nutné nahlášení ke koncesionářskému poplatku&rdquo;
-                </p>
-              </div>
-            </div>
+            <MessageCard
+              icon={MdNotifications}
+              heading="Připomínka termínu"
+              text="&ldquo;Nutné nahlášení ke koncesionářskému poplatku&rdquo;"
+            />
 
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-zinc-200 shadow-sm">
-              <span className="text-secondary text-2xl flex-shrink-0">✓</span>
-              <div>
-                <p className="text-primary font-semibold text-sm mb-1">
-                  Změna legislativy
-                </p>
-                <p className="text-textP text-sm">
-                  &ldquo;Změna příjmových hranic pro pásma paušální daně&rdquo;
-                </p>
-              </div>
-            </div>
+            <MessageCard
+              icon={MdGavel}
+              heading="Změna legislativy"
+              text="&ldquo;Změna příjmových hranic pro pásma paušální daně&rdquo;"
+            />
 
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-zinc-200 shadow-sm">
-              <span className="text-secondary text-2xl flex-shrink-0">✓</span>
-              <div>
-                <p className="text-primary font-semibold text-sm mb-1">
-                  Důležitá platba
-                </p>
-                <p className="text-textP text-sm">
-                  &ldquo;Zítra je splatná záloha na zdravotní pojištění&rdquo;
-                </p>
-              </div>
-            </div>
+            <MessageCard
+              icon={MdPayment}
+              heading="Důležitá platba"
+              text="&ldquo;Zítra je splatná záloha na zdravotní pojištění&rdquo;"
+            />
           </div>
         </div>
       </div>

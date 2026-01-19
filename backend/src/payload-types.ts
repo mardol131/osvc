@@ -71,7 +71,6 @@ export interface Config {
     media: Media;
     'activity-groups': ActivityGroup;
     subscribes: Subscribe;
-    alerts: Alert;
     'monthly-notifications': MonthlyNotification;
     accesses: Access;
     obligations: Obligation;
@@ -87,7 +86,6 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'activity-groups': ActivityGroupsSelect<false> | ActivityGroupsSelect<true>;
     subscribes: SubscribesSelect<false> | SubscribesSelect<true>;
-    alerts: AlertsSelect<false> | AlertsSelect<true>;
     'monthly-notifications': MonthlyNotificationsSelect<false> | MonthlyNotificationsSelect<true>;
     accesses: AccessesSelect<false> | AccessesSelect<true>;
     obligations: ObligationsSelect<false> | ObligationsSelect<true>;
@@ -120,7 +118,6 @@ export interface Config {
     };
     workflows: {
       monthlyNotificationsWorkflow: WorkflowMonthlyNotificationsWorkflow;
-      createObligationWorkflow: WorkflowCreateObligationWorkflow;
       alertNotificationWorkflow: WorkflowAlertNotificationWorkflow;
       subscriptionCreatedWorkflow: WorkflowSubscriptionCreatedWorkflow;
       addMarketingContactWorkflow: WorkflowAddMarketingContactWorkflow;
@@ -249,23 +246,6 @@ export interface Subscribe {
   promotionCode?: string | null;
   stripeSubscribeId: string;
   customerId?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "alerts".
- */
-export interface Alert {
-  id: string;
-  date: string;
-  repeating?: boolean | null;
-  frequency?: ('daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly') | null;
-  day?: number | null;
-  month?: number | null;
-  name: string;
-  general?: boolean | null;
-  activityGroups?: (string | ActivityGroup)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -438,7 +418,6 @@ export interface PayloadJob {
   workflowSlug?:
     | (
         | 'monthlyNotificationsWorkflow'
-        | 'createObligationWorkflow'
         | 'alertNotificationWorkflow'
         | 'subscriptionCreatedWorkflow'
         | 'addMarketingContactWorkflow'
@@ -473,10 +452,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'subscribes';
         value: string | Subscribe;
-      } | null)
-    | ({
-        relationTo: 'alerts';
-        value: string | Alert;
       } | null)
     | ({
         relationTo: 'monthly-notifications';
@@ -612,22 +587,6 @@ export interface SubscribesSelect<T extends boolean = true> {
   promotionCode?: T;
   stripeSubscribeId?: T;
   customerId?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "alerts_select".
- */
-export interface AlertsSelect<T extends boolean = true> {
-  date?: T;
-  repeating?: T;
-  frequency?: T;
-  day?: T;
-  month?: T;
-  name?: T;
-  general?: T;
-  activityGroups?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -811,23 +770,6 @@ export interface TaskGetRecord {
  */
 export interface WorkflowMonthlyNotificationsWorkflow {
   input: {
-    monthlyNotificationId: string;
-  };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "WorkflowCreateObligationWorkflow".
- */
-export interface WorkflowCreateObligationWorkflow {
-  input: {
-    text: string;
-    mobileText?: string | null;
-    link?: string | null;
-    description?: string | null;
-    date?: string | null;
-    activityGroups: {
-      activityGroupId: string;
-    }[];
     monthlyNotificationId: string;
   };
 }

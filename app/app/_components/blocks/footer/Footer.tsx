@@ -1,6 +1,9 @@
 import Link from "next/link";
 import React from "react";
 import Button from "../../atoms/Button";
+import { HiHome, HiCurrencyDollar, HiQuestionMarkCircle } from "react-icons/hi";
+import { MdEmail, MdPhone, MdBusiness } from "react-icons/md";
+import { IoDocument } from "react-icons/io5";
 
 export default function Footer() {
   return (
@@ -21,14 +24,16 @@ export default function Footer() {
               <h4 className="text-textLight mb-2">Stránky</h4>
               <Link
                 href="/"
-                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
+                <HiHome className="text-secondary" />
                 Domů
               </Link>
               <Link
                 href="/cena"
-                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
+                <HiCurrencyDollar className="text-secondary" />
                 Cena
               </Link>
               {/* <Link
@@ -39,8 +44,9 @@ export default function Footer() {
               </Link> */}
               <Link
                 href="/otazky"
-                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
+                <HiQuestionMarkCircle className="text-secondary" />
                 Otázky
               </Link>
             </div>
@@ -52,18 +58,18 @@ export default function Footer() {
                 href="mailto:info@osvc365.cz"
                 className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
-                <span className="text-secondary">✉</span>
+                <MdEmail className="text-secondary" />
                 info@osvc365.cz
               </a>
               <a
                 href="tel:+420735202345"
                 className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
-                <span className="text-secondary">☎</span>
+                <MdPhone className="text-secondary" />
                 +420 735 202 345
               </a>
               <p className="text-zinc-300 flex items-center gap-2">
-                <span className="text-secondary">🏢</span>
+                <MdBusiness className="text-secondary" />
                 IČO: 10796509
               </p>
             </div>
@@ -73,14 +79,16 @@ export default function Footer() {
               <h4 className="text-textLight mb-2">Dokumenty</h4>
               <Link
                 href="/obchodni-podminky.pdf"
-                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
+                <IoDocument className="text-secondary" />
                 Obchodní podmínky
               </Link>
               <Link
                 href="/gdpr.pdf"
-                className="text-zinc-300 hover:text-secondary transition-colors duration-200"
+                className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
+                <IoDocument className="text-secondary" />
                 Ochrana osobních údajů (GDPR)
               </Link>
             </div>
