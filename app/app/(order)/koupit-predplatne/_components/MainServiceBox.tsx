@@ -4,7 +4,7 @@ import { servicePrice } from "@/app/_data/pricing";
 import { ActivityGroup } from "@/app/_data/businessActivities";
 
 export default function MainServiceBox({
-  name,
+  label,
   description,
   items,
   price,
@@ -17,7 +17,7 @@ export default function MainServiceBox({
             <span className="inline-block px-2.5 py-1 text-xs font-semibold text-white bg-secondary rounded-md mb-2 uppercase">
               Základní služba
             </span>
-            <h3 className="text-white mb-2">{name}</h3>
+            <h3 className="text-white mb-2">{label}</h3>
           </div>
           <div className="text-left sm:text-right shrink-0">
             <p className="text-3xl text-white">{price} Kč</p>

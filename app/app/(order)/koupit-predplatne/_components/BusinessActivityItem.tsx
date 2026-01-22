@@ -10,7 +10,7 @@ type Props = {
 } & ActivityGroup;
 
 export default function BusinessActivityItem({
-  name,
+  label,
   description,
   price,
   items,
@@ -32,7 +32,7 @@ export default function BusinessActivityItem({
       <div className="flex items-start gap-3 md:gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex max-lg:flex-col-reverse items-center max-lg:items-start justify-between gap-3 mb-2">
-            <h5 className="text-zinc-800">{name}</h5>
+            <h5 className="text-zinc-800">{label}</h5>
             <span className="shrink-0 px-2 py-1 bg-secondary/10 text-secondary rounded text-base md:text-base">
               +{price} Kč/rok
             </span>

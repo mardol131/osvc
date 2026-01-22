@@ -71,6 +71,7 @@ export async function getCollection({
   apiKey,
   query,
   cache,
+  depth,
 }: {
   collectionSlug:
     | "activity-groups"
@@ -80,11 +81,12 @@ export async function getCollection({
   apiKey?: string;
   query?: string;
   cache?: RequestCache;
+  depth?: number;
 }) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}${
       query ? `?${query}` : ""
-    }`,
+    }${depth ? `&depth=${depth}` : ""}`,
     {
       method: "GET",
       headers: {
@@ -92,12 +94,12 @@ export async function getCollection({
         Authorization: apiKey ? `users API-Key ${apiKey}` : "",
       },
       cache: cache,
-    }
+    },
   );
 
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch collection ${collectionSlug}: ${response.statusText}`
+      `Failed to fetch collection ${collectionSlug}: ${response.statusText}`,
     );
   }
   const data = await response.json();
@@ -109,31 +111,33 @@ export async function getSingleRecord({
   recordId,
   apiKey,
   query,
+  depth,
 }: {
   collectionSlug: "subscribes" | "monthly-notifications" | "accesses";
   recordId: string;
   apiKey?: string;
   query?: string;
+  depth?: number;
 }) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}${
       query ? `?${query}` : ""
-    }`,
+    }${depth ? `&depth=${depth}` : ""}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: apiKey ? `users API-Key ${apiKey}` : "",
       },
-    }
+    },
   );
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`
+      `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`,
     );
   }
   const data = await response.json();
-  return data.doc;
+  return data;
 }
 
 export async function updateRecord({
@@ -156,11 +160,11 @@ export async function updateRecord({
         Authorization: apiKey ? `users API-Key ${apiKey}` : "",
       },
       body: JSON.stringify(body),
-    }
+    },
   );
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`
+      `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`,
     );
   }
   const data = await response.json();
@@ -181,7 +185,7 @@ export async function login(email: string, password: string) {
         password: password,
       }),
       credentials: "include",
-    }
+    },
   );
   if (!response.ok) {
     throw new Error(`Login failed: ${response.statusText}`);

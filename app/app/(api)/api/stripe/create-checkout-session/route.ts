@@ -1,4 +1,5 @@
 import { ActivityGroup } from "@/app/_data/businessActivities";
+import { productKind } from "@/app/_data/productKind";
 
 import Stripe from "stripe";
 
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 
@@ -29,6 +30,14 @@ export async function POST(request: Request) {
       price: priceId,
     };
   });
+
+  let productKindType = productKind.general_subscription;
+
+  if (
+    body.activityGroups.some((group: ActivityGroup) => group.slug !== "general")
+  ) {
+    productKindType = productKind.activity_group_addon;
+  }
 
   try {
     const promotionCode = await stripe.promotionCodes.create({
@@ -51,11 +60,12 @@ export async function POST(request: Request) {
           phone: body.phone,
           phonePrefix: body.phonePrefix,
           activityGroups: JSON.stringify(
-            body.activityGroups.map((item: { id: string }) => item.id)
+            body.activityGroups.map((item: { id: string }) => item.id),
           ),
           terms: body.terms,
           marketing: body.marketing || false,
           promotionCode: promotionCode.code,
+          productKind: productKindType,
         },
       },
     });
@@ -65,7 +75,7 @@ export async function POST(request: Request) {
       {
         status: 201,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (err) {
     return new Response(
@@ -73,7 +83,7 @@ export async function POST(request: Request) {
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 }

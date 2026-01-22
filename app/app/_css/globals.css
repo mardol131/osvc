@@ -1,12 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
-/* @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"); */
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap");
-
 @font-face {
   font-family: Oswald;
-  src: url("../_fonts/Oswald-variable.ttf");
+  src: url("../_fonts/Oswald.ttf");
+}
+
+@font-face {
+  font-family: Bebas Neue;
+  src: url("../_fonts/Bebas-neue.ttf");
 }
 
 @import "tailwindcss";
@@ -14,9 +13,6 @@
 @theme {
   --font-oswald: "Oswald";
   --font-bebas: "Bebas Neue";
-  --font-roboto: "Roboto";
-  --font-cabin: "Cabin";
-  --font-nunito: "Nunito Sans";
 
   --color-primary: var(--color-zinc-800);
   --color-secondary: var(--color-amber-500);
@@ -82,5 +78,5 @@ h4 {
 }
 
 h5 {
-  @apply text-2xl/loose font-bebas;
+  @apply text-2xl/normal font-bebas;
 }

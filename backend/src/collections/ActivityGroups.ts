@@ -28,6 +28,14 @@ export const ActivityGroups: CollectionConfig = {
       },
     },
     {
+      name: 'label',
+      type: 'text',
+      required: true,
+      admin: {
+        description: 'Název pro katalog',
+      },
+    },
+    {
       name: 'name',
       type: 'text',
       required: true,

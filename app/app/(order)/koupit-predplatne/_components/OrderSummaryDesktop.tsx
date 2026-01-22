@@ -2,12 +2,12 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { servicePrice } from "@/app/_data/pricing";
-import { OrderFormData } from "./OrderSummary";
+import { OrderFormData, SelectedActivities } from "./OrderSummary";
 import Button from "@/app/_components/atoms/Button";
 import CustomCheckbox from "@/app/_components/atoms/CustomCheckbox";
 
 type Props = {
-  selectedActivities: Array<{ name: string; price: number }>;
+  selectedActivities: SelectedActivities;
   onSubmit: (data: OrderFormData) => void;
   isSubmitting?: boolean;
 };
@@ -25,7 +25,7 @@ export default function OrderSummaryDesktop({
 
   const activitiesTotal = selectedActivities.reduce(
     (sum, activity) => sum + activity.price,
-    0
+    0,
   );
   const total = servicePrice + activitiesTotal;
 
@@ -86,7 +86,7 @@ export default function OrderSummaryDesktop({
                 key={index}
                 className="flex justify-between items-center text-sm"
               >
-                <p className="text-zinc-600">{activity.name}</p>
+                <p className="text-zinc-600">{activity.label}</p>
                 <p className="font-semibold text-secondary">
                   +{activity.price} Kč
                 </p>

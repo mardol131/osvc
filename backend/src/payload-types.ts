@@ -204,6 +204,10 @@ export interface ActivityGroup {
    */
   priceId: string;
   /**
+   * Název pro katalog
+   */
+  label: string;
+  /**
    * Název skupiny obchodních činností
    */
   name: string;
@@ -558,6 +562,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface ActivityGroupsSelect<T extends boolean = true> {
   slug?: T;
   priceId?: T;
+  label?: T;
   name?: T;
   mobileName?: T;
   description?: T;

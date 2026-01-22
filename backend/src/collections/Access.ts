@@ -17,24 +17,36 @@ export const Accesses: CollectionConfig = {
       type: 'relationship',
       relationTo: 'activity-groups',
       hasMany: true,
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'monthlyNotification',
       type: 'relationship',
       relationTo: 'monthly-notifications',
       required: true,
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'subscribe',
       type: 'relationship',
       relationTo: 'subscribes',
       required: true,
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'accessId',
       type: 'text',
       required: true,
       unique: true,
+      admin: {
+        readOnly: true,
+      },
     },
   ],
 }

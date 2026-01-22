@@ -12,8 +12,10 @@ export type OrderFormData = {
   marketing?: boolean;
 };
 
+export type SelectedActivities = Array<{ label: string; price: number }>;
+
 type Props = {
-  selectedActivities: Array<{ name: string; price: number }>;
+  selectedActivities: SelectedActivities;
   onSubmit: (data: OrderFormData) => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;

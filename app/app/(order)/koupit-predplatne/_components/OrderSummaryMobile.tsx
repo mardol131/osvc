@@ -2,12 +2,12 @@
 
 import React, { useEffect } from "react";
 import { servicePrice } from "@/app/_data/pricing";
-import { OrderFormData } from "./OrderSummary";
+import { OrderFormData, SelectedActivities } from "./OrderSummary";
 import Button from "@/app/_components/atoms/Button";
 import CustomCheckbox from "@/app/_components/atoms/CustomCheckbox";
 
 type Props = {
-  selectedActivities: Array<{ name: string; price: number }>;
+  selectedActivities: SelectedActivities;
   onSubmit: (data: OrderFormData) => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -26,7 +26,7 @@ export default function OrderSummaryMobile({
 
   const activitiesTotal = selectedActivities.reduce(
     (sum, activity) => sum + activity.price,
-    0
+    0,
   );
   const total = servicePrice + activitiesTotal;
 
@@ -135,7 +135,7 @@ export default function OrderSummaryMobile({
                     key={index}
                     className="flex justify-between items-center text-sm"
                   >
-                    <span className="text-zinc-600">{activity.name}</span>
+                    <span className="text-zinc-600">{activity.label}</span>
                     <span className="font-semibold text-secondary">
                       +{activity.price} Kč
                     </span>

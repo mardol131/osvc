@@ -7,6 +7,9 @@ import LoadErrorState from "./_components/LoadErrorState";
 import NotificationGroup from "./_components/NotificationGroup";
 import { notFound } from "next/navigation";
 
+import EditSubscription from "./_components/EditSubscription";
+import SubscriptionManagement from "./_components/subscription-management";
+
 export type CustomMessage = {
   heading: string;
   notifications: Notification[];
@@ -41,6 +44,7 @@ export default async function page({
         createdAt: Date;
         updatedAt: Date;
         activityGroups: ActivityGroup[];
+        subscribe: string | { id: string };
         monthlyNotification: MonthlyNotification;
       }[]
     | undefined = undefined;
@@ -50,6 +54,7 @@ export default async function page({
       collectionSlug: "accesses",
       apiKey: process.env.CMS_API_KEY,
       query: `where[accessId][equals]=${accessId}`,
+      depth: 0,
     });
   } catch (error) {
     return notFound();
@@ -64,6 +69,17 @@ export default async function page({
     );
   }
 
+  // Načtení všech dostupných ActivityGroups
+  let allActivityGroups: ActivityGroup[] = [];
+  try {
+    allActivityGroups = await getCollection({
+      collectionSlug: "activity-groups",
+      apiKey: process.env.CMS_API_KEY,
+    });
+  } catch (error) {
+    console.error("Failed to load activity groups:", error);
+  }
+
   // Přizpůsobení notifikací podle aktivit uživatele
 
   const access = accessResponse[0];
@@ -74,18 +90,17 @@ export default async function page({
 
   const customNotifications: CustomMessage[] = [];
 
-  console.log("HERE", notificationsData);
-
   customActivityGroups?.forEach((group) => {
-    const groupNotifications = notificationsData.filter((notification) =>
-      notification.activityGroups.some((ag) =>
-        typeof group === "string" ? ag.id === group : ag.id === group.id
-      )
-    );
+    const groupNotifications =
+      notificationsData?.filter((notification) =>
+        notification.activityGroups.some((ag) =>
+          typeof group === "string" ? ag.id === group : ag.id === group.id,
+        ),
+      ) ?? [];
 
     customNotifications.push({
       heading: group.name,
-      notifications: groupNotifications ?? [],
+      notifications: groupNotifications,
       order: group.order,
       slug: group.slug,
     });
@@ -95,7 +110,7 @@ export default async function page({
 
   const totalNotifications = customNotifications.reduce(
     (sum, group) => sum + group.notifications.length,
-    0
+    0,
   );
   const monthLabel = access.monthlyNotification?.month || "";
   const yearLabel = access.monthlyNotification?.year || "";
@@ -107,6 +122,19 @@ export default async function page({
     if (b.slug === "general") return 1;
     return b.notifications.length - a.notifications.length;
   });
+
+  // Rozdělení ActivityGroups na aktivní a neaktivní
+  const userActivityGroupIds = customActivityGroups?.map((group) =>
+    typeof group === "string" ? group : group.id,
+  );
+
+  const activeGroups = allActivityGroups.filter((group) =>
+    userActivityGroupIds?.includes(group.id),
+  );
+
+  const inactiveGroups = allActivityGroups.filter(
+    (group) => !userActivityGroupIds?.includes(group.id),
+  );
 
   return (
     <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white">
@@ -126,25 +154,29 @@ export default async function page({
 
         {/* Shrnutí */}
         {totalNotifications > 0 ? (
-          <div className="w-full mx-auto mb-8 md:mb-10">
-            <div className="bg-secondary/5 rounded-xl p-5 md:p-6 border-l-4 border-secondary">
-              <div className="flex items-center gap-3 mb-2">
-                <FiCheckCircle className="text-secondary text-xl shrink-0" />
-                <h4 className="text-primary">
-                  {totalNotifications}{" "}
-                  {totalNotifications === 1
-                    ? "nová informace"
-                    : totalNotifications < 5
-                    ? "nové informace"
-                    : "nových informací"}
-                </h4>
+          <>
+            <div className="w-full mx-auto mb-8 md:mb-10">
+              <div className="bg-secondary/5 rounded-xl p-5 md:p-6 border-l-4 border-secondary">
+                <div className="flex items-center gap-3 mb-2">
+                  <FiCheckCircle className="text-secondary text-xl shrink-0" />
+                  <h4 className="text-primary">
+                    {totalNotifications}{" "}
+                    {totalNotifications === 1
+                      ? "nová informace"
+                      : totalNotifications < 5
+                        ? "nové informace"
+                        : "nových informací"}
+                  </h4>
+                </div>
+                <p className="text-textP text-sm md:text-base leading-relaxed">
+                  Přehled důležitých změn a termínů pro váš balíček v
+                  nadcházejícím období
+                </p>
               </div>
-              <p className="text-textP text-sm md:text-base leading-relaxed">
-                Přehled důležitých změn a termínů pro váš balíček v
-                nadcházejícím období
-              </p>
             </div>
-          </div>
+            {/* Upravit předplatné */}
+            <EditSubscription />
+          </>
         ) : (
           <div className="w-full mx-auto mb-8 md:mb-10">
             <div className="bg-green-50 rounded-xl p-5 md:p-6 border-l-4 border-green-500">
@@ -169,6 +201,13 @@ export default async function page({
             />
           ))}
         </div>
+
+        {/* Správa předplatného */}
+        <SubscriptionManagement
+          activeGroups={activeGroups}
+          inactiveGroups={inactiveGroups}
+          subscribeId={access.subscribe}
+        />
       </SectionWrapper>
     </div>
   );

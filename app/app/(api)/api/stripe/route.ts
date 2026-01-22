@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     event = stripe.webhooks.constructEvent(
       rawBody,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (err: any) {
     console.error("Webhook error:", err.message);
@@ -36,45 +36,46 @@ export async function POST(request: Request) {
           throw new Error("Missing subscribe metadata");
         }
 
-        const subscriptionId =
-          typeof data.subscription === "string"
-            ? data.subscription
-            : data.subscription?.id;
+        if (data.metadata.productKind === "general_subscription") {
+          const subscriptionId =
+            typeof data.subscription === "string"
+              ? data.subscription
+              : data.subscription?.id;
 
-        if (!subscriptionId) {
-          throw new Error("Missing subscription ID");
+          if (!subscriptionId) {
+            throw new Error("Missing subscription ID");
+          }
+
+          const subscription =
+            await stripe.subscriptions.retrieve(subscriptionId);
+
+          console.log("Subscription metadata:", subscription.metadata);
+
+          const customer = !subscription.customer
+            ? undefined
+            : typeof subscription.customer === "string"
+              ? subscription.customer
+              : subscription.customer.id;
+
+          const subscriptionResponse = await createSubscribe({
+            email: subscription.metadata.email,
+            phone: subscription.metadata.phone,
+            phonePrefix: subscription.metadata.phonePrefix,
+            activityGroups: JSON.parse(subscription.metadata.activityGroups),
+            terms: JSON.parse(subscription.metadata.terms),
+            active: true,
+            marketing: JSON.parse(subscription.metadata.marketing),
+            promotionCode: subscription.metadata.promotionCode,
+            stripeSubscribeId: subscription.id,
+            customerId: customer,
+          });
+
+          await stripe.subscriptions.update(subscription.id, {
+            metadata: {
+              cmsSubscribeId: subscriptionResponse.id,
+            },
+          });
         }
-
-        const subscription = await stripe.subscriptions.retrieve(
-          subscriptionId
-        );
-
-        console.log("Subscription metadata:", subscription.metadata);
-
-        const customer = !subscription.customer
-          ? undefined
-          : typeof subscription.customer === "string"
-          ? subscription.customer
-          : subscription.customer.id;
-
-        const subscriptionResponse = await createSubscribe({
-          email: subscription.metadata.email,
-          phone: subscription.metadata.phone,
-          phonePrefix: subscription.metadata.phonePrefix,
-          activityGroups: JSON.parse(subscription.metadata.activityGroups),
-          terms: JSON.parse(subscription.metadata.terms),
-          active: true,
-          marketing: JSON.parse(subscription.metadata.marketing),
-          promotionCode: subscription.metadata.promotionCode,
-          stripeSubscribeId: subscription.id,
-          customerId: customer,
-        });
-
-        await stripe.subscriptions.update(subscription.id, {
-          metadata: {
-            cmsSubscribeId: subscriptionResponse.id,
-          },
-        });
 
         break;
       }
