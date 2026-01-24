@@ -8,7 +8,6 @@ import NotificationGroup from "./_components/NotificationGroup";
 import { notFound } from "next/navigation";
 
 import EditSubscription from "./_components/EditSubscription";
-import SubscriptionManagement from "./_components/subscription-management";
 
 export type CustomMessage = {
   heading: string;
@@ -45,6 +44,7 @@ export default async function page({
         updatedAt: Date;
         activityGroups: ActivityGroup[];
         subscribe: string | { id: string };
+        subscribeId: string;
         monthlyNotification: MonthlyNotification;
       }[]
     | undefined = undefined;
@@ -123,18 +123,10 @@ export default async function page({
     return b.notifications.length - a.notifications.length;
   });
 
-  // Rozdělení ActivityGroups na aktivní a neaktivní
-  const userActivityGroupIds = customActivityGroups?.map((group) =>
-    typeof group === "string" ? group : group.id,
-  );
+  // Získej subscribe ID pro EditSubscription
+  const subscribeId = access.subscribeId;
 
-  const activeGroups = allActivityGroups.filter((group) =>
-    userActivityGroupIds?.includes(group.id),
-  );
-
-  const inactiveGroups = allActivityGroups.filter(
-    (group) => !userActivityGroupIds?.includes(group.id),
-  );
+  console.log(access);
 
   return (
     <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white">
@@ -153,6 +145,10 @@ export default async function page({
         />
 
         {/* Shrnutí */}
+        <EditSubscription
+          activeGroups={customActivityGroups || []}
+          subscribeId={subscribeId}
+        />
         {totalNotifications > 0 ? (
           <>
             <div className="w-full mx-auto mb-8 md:mb-10">
@@ -175,7 +171,6 @@ export default async function page({
               </div>
             </div>
             {/* Upravit předplatné */}
-            <EditSubscription />
           </>
         ) : (
           <div className="w-full mx-auto mb-8 md:mb-10">
@@ -201,13 +196,6 @@ export default async function page({
             />
           ))}
         </div>
-
-        {/* Správa předplatného */}
-        <SubscriptionManagement
-          activeGroups={activeGroups}
-          inactiveGroups={inactiveGroups}
-          subscribeId={access.subscribe}
-        />
       </SectionWrapper>
     </div>
   );

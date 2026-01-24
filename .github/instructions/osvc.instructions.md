@@ -15,3 +15,5 @@ When creating React components, prefer functional components and hooks over clas
 When writing TypeScript, always define types and interfaces for props, state, and function signatures to ensure type safety and improve code readability.
 When creating new files, ensure they follow the existing project structure and naming conventions.
 Use kebab-case for file names and folder names.
+Dont use <strong>
+Dont use <img>, only <Image> from next/image

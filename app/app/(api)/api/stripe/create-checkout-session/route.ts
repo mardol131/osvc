@@ -54,6 +54,9 @@ export async function POST(request: Request) {
       mode: "subscription",
       customer_email: body.email,
       allow_promotion_codes: true,
+      metadata: {
+        productKind: productKindType,
+      },
       subscription_data: {
         metadata: {
           email: body.email,
@@ -65,7 +68,6 @@ export async function POST(request: Request) {
           terms: body.terms,
           marketing: body.marketing || false,
           promotionCode: promotionCode.code,
-          productKind: productKindType,
         },
       },
     });

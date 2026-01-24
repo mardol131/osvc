@@ -1,4 +1,5 @@
 import { apiKeyAuth } from '@/functions/ACL'
+import { generateAlphanumericId } from '@/functions/generateAlphanumericId'
 import { addYears } from 'date-fns'
 import type { CollectionConfig } from 'payload'
 
@@ -9,6 +10,7 @@ export const Subscribes: CollectionConfig = {
   },
   access: {
     create: async ({ req }) => {
+      if (req.user && req.user?.role.includes('admin')) return true
       const apiKey = req.headers.get('authorization')
       if (!apiKey) return false
       return apiKeyAuth(apiKey)
@@ -73,9 +75,6 @@ export const Subscribes: CollectionConfig = {
       type: 'checkbox',
       label: 'Aktivní předplatné',
       defaultValue: false,
-      admin: {
-        readOnly: true,
-      },
     },
     {
       name: 'promotionCode',
@@ -92,12 +91,19 @@ export const Subscribes: CollectionConfig = {
       },
       required: true,
     },
+
     {
       name: 'customerId',
       type: 'text',
       admin: {
         readOnly: true,
       },
+    },
+    {
+      name: 'subscribeId',
+      type: 'text',
+      defaultValue: () => generateAlphanumericId(),
+      required: true,
     },
   ],
   hooks: {

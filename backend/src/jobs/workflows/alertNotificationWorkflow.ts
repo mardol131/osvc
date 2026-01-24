@@ -50,6 +50,7 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
             },
             active: { equals: true },
           },
+          showHiddenFields: true,
         })
 
         return { output: subscribes }

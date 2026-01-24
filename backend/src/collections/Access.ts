@@ -40,6 +40,14 @@ export const Accesses: CollectionConfig = {
       },
     },
     {
+      name: 'subscribeId',
+      type: 'text',
+      required: true,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
       name: 'accessId',
       type: 'text',
       required: true,

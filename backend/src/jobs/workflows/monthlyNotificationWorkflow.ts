@@ -1,3 +1,4 @@
+import { generateAlphanumericId } from '@/functions/generateAlphanumericId'
 import {
   createGeneralNotificationEmail,
   createGeneralNotificationSms,
@@ -21,17 +22,6 @@ export type CustomMessage = {
   order?: number | null
 }
 
-const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-const ID_LENGTH = 18
-
-function generateAlphanumericId(length = ID_LENGTH) {
-  const array = new Uint8Array(length)
-  crypto.getRandomValues(array)
-  return Array.from(array)
-    .map((b) => ALPHABET[b % ALPHABET.length])
-    .join('')
-}
-
 export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
   slug: 'monthlyNotificationsWorkflow',
   inputSchema: [
@@ -51,6 +41,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
           where: {
             active: { equals: true },
           },
+          showHiddenFields: true,
         })
         return { output: subscribes.docs }
       },
@@ -168,6 +159,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
                   activityGroups: subscribe.activityGroups || [],
                   monthlyNotification: monthlyNotification.id,
                   subscribe: subscribe.id,
+                  subscribeId: subscribe.subscribeId,
                   accessId: accessId,
                 },
               })

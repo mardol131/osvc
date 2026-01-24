@@ -25,11 +25,13 @@ export default function AddActivityModal({
   finalPriceThatWillBePaid,
 }: AddActivityModalProps) {
   const [termsChecked, setTermsChecked] = useState(false);
+  const [paymentConsent, setPaymentConsent] = useState(false);
 
   if (!group) return null;
 
   const handleClose = () => {
     setTermsChecked(false);
+    setPaymentConsent(false);
     onClose();
   };
 
@@ -67,16 +69,14 @@ export default function AddActivityModal({
         {/* Informační box o ceně */}
         <div className="bg-emerald-50 border-l-4 border-emerald-500 rounded-lg p-4 space-y-2">
           <div className="flex items-baseline justify-between gap-4">
-            <p className="text-sm text-zinc-700">
-              <strong>K úhradě nyní:</strong>
-            </p>
+            <h5 className="text-sm text-zinc-700">K úhradě nyní: </h5>
             <p className="text-2xl font-bold text-emerald-700">
               {finalPriceThatWillBePaid !== null
                 ? `${finalPriceThatWillBePaid} Kč`
                 : "Počítám..."}
             </p>
           </div>
-          <p className="text-xs text-zinc-600 leading-relaxed">
+          <p className="text-sm text-zinc-600 leading-relaxed">
             Cena je dopočítána podle zbývajícího období vašeho předplatného. Po
             jeho vypršení bude tento předmět podnikání účtován za{" "}
             <span className="font-semibold">{group.price} Kč/rok</span>. Skupina
@@ -84,8 +84,16 @@ export default function AddActivityModal({
           </p>
         </div>
 
-        {/* Checkbox pro obchodní podmínky - stejný jako v OrderSummary */}
-        <div className="pt-2">
+        {/* Checkboxy */}
+        <div className="pt-2 mb-3 space-y-3">
+          <CustomCheckbox
+            name="paymentConsent"
+            checked={paymentConsent}
+            onChange={setPaymentConsent}
+            required
+            label="Souhlasím s okamžitým stržením částky z platební karty nastavené pro předplatné"
+          />
+
           <CustomCheckbox
             name="terms"
             checked={termsChecked}
@@ -123,7 +131,7 @@ export default function AddActivityModal({
             text={isSubmitting ? "Zpracovávám..." : "Dokoupit"}
             variant="gold"
             size="md"
-            disabled={!termsChecked || isSubmitting}
+            disabled={!termsChecked || !paymentConsent || isSubmitting}
             className="w-full sm:w-auto"
             loading={isSubmitting}
             htmlType="submit"

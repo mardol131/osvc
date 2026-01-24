@@ -39,19 +39,19 @@ export default buildConfig({
     shouldAutoRun: () => true,
     autoRun: [
       {
-        cron: '0 16 * * *',
+        cron: process.env.CRON_MONTHLY_NOTIFICATION_QUEUE || '0 16 * * *',
         queue: getQueueName('monthlyNotificationsQueue'),
       },
       {
-        cron: '30 16 * * *',
+        cron: process.env.CRON_ALERT_NOTIFICATIONS_QUEUE || '30 16 * * *',
         queue: getQueueName('alertNotificationsQueue'),
       },
       {
-        cron: '* * * * *',
+        cron: process.env.CRON_SUBSCRIPTION_CREATED_QUEUE || '* * * * *',
         queue: getQueueName('subscriptionCreatedQueue'),
       },
       {
-        cron: '0 15 * * *',
+        cron: process.env.CRON_ADD_MARKETING_CONTACT_QUEUE || '0 15 * * *',
         queue: getQueueName('addMarketingContactQueue'),
       },
     ],

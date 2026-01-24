@@ -120,8 +120,8 @@ export async function getSingleRecord({
   depth?: number;
 }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}${
-      query ? `?${query}` : ""
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}?${
+      query ? `${query}` : ""
     }${depth ? `&depth=${depth}` : ""}`,
     {
       method: "GET",

@@ -250,6 +250,7 @@ export interface Subscribe {
   promotionCode?: string | null;
   stripeSubscribeId: string;
   customerId?: string | null;
+  subscribeId: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -297,6 +298,7 @@ export interface Access {
   activityGroups?: (string | ActivityGroup)[] | null;
   monthlyNotification: string | MonthlyNotification;
   subscribe: string | Subscribe;
+  subscribeId: string;
   accessId: string;
   updatedAt: string;
   createdAt: string;
@@ -592,6 +594,7 @@ export interface SubscribesSelect<T extends boolean = true> {
   promotionCode?: T;
   stripeSubscribeId?: T;
   customerId?: T;
+  subscribeId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -625,6 +628,7 @@ export interface AccessesSelect<T extends boolean = true> {
   activityGroups?: T;
   monthlyNotification?: T;
   subscribe?: T;
+  subscribeId?: T;
   accessId?: T;
   updatedAt?: T;
   createdAt?: T;

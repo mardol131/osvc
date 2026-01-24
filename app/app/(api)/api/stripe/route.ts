@@ -49,7 +49,9 @@ export async function POST(request: Request) {
           const subscription =
             await stripe.subscriptions.retrieve(subscriptionId);
 
-          console.log("Subscription metadata:", subscription.metadata);
+          if (!subscription.metadata) {
+            throw new Error("Missing subscription metadata");
+          }
 
           const customer = !subscription.customer
             ? undefined
@@ -63,8 +65,8 @@ export async function POST(request: Request) {
             phonePrefix: subscription.metadata.phonePrefix,
             activityGroups: JSON.parse(subscription.metadata.activityGroups),
             terms: JSON.parse(subscription.metadata.terms),
-            active: true,
             marketing: JSON.parse(subscription.metadata.marketing),
+            active: true,
             promotionCode: subscription.metadata.promotionCode,
             stripeSubscribeId: subscription.id,
             customerId: customer,
