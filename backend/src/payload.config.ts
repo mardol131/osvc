@@ -20,6 +20,7 @@ import { alertNotificationWorkflow } from './jobs/workflows/alertNotificationWor
 import { monthlyNotificationsWorkflow } from './jobs/workflows/monthlyNotificationWorkflow'
 import { subscriptionCreatedWorkflow } from './jobs/workflows/subscriptionCreatedWorkflow'
 import { addMarketingContactWorkflow } from './jobs/workflows/addMarketingContactWorkflow'
+import { Accounts } from './collections/Accounts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -77,6 +78,7 @@ export default buildConfig({
     MonthlyNotifications,
     Accesses,
     Obligations,
+    Accounts,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

@@ -1,11 +1,9 @@
 import Stripe from "stripe";
 import {
+  createAccount,
   createSubscribe,
-  getCollection,
-  getSingleRecord,
   updateRecord,
 } from "../../../_functions/backend";
-import { get } from "http";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
@@ -53,11 +51,25 @@ export async function POST(request: Request) {
             throw new Error("Missing subscription metadata");
           }
 
-          const customer = !subscription.customer
-            ? undefined
-            : typeof subscription.customer === "string"
+          const customer =
+            typeof subscription.customer === "string"
               ? subscription.customer
               : subscription.customer.id;
+
+          let accountId = subscription.metadata.accountId;
+
+          console.log("accountId", accountId);
+
+          if (!accountId) {
+            const newAccount = await createAccount({
+              email: subscription.metadata.email,
+              stripeCustomerId: customer,
+              terms: JSON.parse(subscription.metadata.terms),
+              marketing: JSON.parse(subscription.metadata.marketing),
+            });
+
+            accountId = newAccount.doc.id;
+          }
 
           const subscriptionResponse = await createSubscribe({
             email: subscription.metadata.email,
@@ -69,7 +81,7 @@ export async function POST(request: Request) {
             active: true,
             promotionCode: subscription.metadata.promotionCode,
             stripeSubscribeId: subscription.id,
-            customerId: customer,
+            account: accountId,
           });
 
           await stripe.subscriptions.update(subscription.id, {

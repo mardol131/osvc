@@ -91,19 +91,19 @@ export const Subscribes: CollectionConfig = {
       },
       required: true,
     },
-
-    {
-      name: 'customerId',
-      type: 'text',
-      admin: {
-        readOnly: true,
-      },
-    },
     {
       name: 'subscribeId',
       type: 'text',
       defaultValue: () => generateAlphanumericId(),
       required: true,
+    },
+    {
+      name: 'account',
+      type: 'relationship',
+      relationTo: 'accounts',
+      admin: {
+        readOnly: true,
+      },
     },
   ],
   hooks: {

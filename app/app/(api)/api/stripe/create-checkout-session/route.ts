@@ -1,5 +1,7 @@
 import { ActivityGroup } from "@/app/_data/businessActivities";
 import { productKind } from "@/app/_data/productKind";
+import { getCollection } from "@/app/_functions/backend";
+import { stringify } from "qs-esm";
 
 import Stripe from "stripe";
 
@@ -48,11 +50,31 @@ export async function POST(request: Request) {
       },
     });
 
+    const query = stringify(
+      {
+        where: {
+          email: {
+            equals: body.email,
+          },
+        },
+      },
+      { encodeValuesOnly: true },
+    );
+
+    const userAccount = await getCollection({
+      collectionSlug: "accounts",
+      query: query,
+      apiKey: process.env.CMS_API_KEY,
+    });
+
     const session = await stripe.checkout.sessions.create({
       success_url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/dekujeme`,
       line_items: items,
+      customer: userAccount[0]?.stripe.customerId || undefined,
       mode: "subscription",
-      customer_email: body.email,
+      customer_email: userAccount[0]?.stripe.customerId
+        ? undefined
+        : body.email,
       allow_promotion_codes: true,
       metadata: {
         productKind: productKindType,
@@ -68,6 +90,7 @@ export async function POST(request: Request) {
           terms: body.terms,
           marketing: body.marketing || false,
           promotionCode: promotionCode.code,
+          accountId: userAccount[0]?.id,
         },
       },
     });

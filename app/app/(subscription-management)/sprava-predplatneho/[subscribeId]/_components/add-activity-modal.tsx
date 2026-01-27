@@ -40,42 +40,43 @@ export default function AddActivityModal({
       isOpen={isOpen}
       onClose={handleClose}
       title="Dokoupit předmět podnikání"
+      maxWidth="lg"
     >
-      <form onSubmit={onSubmit}>
-        {/* Box s informacemi o skupině - podobný BusinessActivityItem */}
-        <div className="bg-secondary/5 rounded-xl p-5 md:p-6 border-l-4 mb-3 border-secondary">
+      <form onSubmit={onSubmit} className="flex flex-col">
+        {/* Informace o skupině */}
+        <div className="bg-secondary/5 rounded-xl p-5 border-l-4 border-secondary mb-4">
           <div className="flex items-start justify-between gap-4 mb-3">
             <h5 className="text-zinc-800">{group.name}</h5>
-            <span className="shrink-0 px-3 py-1.5 bg-secondary text-white rounded-lg text-sm md:text-base">
+            <span className="shrink-0 px-3 py-1.5 bg-secondary text-white rounded-lg text-sm font-semibold">
               {group.price} Kč/rok
             </span>
           </div>
 
-          {/* Seznam předmětů podnikání - stejný styl jako BusinessActivityItem */}
           {group.items && group.items.length > 0 && (
             <div className="space-y-2 pt-3 border-t border-zinc-300">
               {group.items.map((item) => (
                 <div key={item.id} className="flex items-start gap-2">
                   <FaCheckCircle className="text-emerald-500 text-base mt-1 shrink-0" />
-                  <p className="text-zinc-700 text-sm md:text-base">
-                    {item.item}
-                  </p>
+                  <p className="text-zinc-700 text-sm">{item.item}</p>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Informační box o ceně */}
-        <div className="bg-emerald-50 border-l-4 border-emerald-500 rounded-lg p-4 space-y-2">
-          <div className="flex items-baseline justify-between gap-4">
-            <h5 className="text-sm text-zinc-700">K úhradě nyní: </h5>
-            <p className="text-2xl font-bold text-emerald-700">
-              {finalPriceThatWillBePaid !== null
-                ? `${finalPriceThatWillBePaid} Kč`
-                : "Počítám..."}
-            </p>
-          </div>
+        <div className="h-px bg-linear-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
+
+        {/* Cenová informace */}
+        <div className="flex justify-between items-end mb-6">
+          <span className="text-sm text-zinc-700">K úhradě nyní</span>
+          <span className="text-3xl font-bold text-secondary">
+            {finalPriceThatWillBePaid !== null
+              ? `${finalPriceThatWillBePaid} Kč`
+              : "Počítám..."}
+          </span>
+        </div>
+
+        <div className="bg-emerald-50 border-l-4 border-emerald-500 rounded-lg p-4 mb-6">
           <p className="text-sm text-zinc-600 leading-relaxed">
             Cena je dopočítána podle zbývajícího období vašeho předplatného. Po
             jeho vypršení bude tento předmět podnikání účtován za{" "}
@@ -84,14 +85,21 @@ export default function AddActivityModal({
           </p>
         </div>
 
+        <div className="h-px bg-linear-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
+
         {/* Checkboxy */}
-        <div className="pt-2 mb-3 space-y-3">
+        <div className="mb-6 flex flex-col gap-3">
           <CustomCheckbox
             name="paymentConsent"
             checked={paymentConsent}
             onChange={setPaymentConsent}
             required
-            label="Souhlasím s okamžitým stržením částky z platební karty nastavené pro předplatné"
+            label={
+              <span className="text-sm text-zinc-600 leading-relaxed">
+                Souhlasím s okamžitým stržením částky z platební karty nastavené
+                pro předplatné
+              </span>
+            }
           />
 
           <CustomCheckbox
@@ -100,7 +108,7 @@ export default function AddActivityModal({
             onChange={setTermsChecked}
             required
             label={
-              <>
+              <span className="text-sm text-zinc-600 leading-relaxed">
                 Souhlasím s{" "}
                 <a
                   href="/obchodni-podminky.pdf"
@@ -120,19 +128,21 @@ export default function AddActivityModal({
                   zpracováním osobních údajů
                 </a>
                 .
-              </>
+              </span>
             }
           />
         </div>
 
         {/* Footer tlačítka */}
-        <div className="bg-white w-full pt-4 rounded-b-2xl border-t pb-5 border-zinc-100">
+        <div className="border-t border-zinc-100 pt-4 -mx-6 px-6 -mb-6 pb-6">
           <Button
-            text={isSubmitting ? "Zpracovávám..." : "Dokoupit"}
+            text={
+              isSubmitting ? "Zpracovávám..." : "Dokoupit předmět podnikání"
+            }
             variant="gold"
             size="md"
             disabled={!termsChecked || !paymentConsent || isSubmitting}
-            className="w-full sm:w-auto"
+            className="w-full"
             loading={isSubmitting}
             htmlType="submit"
           />

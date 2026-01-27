@@ -26,7 +26,7 @@ export async function createSubscribe({
   active,
   promotionCode,
   stripeSubscribeId,
-  customerId,
+  account,
 }: {
   email: string;
   phone: string;
@@ -37,7 +37,7 @@ export async function createSubscribe({
   active?: boolean;
   promotionCode?: string;
   stripeSubscribeId: string;
-  customerId?: string;
+  account: string;
 }) {
   const response = await fetch(`${process.env.CMS_URL}/api/subscribes`, {
     method: "POST",
@@ -55,11 +55,13 @@ export async function createSubscribe({
       active: active ? "true" : "false",
       promotionCode: promotionCode ? promotionCode : undefined,
       stripeSubscribeId: stripeSubscribeId,
-      customerId: customerId ? customerId : undefined,
+      account: account,
     }),
   });
 
   if (!response.ok) {
+    console.log(response);
+
     throw new Error(`Failed to create customer: ${response.statusText}`);
   }
   const data = await response.json();
@@ -77,12 +79,13 @@ export async function getCollection({
     | "activity-groups"
     | "subscribes"
     | "monthly-notifications"
-    | "accesses";
+    | "accesses"
+    | "accounts";
   apiKey?: string;
   query?: string;
   cache?: RequestCache;
   depth?: number;
-}) {
+}): Promise<any[]> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}${
       query ? `?${query}` : ""
@@ -96,6 +99,8 @@ export async function getCollection({
       cache: cache,
     },
   );
+
+  console.log(response);
 
   if (!response.ok) {
     throw new Error(
@@ -137,6 +142,42 @@ export async function getSingleRecord({
     );
   }
   const data = await response.json();
+  return data;
+}
+
+export async function createAccount({
+  email,
+  stripeCustomerId,
+  terms,
+  marketing,
+}: {
+  email: string;
+  stripeCustomerId: string;
+  terms?: boolean;
+  marketing?: boolean;
+}) {
+  const response = await fetch(`${process.env.CMS_URL}/api/accounts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `users API-Key ${process.env.CMS_API_KEY}`,
+    },
+    body: JSON.stringify({
+      email: email,
+      stripe: {
+        customerId: stripeCustomerId,
+      },
+      terms: terms ? "true" : "false",
+      marketing: marketing ? "true" : "false",
+    }),
+  });
+
+  if (!response.ok) {
+    console.log("createAccount response", response);
+    throw new Error(`Failed to create account: ${response.statusText}`);
+  }
+  const data = await response.json();
+  console.log("createAccount data", data);
   return data;
 }
 

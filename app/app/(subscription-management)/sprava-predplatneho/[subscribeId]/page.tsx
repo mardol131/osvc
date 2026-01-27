@@ -15,14 +15,17 @@ export default async function SubscriptionManagementPage({
   // Získej subscribe data
   let subscribes: any[] = [];
 
-  const query = stringify({
-    where: {
-      subscribeId: {
-        equals: subscribeId,
+  const query = stringify(
+    {
+      where: {
+        subscribeId: {
+          equals: subscribeId,
+        },
+        active: { equals: "true" },
       },
-      active: { equals: true },
     },
-  });
+    { encodeValuesOnly: true },
+  );
   try {
     subscribes = await getCollection({
       collectionSlug: "subscribes",
@@ -44,6 +47,16 @@ export default async function SubscriptionManagementPage({
     allActivityGroups = await getCollection({
       collectionSlug: "activity-groups",
       apiKey: process.env.CMS_API_KEY,
+      query: stringify(
+        {
+          where: {
+            active: {
+              equals: "true",
+            },
+          },
+        },
+        { encodeValuesOnly: true },
+      ),
     });
   } catch (error) {
     console.error("Failed to load activity groups:", error);

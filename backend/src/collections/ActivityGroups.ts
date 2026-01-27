@@ -10,6 +10,12 @@ export const ActivityGroups: CollectionConfig = {
   },
   fields: [
     {
+      name: 'active',
+      type: 'checkbox',
+      label: 'Aktivní skupina',
+      defaultValue: true,
+    },
+    {
       name: 'slug',
       type: 'text',
       required: true,

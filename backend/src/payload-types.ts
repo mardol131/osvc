@@ -74,6 +74,7 @@ export interface Config {
     'monthly-notifications': MonthlyNotification;
     accesses: Access;
     obligations: Obligation;
+    accounts: Account;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -89,6 +90,7 @@ export interface Config {
     'monthly-notifications': MonthlyNotificationsSelect<false> | MonthlyNotificationsSelect<true>;
     accesses: AccessesSelect<false> | AccessesSelect<true>;
     obligations: ObligationsSelect<false> | ObligationsSelect<true>;
+    accounts: AccountsSelect<false> | AccountsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -195,6 +197,7 @@ export interface Media {
  */
 export interface ActivityGroup {
   id: string;
+  active?: boolean | null;
   /**
    * Unikátní identifikátor skupiny činností
    */
@@ -249,8 +252,23 @@ export interface Subscribe {
   active?: boolean | null;
   promotionCode?: string | null;
   stripeSubscribeId: string;
-  customerId?: string | null;
   subscribeId: string;
+  account?: (string | null) | Account;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accounts".
+ */
+export interface Account {
+  id: string;
+  email: string;
+  stripe: {
+    customerId: string;
+  };
+  terms: boolean;
+  marketing?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -470,6 +488,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'obligations';
         value: string | Obligation;
+      } | null)
+    | ({
+        relationTo: 'accounts';
+        value: string | Account;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -562,6 +584,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "activity-groups_select".
  */
 export interface ActivityGroupsSelect<T extends boolean = true> {
+  active?: T;
   slug?: T;
   priceId?: T;
   label?: T;
@@ -593,8 +616,8 @@ export interface SubscribesSelect<T extends boolean = true> {
   active?: T;
   promotionCode?: T;
   stripeSubscribeId?: T;
-  customerId?: T;
   subscribeId?: T;
+  account?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -645,6 +668,22 @@ export interface ObligationsSelect<T extends boolean = true> {
   activityGroups?: T;
   date?: T;
   monthlyNotificationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accounts_select".
+ */
+export interface AccountsSelect<T extends boolean = true> {
+  email?: T;
+  stripe?:
+    | T
+    | {
+        customerId?: T;
+      };
+  terms?: T;
+  marketing?: T;
   updatedAt?: T;
   createdAt?: T;
 }
