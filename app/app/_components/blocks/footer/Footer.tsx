@@ -79,6 +79,7 @@ export default function Footer() {
               <h4 className="text-textLight mb-2">Dokumenty</h4>
               <Link
                 href="/obchodni-podminky.pdf"
+                target="_blank"
                 className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
                 <IoDocument className="text-secondary" />
@@ -86,6 +87,7 @@ export default function Footer() {
               </Link>
               <Link
                 href="/gdpr.pdf"
+                target="_blank"
                 className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
               >
                 <IoDocument className="text-secondary" />

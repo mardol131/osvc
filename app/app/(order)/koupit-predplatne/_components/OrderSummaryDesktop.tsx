@@ -69,7 +69,6 @@ export default function OrderSummaryDesktop({
       className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-lg"
     >
       <h3 className="text-2xl text-zinc-800 mb-4">Souhrn objednávky</h3>
-
       <div className="space-y-3 mb-4">
         <div className="flex justify-between items-center pb-3 border-b border-zinc-200">
           <p className="text-zinc-700">Předplatné OSVČ365</p>
@@ -95,11 +94,9 @@ export default function OrderSummaryDesktop({
           </>
         )}
       </div>
-
       {selectedActivities.length > 0 && (
         <div className="h-px bg-gradient-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
       )}
-
       {/* Kontaktní údaje */}
       <div className="space-y-4 mb-6">
         <div>
@@ -201,14 +198,11 @@ export default function OrderSummaryDesktop({
           </div>
         </div>
       </div>
-
       <div className="h-px bg-gradient-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
-
       <div className="flex justify-between items-end mb-6">
         <p className="text-lg font-bold text-zinc-800">Celkem za rok</p>
         <p className="text-3xl font-bold text-secondary">{total} Kč</p>
       </div>
-
       {/* Checkbox pro obchodní podmínky a GDPR */}
       <div className="mb-6 flex flex-col gap-3">
         <CustomCheckbox
@@ -245,7 +239,7 @@ export default function OrderSummaryDesktop({
           label="Chci dostávat marketingovou komunikaci"
         />
       </div>
-
+      {/* Informace o promo kódech */}
       <Button
         htmlType="submit"
         text="Přejít k platbě"
@@ -253,6 +247,9 @@ export default function OrderSummaryDesktop({
         className="w-full"
         loading={isSubmitting}
       />
+      <p className="text-sm text-zinc-600 mt-6 text-center">
+        Slevové kódy lze uplatnit v platební bráně.
+      </p>
     </form>
   );
 }

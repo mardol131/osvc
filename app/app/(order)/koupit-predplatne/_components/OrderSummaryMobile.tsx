@@ -127,13 +127,13 @@ export default function OrderSummaryMobile({
 
             {selectedActivities.length > 0 && (
               <>
-                <div className="text-sm font-semibold text-zinc-500 uppercase tracking-wide pt-2">
+                <div className="text-base font-semibold text-zinc-500 uppercase tracking-wide pt-2">
                   Předměty podnikání
                 </div>
                 {selectedActivities.map((activity, index) => (
                   <div
                     key={index}
-                    className="flex justify-between items-center text-sm"
+                    className="flex justify-between items-center text-base"
                   >
                     <span className="text-zinc-600">{activity.label}</span>
                     <span className="font-semibold text-secondary">
@@ -151,14 +151,14 @@ export default function OrderSummaryMobile({
 
           {/* Kontaktní údaje */}
           <div className="space-y-4 mb-6">
-            <div className="text-sm font-semibold uppercase tracking-wide">
+            <div className="text-base font-semibold uppercase tracking-wide">
               Kontaktní údaje
             </div>
 
             <div>
               <label
                 htmlFor="email-mobile"
-                className="block text-sm font-medium text-zinc-700 mb-2"
+                className="block text-base font-medium text-zinc-700 mb-2"
               >
                 Email <span className="text-secondary">*</span>
               </label>
@@ -166,7 +166,7 @@ export default function OrderSummaryMobile({
                 type="email"
                 id="email-mobile"
                 name="email"
-                className="w-full rounded-lg border-2 border-zinc-200 px-4 py-2.5 text-sm text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
+                className="w-full rounded-lg border-2 border-zinc-200 px-4 py-2.5 text-base text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
                 placeholder="vas@email.cz"
                 required
               />
@@ -175,26 +175,28 @@ export default function OrderSummaryMobile({
             <div>
               <label
                 htmlFor="phone-mobile"
-                className="block text-sm font-medium text-zinc-700 mb-2"
+                className="block text-base font-medium text-zinc-700 mb-2"
               >
                 Telefon <span className="text-secondary">*</span>
               </label>
               <div className="flex gap-2">
-                <select
-                  name="phonePrefix"
-                  defaultValue="+420"
-                  className="w-20 shrink-0 rounded-lg border-2 border-zinc-200 px-3 py-2.5 text-sm text-zinc-800 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300 cursor-pointer bg-white"
-                >
-                  <option value="+420">+420</option>
-                  <option value="+421">+421</option>
-                </select>
+                <div className="border-2 border-zinc-200 rounded-lg px-2 flex items-center justify-center">
+                  <select
+                    name="phonePrefix"
+                    defaultValue="+420"
+                    className="w-16 shrink-0 rounded-lg text-base text-zinc-800 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300 cursor-pointer bg-white"
+                  >
+                    <option value="+420">+420</option>
+                    <option value="+421">+421</option>
+                  </select>
+                </div>
 
                 <input
                   type="tel"
                   id="phone-mobile"
                   name="phone"
                   onInput={handlePhoneInput}
-                  className="flex-1 min-w-0 rounded-lg border-2 border-zinc-200 px-4 py-2.5 text-sm text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
+                  className="flex-1 min-w-0 rounded-lg border-2 border-zinc-200 px-4 py-2.5 text-base text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
                   placeholder="123 456 789"
                   maxLength={9}
                   minLength={9}
@@ -224,7 +226,7 @@ export default function OrderSummaryMobile({
               onChange={setTermsChecked}
               required
               label={
-                <span className="text-sm text-zinc-600 leading-relaxed">
+                <span className="text-base text-zinc-600 leading-relaxed">
                   Souhlasím s{" "}
                   <a
                     href="/obchodni-podminky"
@@ -250,7 +252,7 @@ export default function OrderSummaryMobile({
               checked={marketingChecked}
               onChange={setMarketingChecked}
               label={
-                <span className="text-sm text-zinc-600 leading-relaxed">
+                <span className="text-base text-zinc-600 leading-relaxed">
                   Chci dostávat marketingovou komunikaci
                 </span>
               }
@@ -265,6 +267,9 @@ export default function OrderSummaryMobile({
               className="w-full"
               loading={isSubmitting}
             />
+            <p className="text-base text-zinc-600 mt-6 text-center">
+              Slevové kódy lze uplatnit v platební bráně.
+            </p>
           </div>
         </div>
       </form>
