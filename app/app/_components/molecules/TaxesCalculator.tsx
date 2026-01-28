@@ -19,6 +19,8 @@ import CheckboxToggle from "@/app/_components/molecules/calculator/CheckboxToggl
 import Select from "@/app/_components/molecules/calculator/Select";
 import BuyButton from "@/app/_components/atoms/BuyButton";
 import Divider from "./calculator/Divider";
+import { FaXmark } from "react-icons/fa6";
+import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 
 // Paušální daň - sazby pro 2026
 const FLAT_TAX_BAND1_MONTHLY = 9984; // Do 1 mil. Kč
@@ -34,6 +36,10 @@ const COST_PERCENT_80 = 0.8; // 80% paušál - zemědělství, lesnictví
 // Daňová sazba
 const INCOME_TAX_RATE = 0.15; // 15% sazba daně z příjmů
 
+// Minimální příjem pro vedlejší činnost (pro odhad pojištění)
+const MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY = 117521;
+const MIN_SOCIAL_MONTHLY_PAYMENT_WHEN_SECONDARY = 1574;
+
 // Sociální a zdravotní pojištění (paušální výdaje)
 // Minimální měsíční zálohy (použito pro odhad, vychází z aktuálních hodnot)
 const MIN_HEALTH_MONTHLY_MAIN = 3306;
@@ -46,23 +52,28 @@ const SOCIAL_RATE = 0.095; // 9.5% sociální (6.5% + 3%)
 // Slevy na dani
 
 const SLEVA_NA_POPLATNIKA = 30840; // ročně
-const SLEVA_NA_DITE = 15168; // ročně na 1 dítě
+const SLEVA_NA_DITE = [15204, 22320, 27840]; // první, druhé, třetí a další dítě
+const SLEVA_NA_MANZELKU = 24840;
+const SLEVA_NA_MANZELKU_DITE_ZTP = 49680;
+const INVALIDITA_1_2_STUPNE = 2520;
+const INVALIDITA_3_STUPNE = 5040;
+const DRZITEL_ZTP = 16140;
 
 const costOptions: RadioOption[] = [
   {
     value: COST_PERCENT_40,
     label: "40% paušál",
-    description: "IT služby, poradenství, konzultace",
+    description: "Autorská činnost, svobodná povolání atd.",
   },
   {
     value: COST_PERCENT_60,
     label: "60% paušál",
-    description: "Obchod, prodej, služby",
+    description: "Zejména volné živnosti",
   },
   {
     value: COST_PERCENT_80,
     label: "80% paušál",
-    description: "Zemědělství, lesnictví",
+    description: "Zemědělství, lesnictví, řemeslné atd.",
   },
 ];
 
@@ -70,17 +81,17 @@ const bandOptions: RadioOption[] = [
   {
     value: "band1",
     label: "Pásmo 1",
-    description: "do 1 mil. Kč — 8 239 Kč/měs.",
+    description: "8 239 Kč/měs.",
   },
   {
     value: "band2",
     label: "Pásmo 2",
-    description: "1–1,5 mil. Kč — 16 745 Kč/měs.",
+    description: "16 745 Kč/měs.",
   },
   {
     value: "band3",
     label: "Pásmo 3",
-    description: "1,5–2 mil. Kč — 27 139 Kč/měs.",
+    description: "27 139 Kč/měs.",
   },
 ];
 
@@ -103,6 +114,19 @@ const costDistribution: RadioOption[] = [
   },
 ];
 
+const isActivityPrimary: RadioOption[] = [
+  {
+    value: true,
+    label: "Podnikán na hlavní výdělečnou činnost",
+    description: "",
+  },
+  {
+    value: false,
+    label: "Podnikán na vedlejší výdělečnou činnost",
+    description: "",
+  },
+];
+
 type CostPercentType =
   | typeof COST_PERCENT_40
   | typeof COST_PERCENT_60
@@ -110,9 +134,17 @@ type CostPercentType =
 
 type Props = {
   modes: ("flatTax" | "costBased")[];
+  useSecondaryActivity?: boolean;
+  title: string;
+  tipBox?: string;
 };
 
-export default function TaxesCalculator({ modes }: Props) {
+export default function TaxesCalculator({
+  modes,
+  useSecondaryActivity,
+  title,
+  tipBox,
+}: Props) {
   const [annualIncome, setAnnualIncome] = useState<number>(1000000);
   const [costPercent, setCostPercent] = useState<CostPercentType>(0.6);
   const deriveBandFromIncome = (income: number) => {
@@ -126,23 +158,16 @@ export default function TaxesCalculator({ modes }: Props) {
   const [selectedCostDistribution, setSelectedCostDistribution] =
     useState<string>("undefined");
 
+  const [isSecondaryActivity, setIsSecondaryActivity] =
+    useState<boolean>(false);
   // Detailed parameters (defaults are editable)
   const [basicTaxpayer, setBasicTaxpayer] = useState<boolean>(true);
-  const [childCount, setChildCount] = useState<number>(0);
-  const [childZtpCount, setChildZtpCount] = useState<number>(0);
-  const [childZtpCreditPer, setChildZtpCreditPer] = useState<number>(50000);
   const [spouseCare, setSpouseCare] = useState<boolean>(false);
-  const [spouseCreditAmount, setSpouseCreditAmount] = useState<number>(
-    2688 * 12,
-  );
+
   const [spouseZtpCare, setSpouseZtpCare] = useState<boolean>(false);
-  const [spouseZtpAmount, setSpouseZtpAmount] = useState<number>(50000);
   const [invalid12, setInvalid12] = useState<boolean>(false);
-  const [invalid12Amount, setInvalid12Amount] = useState<number>(2500 * 12);
   const [invalid3, setInvalid3] = useState<boolean>(false);
-  const [invalid3Amount, setInvalid3Amount] = useState<number>(5000 * 12);
   const [holderZtp, setHolderZtp] = useState<boolean>(false);
-  const [holderZtpAmount, setHolderZtpAmount] = useState<number>(50000);
 
   // Nezdanitelne castky
   const [pensionPaid, setPensionPaid] = useState<number>(0);
@@ -152,6 +177,36 @@ export default function TaxesCalculator({ modes }: Props) {
   const [otherNonTaxable, setOtherNonTaxable] = useState<number>(0);
 
   const [showDetails, setShowDetails] = useState<boolean>(false);
+  const [childrenFields, setChildrenFields] = useState<
+    { id: string; age: string; ztp: boolean }[]
+  >([]);
+
+  console.log(childrenFields);
+
+  const addChildren = () => {
+    setChildrenFields((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), age: "", ztp: false },
+    ]);
+  };
+
+  const updateChildField = (id: string, value: string) => {
+    setChildrenFields((prev) =>
+      prev.map((field) => (field.id === id ? { ...field, age: value } : field)),
+    );
+  };
+
+  const changeChildZtpStatus = (id: string) => {
+    setChildrenFields((prev) =>
+      prev.map((field) =>
+        field.id === id ? { ...field, ztp: !field.ztp } : field,
+      ),
+    );
+  };
+
+  const removeChildren = (id: string) => {
+    setChildrenFields((prev) => prev.filter((field) => field.id !== id));
+  };
 
   const calculations = useMemo(() => {
     // Paušální výdaje (normální režim)
@@ -176,16 +231,34 @@ export default function TaxesCalculator({ modes }: Props) {
     // Slevy na dani (suma podle nastavení)
     const totalTaxSaleCredits =
       (basicTaxpayer ? SLEVA_NA_POPLATNIKA : 0) +
-      (spouseCare ? spouseCreditAmount : 0) +
-      (spouseZtpCare ? spouseZtpAmount : 0) +
-      (invalid12 ? invalid12Amount : 0) +
-      (invalid3 ? invalid3Amount : 0) +
-      (holderZtp ? holderZtpAmount : 0);
+      (spouseCare ? SLEVA_NA_MANZELKU : 0) +
+      (spouseZtpCare ? SLEVA_NA_MANZELKU_DITE_ZTP - SLEVA_NA_MANZELKU : 0) +
+      (invalid12 ? INVALIDITA_1_2_STUPNE : 0) +
+      (invalid3 ? INVALIDITA_3_STUPNE : 0) +
+      (holderZtp ? DRZITEL_ZTP : 0);
 
     const incomeTaxAfterCredits = Math.max(0, incomeTax - totalTaxSaleCredits);
 
-    const totalTaxBenefits =
-      childCount * SLEVA_NA_DITE + childZtpCount * (SLEVA_NA_DITE * 2);
+    let childBenefit = 0;
+
+    const childArray = [...childrenFields];
+    childArray.sort((a, b) => (a.age < b.age ? -1 : 1));
+
+    childArray.forEach((child, index) => {
+      if (child.ztp) {
+        if (index === 0) childBenefit += SLEVA_NA_DITE[0] * 2;
+        else if (index === 1) childBenefit += SLEVA_NA_DITE[1] * 2;
+        else childBenefit += SLEVA_NA_DITE[2] * 2;
+      } else {
+        if (index === 0) childBenefit += SLEVA_NA_DITE[0];
+        else if (index === 1) childBenefit += SLEVA_NA_DITE[1];
+        else childBenefit += SLEVA_NA_DITE[2];
+      }
+    });
+
+    // Výpočet běžných dětí (nezohledněných ZTP)
+
+    const totalTaxBenefits = childBenefit;
 
     const incomeTaxAfterBenefits = incomeTaxAfterCredits - totalTaxBenefits;
 
@@ -238,6 +311,7 @@ export default function TaxesCalculator({ modes }: Props) {
       taxableProfit,
       incomeTaxAfterCredits,
       incomeTaxAfterBenefits,
+      childBenefits: totalTaxBenefits,
     };
   }, [
     annualIncome,
@@ -249,19 +323,12 @@ export default function TaxesCalculator({ modes }: Props) {
     interestPaid,
     otherNonTaxable,
     basicTaxpayer,
-    childCount,
-    childZtpCount,
-    childZtpCreditPer,
     spouseCare,
-    spouseCreditAmount,
     spouseZtpCare,
-    spouseZtpAmount,
     invalid12,
-    invalid12Amount,
     invalid3,
-    invalid3Amount,
     holderZtp,
-    holderZtpAmount,
+    childrenFields,
   ]);
 
   const flatTaxCalculations = useMemo(() => {
@@ -332,16 +399,6 @@ export default function TaxesCalculator({ modes }: Props) {
     });
   };
 
-  const header = useMemo(() => {
-    if (modes.length === 2) {
-      return "Paušální daň vs. paušální výdaje";
-    } else if (modes[0] === "flatTax") {
-      return "Kalkulačka paušální daně";
-    } else {
-      return "Daňová kalkulačka";
-    }
-  }, [modes]);
-
   useEffect(() => {
     if (annualIncome <= 1000000) {
       setSelectedBand("band1");
@@ -372,14 +429,14 @@ export default function TaxesCalculator({ modes }: Props) {
   }, [annualIncome, selectedCostDistribution]);
   return (
     <div className="bg-white rounded-2xl border-2 border-zinc-200 p-8 md:p-12">
-      <h2 className="text-3xl md:text-4xl font-bebas mb-8">{header}</h2>
+      <h2 className="text-3xl md:text-4xl font-bebas mb-8">{title}</h2>
       {/* Input - Roční příjmy */}
       <div className="mb-8">
         <RangeInput
           label="Roční příjmy"
           min={100000}
           max={2400000}
-          step={50000}
+          step={30000}
           value={annualIncome}
           onChange={handleSliderChange}
           marks={[
@@ -412,6 +469,20 @@ export default function TaxesCalculator({ modes }: Props) {
         </div>
       )}
       <Divider />
+      {useSecondaryActivity && (
+        <>
+          <div className={`grid gap-6`}>
+            <RadioGroup
+              label="Je vaše podnikání hlavní nebo vedlejší výdělečná činnost?"
+              name="costDistribution"
+              value={isSecondaryActivity}
+              onChange={(val) => setIsSecondaryActivity(val === "true")}
+              options={isActivityPrimary}
+            />
+          </div>
+          <Divider />
+        </>
+      )}
       {modes.includes("flatTax") && (
         <>
           <div className={`grid gap-6`}>
@@ -428,7 +499,7 @@ export default function TaxesCalculator({ modes }: Props) {
         </>
       )}
       <div
-        className={`grid ${modes.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"} gap-6`}
+        className={`grid ${modes.includes("costBased") && modes.includes("flatTax") ? "md:grid-cols-2" : "md:grid-cols-1"} gap-6`}
       >
         {modes.includes("costBased") && (
           <RadioGroup
@@ -478,103 +549,97 @@ export default function TaxesCalculator({ modes }: Props) {
                       label="Na manžela/manželku pečující o dítě do 3 let"
                       checked={spouseCare}
                       onChange={setSpouseCare}
-                      amount={spouseCreditAmount}
+                      amount={SLEVA_NA_MANZELKU}
                     />
                     <CheckboxToggle
-                      label="Manžel/manželka s průkazem ZTP/P pečující o dítě"
+                      label="Manžel/manželka s průkazem ZTP/P, navyšuje se sleva"
                       checked={spouseZtpCare}
                       onChange={setSpouseZtpCare}
-                      amount={spouseZtpAmount}
+                      amount={SLEVA_NA_MANZELKU_DITE_ZTP - SLEVA_NA_MANZELKU}
                     />
                     <CheckboxToggle
                       label="Invalidní důchod 1. nebo 2. stupně"
                       checked={invalid12}
                       onChange={setInvalid12}
-                      amount={invalid12Amount}
+                      amount={INVALIDITA_1_2_STUPNE}
                     />
                     <CheckboxToggle
                       label="Invalidní důchod 3. stupně"
                       checked={invalid3}
                       onChange={setInvalid3}
-                      amount={invalid3Amount}
+                      amount={INVALIDITA_3_STUPNE}
                     />
                     <CheckboxToggle
                       label="Držitel průkazu ZTP/P"
                       checked={holderZtp}
                       onChange={setHolderZtp}
-                      amount={holderZtpAmount}
+                      amount={DRZITEL_ZTP}
                     />
                   </div>
                   <div className="flex flex-col gap-3">
                     <p className="font-semibold mb-2">Počet dětí</p>
+                    <p className="text-base text-textP mb-4">
+                      Aby byl výpočet přesný, je nutné vyplnit i věk dětí kvůli
+                      určení pořadí a výši slevy.
+                    </p>
+
                     <div className="flex flex-row gap-4 items-center justify-between">
-                      <div className="flex gap-4 items-center">
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor="childCount"
-                            className="text-xs text-zinc-600 mb-1"
-                          >
-                            Počet dětí
-                          </label>
-                          <div className="border border-zinc-300 rounded-lg px-3 py-2 min-w-[120px] bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-                            <select
-                              className="w-full"
-                              id="childCount"
-                              value={childCount}
-                              onChange={(e) => {
-                                const newChildCount = Number(e.target.value);
-                                setChildCount(newChildCount);
-                                if (childZtpCount > newChildCount) {
-                                  setChildZtpCount(newChildCount);
-                                }
-                              }}
-                            >
-                              {Array.from({ length: 11 }, (_, i) => (
-                                <option key={i} value={i}>
-                                  {i}
-                                </option>
-                              ))}
-                            </select>
+                      <div className="flex flex-col gap-4 items-start">
+                        {childrenFields.map((field, index) => (
+                          <div key={field.id}>
+                            <div className="flex gap-3 items-center">
+                              <p className="text-sm text-primary my-2">
+                                {`${index + 1}. dítě:`}
+                              </p>
+                              <FaXmark
+                                className="text-rose-800 hover:scale-105 cursor-pointer transition-all ease-in-out"
+                                onClick={() => {
+                                  removeChildren(field.id);
+                                }}
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <input
+                                onChange={(e) => {
+                                  updateChildField(field.id, e.target.value);
+                                }}
+                                value={field.age}
+                                type="text"
+                                placeholder={"Zadejte věk dítěte"}
+                                className="w-full p-2 border-2 bg-white border-zinc-300 rounded-xl font-oswald text-lg focus:border-secondary focus:outline-none transition-colors"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => changeChildZtpStatus(field.id)}
+                                className="flex cursor-pointer items-center gap-3 text-left"
+                              >
+                                <div className="shrink-0">
+                                  {field.ztp ? (
+                                    <MdCheckBox className="w-6 h-6 text-secondary" />
+                                  ) : (
+                                    <MdCheckBoxOutlineBlank className="w-6 h-6 text-zinc-400" />
+                                  )}
+                                </div>
+                                <div className="grow">
+                                  <div className="font-medium text-sm text-primary">
+                                    ZTP
+                                  </div>
+                                </div>
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor="childZtpCount"
-                            className="text-xs text-zinc-600 mb-1"
-                          >
-                            Počet dětí ZTP/P
-                          </label>
-                          <div className="border border-zinc-300 rounded-lg px-3 py-2 min-w-[140px] bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-                            <select
-                              className="w-full"
-                              id="childZtpCount"
-                              value={childZtpCount}
-                              onChange={(e) => {
-                                const newZtpCount = Number(e.target.value);
-                                setChildZtpCount(
-                                  Math.min(newZtpCount, childCount),
-                                );
-                              }}
-                            >
-                              {Array.from(
-                                { length: childCount + 1 },
-                                (_, i) => (
-                                  <option key={i} value={i}>
-                                    {i}
-                                  </option>
-                                ),
-                              )}
-                            </select>
-                          </div>
-                        </div>
+                        ))}
+                        <button
+                          onClick={addChildren}
+                          className="hover:bg-secondary/20 transition-all ease-in-out rounded-md p-2 cursor-pointer"
+                        >
+                          + Přidat dítě
+                        </button>
                       </div>
                       <div className="">
                         <p>Sleva na děti:&nbsp;</p>
                         <p className="">
-                          {formatCurrency(
-                            childCount * SLEVA_NA_DITE +
-                              childZtpCount * (SLEVA_NA_DITE * 2),
-                          )}
+                          {formatCurrency(calculations.childBenefits)}
                         </p>
                       </div>
                     </div>
@@ -624,12 +689,20 @@ export default function TaxesCalculator({ modes }: Props) {
         </>
       )}
       <div
-        className={`grid ${modes.length > 1 ? "md:grid-cols-2" : "grid-cols-1"} gap-6`}
+        className={`grid ${modes.includes("flatTax") && modes.includes("costBased") ? "md:grid-cols-2" : "grid-cols-1"} gap-6`}
       >
         {modes.includes("costBased") && (
           <CalculationBreakdown
             title={`Paušální výdaje (${Math.round(costPercent * 100)}%)`}
             items={[
+              {
+                type: "calculation",
+                label: "Celkový příjem",
+                value: formatCurrency(
+                  calculations.profit + calculations.expensesAmount,
+                ),
+                description: "Paušální % z příjmů",
+              },
               {
                 type: "calculation",
                 label: "Uplatněné výdaje",
@@ -702,7 +775,7 @@ export default function TaxesCalculator({ modes }: Props) {
             ]}
             result={{
               type: "calculation",
-              label: "Celkem (ročně)",
+              label: "Roční platba",
               value: formatCurrency(calculations.totalCostMethod),
               description: "Daň + pojištění",
             }}
@@ -779,7 +852,7 @@ export default function TaxesCalculator({ modes }: Props) {
                       : "text-orange-800"
                   }
                 >
-                  Měsíční úspora/prodlení
+                  Měsíční úspora
                 </span>
                 <span
                   className={`text-2xl font-bebas ${
@@ -800,7 +873,7 @@ export default function TaxesCalculator({ modes }: Props) {
                       : "text-orange-700"
                   }
                 >
-                  Roční úspora/prodlení
+                  Roční úspora
                 </span>
                 <span
                   className={`text-lg font-semibold ${
@@ -840,10 +913,10 @@ export default function TaxesCalculator({ modes }: Props) {
         </>
       )}
       {/* Tipy */}
-      {modes.length === 2 && (
+      {tipBox && (
         <>
           <Divider />
-          <TipBox text="Paušální daň je vhodná pro jednoduché podnikání bez DPH. Nemusíte podávat daňové přiznání - jen platíte měsíčně. Naopak paušální výdaje se vyplatí, máte-li vyšší skutečné náklady a chcete si uplatnit daňové slevy." />
+          <TipBox text={tipBox} />
         </>
       )}
     </div>

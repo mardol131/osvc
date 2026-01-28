@@ -21,7 +21,12 @@ export default function FlatTaxVsCostCalculator() {
         <div className="w-full max-w-3xl mx-auto">
           {/* Kalkulátor */}
 
-          <TaxesCalculator modes={["costBased", "flatTax"]} />
+          <TaxesCalculator
+            modes={["costBased", "flatTax"]}
+            useSecondaryActivity={false}
+            title="Paušální daň vs. Paušální výdaje"
+            tipBox="Paušální daň je vhodná pro jednoduché podnikání bez DPH. Nemusíte podávat daňové přiznání - jen platíte měsíčně. Naopak paušální výdaje se vyplatí, máte-li vyšší skutečné náklady a chcete si uplatnit daňové slevy."
+          />
           {/* Informační karty */}
           <div className="mt-12 grid md:grid-cols-2 gap-6">
             <InfoCard
