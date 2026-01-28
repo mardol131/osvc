@@ -26,7 +26,7 @@ export default function CheckboxToggle({
     });
 
   return (
-    <div className="flex items-center justify-between p-2 border rounded-lg bg-white">
+    <div className="flex items-center justify-between p-2 border-2 border-zinc-300 rounded-lg bg-white">
       <button
         type="button"
         onClick={() => onChange(!checked)}

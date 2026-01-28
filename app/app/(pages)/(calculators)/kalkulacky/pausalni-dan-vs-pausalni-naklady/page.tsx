@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import Button from "@/app/_components/atoms/Button";
 import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
@@ -14,7 +14,9 @@ import TipBox from "@/app/_components/molecules/calculator/TipBox";
 import RadioGroup, {
   type RadioOption,
 } from "@/app/_components/molecules/calculator/RadioGroup";
-import { TrendingUp, DollarSign, AlertCircle, Check } from "lucide-react";
+import { TrendingUp, DollarSign, AlertCircle, Check, User } from "lucide-react";
+import CheckboxToggle from "@/app/_components/molecules/calculator/CheckboxToggle";
+import Select from "@/app/_components/molecules/calculator/Select";
 
 // Paušální daň - sazby pro 2026
 const FLAT_TAX_BAND1_MONTHLY = 9984; // Do 1 mil. Kč
@@ -248,6 +250,10 @@ export default function FlatTaxVsCostCalculator() {
     setAnnualIncome(Math.min(value, FLAT_TAX_LIMIT * 1.2));
   };
 
+  useEffect(() => {
+    setSelectedBand(deriveBandFromIncome(annualIncome));
+  }, [annualIncome]);
+
   const formatCurrency = (value: number) => {
     return value.toLocaleString("cs-CZ", {
       style: "currency",
@@ -300,7 +306,20 @@ export default function FlatTaxVsCostCalculator() {
               placeholder="Zadejte roční příjmy"
               helperText="Paušální daň je k dispozici do 2 mil. Kč/rok"
             />
-
+            {!calculations.canUseFlatTax && (
+              <div className="my-8 p-4 bg-red-50 border-2 border-red-200 rounded-lg flex gap-3">
+                <AlertCircle className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-red-900">
+                    Paušální daň není dostupná
+                  </p>
+                  <p className="text-sm text-red-800 mt-1">
+                    Vaše příjmy překračují limit 2 milionů Kč. Pro vás je
+                    dostupný jen režim paušálních výdajů.
+                  </p>
+                </div>
+              </div>
+            )}
             {/* Výběr paušálu */}
             <div className="my-10 pt-8 border-t border-zinc-200">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -322,20 +341,6 @@ export default function FlatTaxVsCostCalculator() {
             </div>
 
             {/* Upozornění - překročení limitu */}
-            {!calculations.canUseFlatTax && (
-              <div className="mb-8 p-4 bg-red-50 border-2 border-red-200 rounded-lg flex gap-3">
-                <AlertCircle className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-semibold text-red-900">
-                    Paušální daň není dostupná
-                  </p>
-                  <p className="text-sm text-red-800 mt-1">
-                    Vaše příjmy překračují limit 2 milionů Kč. Pro vás je
-                    dostupný jen režim paušálních výdajů.
-                  </p>
-                </div>
-              </div>
-            )}
 
             {/* Výsledky */}
             <div className="mt-12 mb-5 space-y-6">
@@ -346,157 +351,122 @@ export default function FlatTaxVsCostCalculator() {
                 </summary>
                 <div className="mt-4 p-4 rounded-lg border border-zinc-200 bg-zinc-50">
                   <div className="space-y-4">
-                    <div>
+                    <div className="flex flex-col gap-3">
                       <p className="font-semibold mb-2">
                         Slevy na dani (automaticky dopočítané)
                       </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={basicTaxpayer}
-                              onChange={(e) =>
-                                setBasicTaxpayer(e.target.checked)
-                              }
-                            />
-                            <span>Sleva na poplatníka</span>
-                          </div>
-                          <div className="font-medium">
-                            {formatCurrency(basicTaxpayerAmount)}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-sm">Počet dětí</div>
-                            <input
-                              className="w-28 p-2 border rounded"
-                              type="number"
-                              min={0}
-                              value={childCount}
-                              onChange={(e) =>
-                                setChildCount(Number(e.target.value))
-                              }
-                            />
-                          </div>
-                          <div className="text-right">
-                            <div className="text-sm">Sleva na 1 dítě</div>
-                            <div className="font-medium">
-                              {formatCurrency(childCreditPer)}
+                      <CheckboxToggle
+                        label="Sleva na poplatníka"
+                        checked={basicTaxpayer}
+                        onChange={setBasicTaxpayer}
+                        amount={basicTaxpayerAmount}
+                      />
+                      <CheckboxToggle
+                        label="Na manžela/manželku pečující o dítě do 3 let"
+                        checked={spouseCare}
+                        onChange={setSpouseCare}
+                        amount={spouseCreditAmount}
+                      />
+                      <CheckboxToggle
+                        label="Manžel/manželka s průkazem ZTP/P pečující o dítě"
+                        checked={spouseZtpCare}
+                        onChange={setSpouseZtpCare}
+                        amount={spouseZtpAmount}
+                      />
+                      <CheckboxToggle
+                        label="Invalidní důchod 1. nebo 2. stupně"
+                        checked={invalid12}
+                        onChange={setInvalid12}
+                        amount={invalid12Amount}
+                      />
+                      <CheckboxToggle
+                        label="Invalidní důchod 3. stupně"
+                        checked={invalid3}
+                        onChange={setInvalid3}
+                        amount={invalid3Amount}
+                      />
+                      <CheckboxToggle
+                        label="Držitel průkazu ZTP/P"
+                        checked={holderZtp}
+                        onChange={setHolderZtp}
+                        amount={holderZtpAmount}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <p className="font-semibold mb-2">Počet dětí</p>
+                      <div className="flex flex-row gap-4 items-center justify-between">
+                        <div className="flex gap-4 items-center">
+                          <div className="flex flex-col">
+                            <label
+                              htmlFor="childCount"
+                              className="text-xs text-zinc-600 mb-1"
+                            >
+                              Počet dětí
+                            </label>
+                            <div className="border border-zinc-300 rounded-lg px-3 py-2 min-w-[120px] bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+                              <select
+                                className="w-full"
+                                id="childCount"
+                                value={childCount}
+                                onChange={(e) => {
+                                  const newChildCount = Number(e.target.value);
+                                  setChildCount(newChildCount);
+                                  if (childZtpCount > newChildCount) {
+                                    setChildZtpCount(newChildCount);
+                                  }
+                                }}
+                              >
+                                {Array.from({ length: 11 }, (_, i) => (
+                                  <option key={i} value={i}>
+                                    {i}
+                                  </option>
+                                ))}
+                              </select>
                             </div>
-                            <div className="text-xs text-textP">
-                              Celkem:{" "}
-                              {formatCurrency(childCount * childCreditPer)}
+                          </div>
+                          <div className="flex flex-col">
+                            <label
+                              htmlFor="childZtpCount"
+                              className="text-xs text-zinc-600 mb-1"
+                            >
+                              Počet dětí ZTP/P
+                            </label>
+                            <div className="border border-zinc-300 rounded-lg px-3 py-2 min-w-[140px] bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+                              <select
+                                className="w-full"
+                                id="childZtpCount"
+                                value={childZtpCount}
+                                onChange={(e) => {
+                                  const newZtpCount = Number(e.target.value);
+                                  setChildZtpCount(
+                                    Math.min(newZtpCount, childCount),
+                                  );
+                                }}
+                              >
+                                {Array.from(
+                                  { length: childCount + 1 },
+                                  (_, i) => (
+                                    <option key={i} value={i}>
+                                      {i}
+                                    </option>
+                                  ),
+                                )}
+                              </select>
                             </div>
                           </div>
                         </div>
-
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-sm">Počet dětí ZTP/P</div>
-                            <input
-                              className="w-28 p-2 border rounded"
-                              type="number"
-                              min={0}
-                              value={childZtpCount}
-                              onChange={(e) =>
-                                setChildZtpCount(Number(e.target.value))
-                              }
-                            />
-                          </div>
-                          <div className="text-right">
-                            <div className="text-sm">Sleva ZTP/P na 1 dítě</div>
-                            <div className="font-medium">
-                              {formatCurrency(childZtpCreditPer)}
-                            </div>
-                            <div className="text-xs text-textP">
-                              Celkem:{" "}
-                              {formatCurrency(
-                                childZtpCount * childZtpCreditPer,
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={spouseCare}
-                              onChange={(e) => setSpouseCare(e.target.checked)}
-                            />
-                            <span>
-                              Na manžela/manželku pečující o dítě do 3 let
-                            </span>
-                          </div>
-                          <div className="font-medium">
-                            {formatCurrency(spouseCreditAmount)}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={spouseZtpCare}
-                              onChange={(e) =>
-                                setSpouseZtpCare(e.target.checked)
-                              }
-                            />
-                            <span>
-                              Manžel/manželka s průkazem ZTP/P pečující o dítě
-                            </span>
-                          </div>
-                          <div className="font-medium">
-                            {formatCurrency(spouseZtpAmount)}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={invalid12}
-                              onChange={(e) => setInvalid12(e.target.checked)}
-                            />
-                            <span>Invalidní důchod 1. nebo 2. stupně</span>
-                          </div>
-                          <div className="font-medium">
-                            {formatCurrency(invalid12Amount)}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={invalid3}
-                              onChange={(e) => setInvalid3(e.target.checked)}
-                            />
-                            <span>Invalidní důchod 3. stupně</span>
-                          </div>
-                          <div className="font-medium">
-                            {formatCurrency(invalid3Amount)}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={holderZtp}
-                              onChange={(e) => setHolderZtp(e.target.checked)}
-                            />
-                            <span>Držitel průkazu ZTP/P</span>
-                          </div>
-                          <div className="font-medium">
-                            {formatCurrency(holderZtpAmount)}
-                          </div>
+                        <div className="">
+                          <p>Sleva na děti:&nbsp;</p>
+                          <p className="">
+                            {formatCurrency(
+                              childCount * childCreditPer +
+                                childZtpCount *
+                                  (childZtpCreditPer - childCreditPer),
+                            )}
+                          </p>
                         </div>
                       </div>
                     </div>
-
                     <div>
                       <p className="font-semibold mb-2">
                         Nezdanitelné částky (zadejte ročně)
@@ -506,31 +476,31 @@ export default function FlatTaxVsCostCalculator() {
                           value={pensionPaid}
                           onChange={setPensionPaid}
                           placeholder="Zaplacené penzijní (Kč/rok)"
-                          helperText="Ročně"
+                          label="Zaplacené penzijní připojištění"
                         />
                         <NumberInput
                           value={investmentPaid}
                           onChange={setInvestmentPaid}
                           placeholder="Zaplacené investiční (Kč/rok)"
-                          helperText="Ročně"
+                          label="Zaplacené investiční připojištění"
                         />
                         <NumberInput
                           value={lifeInsurancePaid}
                           onChange={setLifeInsurancePaid}
                           placeholder="Zaplacené životní připojištění (Kč/rok)"
-                          helperText="Ročně"
+                          label="Zaplacené životní připojištění"
                         />
                         <NumberInput
                           value={interestPaid}
                           onChange={setInterestPaid}
                           placeholder="Zaplacené úroky (Kč/rok)"
-                          helperText="Ročně"
+                          label="Zaplacené úroky"
                         />
                         <NumberInput
                           value={otherNonTaxable}
                           onChange={setOtherNonTaxable}
                           placeholder="Ostatní nezdanitelné (Kč/rok)"
-                          helperText="Ročně"
+                          label="Ostatní nezdanitelné částky"
                         />
                       </div>
                     </div>
