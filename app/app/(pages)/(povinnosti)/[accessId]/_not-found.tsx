@@ -6,10 +6,8 @@ type Props = {};
 export default function NotFound({}: Props) {
   return (
     <LoadErrorState
-      title="Stránku se nepodařilo najít"
-      message="Kliknutím na tlačítko níže se vrátíte na hlavní stránku."
-      buttonText="Zpět na hlavní stránku"
-      buttonLink="/"
+      title="Přístup neexistuje"
+      message="Omlouváme se, chyba je na naší straně. Zkuste to prosím později."
     />
   );
 }

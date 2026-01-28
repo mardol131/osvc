@@ -4,8 +4,15 @@ import Image from "next/image";
 import logo from "@/public/logo-osvc.png";
 import Link from "next/link";
 import Button from "../../atoms/Button";
+import { useState, useRef } from "react";
+import { IoChevronDown } from "react-icons/io5";
+import { useClickOutside } from "@/app/_hooks/useClickOutside";
 
 export default function DesktopHeader() {
+  const [toolsOpen, setToolsOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLLIElement>(null);
+
+  useClickOutside(dropdownRef, () => setToolsOpen(false));
   return (
     <header className="hidden min-h-20 bg-white/80 backdrop-blur-xl lg:flex items-center justify-center px-10 sticky top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
       <div className="max-w-wrapper w-full grid grid-cols-[1fr_3fr_1fr] items-center p-2">
@@ -42,16 +49,6 @@ export default function DesktopHeader() {
           <li>
             <button
               onClick={() => {
-                scrollToElement("about");
-              }}
-              className="hover:text-secondary transition-colors duration-200 cursor-pointer relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Proč to děláme
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => {
                 scrollToElement("faq");
               }}
               className="hover:text-secondary transition-colors duration-200 cursor-pointer relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full"
@@ -69,14 +66,56 @@ export default function DesktopHeader() {
               Kontakt
             </button>
           </li>
-          {/* <li>
-            <Link
-              href={"/hub"}
+          <li>
+            <button
+              onClick={() => {
+                scrollToElement("about");
+              }}
               className="hover:text-secondary transition-colors duration-200 cursor-pointer relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full"
             >
-              Hub
-            </Link>
-          </li> */}
+              O nás
+            </button>
+          </li>
+          <li className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => {
+                setToolsOpen(!toolsOpen);
+              }}
+              className="hover:text-secondary transition-colors duration-200 cursor-pointer relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full flex items-center gap-1"
+            >
+              Nástroje
+              <IoChevronDown
+                className={`text-base transition-transform duration-300 ${
+                  toolsOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {toolsOpen && (
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-zinc-200 rounded-lg shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="flex flex-col">
+                  <Link
+                    href="/kalkulacky/dph-registrace"
+                    className="px-4 py-3 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald border-b border-zinc-100 last:border-b-0 first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    Kalkulátor DPH
+                  </Link>
+                  <Link
+                    href="/kalkulacky/pojistne-osvč"
+                    className="px-4 py-3 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald border-b border-zinc-100 last:border-b-0 first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    Kalkulátor pojistného
+                  </Link>
+                  <Link
+                    href="/kalkulacky/zdravotni-pojisteni"
+                    className="px-4 py-3 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald border-b border-zinc-100 last:border-b-0 first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    Kalkulátor zdravotní pojistné
+                  </Link>
+                </div>
+              </div>
+            )}
+          </li>
         </ul>
 
         <Button

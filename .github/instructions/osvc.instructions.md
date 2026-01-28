@@ -17,3 +17,5 @@ When creating new files, ensure they follow the existing project structure and n
 Use kebab-case for file names and folder names.
 Dont use <strong>
 Dont use <img>, only <Image> from next/image
+Use only icons from lucide-icons package, dont use text-based emojis.
+Nepoužívat textové ikony.

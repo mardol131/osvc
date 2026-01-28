@@ -1,33 +1,19 @@
 "use client";
 
 import { scrollToElement } from "@/app/_functions/scrollToElement";
-import React, { useEffect, useRef, useState } from "react";
-import { IoMenu } from "react-icons/io5";
+import React, { useRef, useState } from "react";
+import { IoMenu, IoChevronDown } from "react-icons/io5";
 import logo from "@/public/logo-osvc.png";
 import Image from "next/image";
 import Link from "next/link";
+import { useClickOutside } from "@/app/_hooks/useClickOutside";
 
 export default function MobileHeader() {
   const [toggle, setToggle] = useState<boolean>(false);
+  const [toolsOpen, setToolsOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLUListElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setToggle(false);
-      }
-    }
-
-    if (toggle) {
-      document.addEventListener("click", handleClickOutside);
-    } else {
-      document.removeEventListener("click", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [toggle]);
+  useClickOutside(menuRef, () => setToggle(false));
 
   return (
     <header className="lg:hidden bg-white/80 backdrop-blur-xl flex items-center justify-center md:px-10 px-4 py-4 sticky top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
@@ -112,10 +98,60 @@ export default function MobileHeader() {
                 Kontakt
               </button>
             </li>
+            <li className="relative">
+              <button
+                onClick={() => {
+                  setToolsOpen(!toolsOpen);
+                }}
+                className="hover:text-secondary transition-colors duration-200 cursor-pointer text-left flex items-center gap-1"
+              >
+                Nástroje
+                <IoChevronDown
+                  className={`text-base transition-transform duration-300 ${
+                    toolsOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {toolsOpen && (
+                <div className="mt-3 ml-0 space-y-2 py-2 bg-zinc-50 rounded-lg border border-zinc-100">
+                  <Link
+                    href="/kalkulacky/dph-registrace"
+                    onClick={() => {
+                      setToggle(false);
+                      setToolsOpen(false);
+                    }}
+                    className="block px-4 py-2 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald text-left"
+                  >
+                    Kalkulátor DPH
+                  </Link>
+                  <Link
+                    href="/kalkulacky/pojistne-osvč"
+                    onClick={() => {
+                      setToggle(false);
+                      setToolsOpen(false);
+                    }}
+                    className="block px-4 py-2 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald text-left"
+                  >
+                    Kalkulátor pojistného
+                  </Link>
+                  <Link
+                    href="/kalkulacky/zdravotni-pojisteni"
+                    onClick={() => {
+                      setToggle(false);
+                      setToolsOpen(false);
+                    }}
+                    className="block px-4 py-2 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald text-left"
+                  >
+                    Kalkulátor zdravotní pojistné
+                  </Link>
+                </div>
+              )}
+            </li>
             <li className="mt-4">
               <a
                 href="/koupit-predplatne"
-                className="block text-center shadow-lg text-base font-semibold py-3 px-6 bg-gradient-to-r from-secondary to-tertiary text-white rounded-xl font-oswald hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out"
+                className="block text-center shadow-lg text-base font-semibold py-3 px-6 bg-linear-to-r from-secondary to-tertiary text-white rounded-xl font-oswald hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out"
               >
                 Koupit roční předplatné
               </a>

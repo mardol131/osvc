@@ -6,8 +6,8 @@ type Props = {};
 export default function NotFound({}: Props) {
   return (
     <LoadErrorState
-      title="Stránku se nepodařilo najít"
-      message="Kliknutím na tlačítko níže se vrátíte na hlavní stránku."
+      title="V tuto chvíli není možné předplatné koupit."
+      message="Omlouváme se, v tuto chvíli probíhá údržba webu. Vraťte se prosím později."
       buttonText="Zpět na hlavní stránku"
       buttonLink="/"
     />
