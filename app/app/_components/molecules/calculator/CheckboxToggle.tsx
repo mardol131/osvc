@@ -2,6 +2,7 @@
 
 import React from "react";
 import { CheckSquare, Square } from "lucide-react";
+import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 
 type Props = {
   label: string;
@@ -30,13 +31,13 @@ export default function CheckboxToggle({
       <button
         type="button"
         onClick={() => onChange(!checked)}
-        className="flex items-center gap-3 text-left w-full"
+        className="flex cursor-pointer items-center gap-3 text-left w-full"
       >
         <div className="shrink-0">
           {checked ? (
-            <CheckSquare className="w-6 h-6 text-secondary" />
+            <MdCheckBox className="w-6 h-6 text-secondary" />
           ) : (
-            <Square className="w-6 h-6 text-zinc-400" />
+            <MdCheckBoxOutlineBlank className="w-6 h-6 text-zinc-400" />
           )}
         </div>
         <div className="grow">

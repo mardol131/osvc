@@ -32,7 +32,7 @@ export default function NumberInput({
         value={formatNumber(value)}
         onChange={handleChange}
         placeholder={placeholder}
-        className="w-full px-4 py-4 border-2 border-zinc-300 rounded-xl font-oswald text-lg focus:border-secondary focus:outline-none transition-colors"
+        className="w-full px-4 py-4 border-2 bg-white border-zinc-300 rounded-xl font-oswald text-lg focus:border-secondary focus:outline-none transition-colors"
       />{" "}
       {helperText && <p className="text-sm text-textP mt-2">{helperText}</p>}
     </div>

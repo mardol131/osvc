@@ -6,7 +6,7 @@ const variantClasses = {
   gold: "bg-gradient-to-r from-secondary to-colorTo text-white",
   black: "bg-gradient-to-r from-primary to-zinc-800 text-white",
   outlined:
-    "bg-transparent border-2 border-secondary text-secondary hover:bg-white hover:text-zinc-900",
+    "bg-transparent border-2 border-secondary text-secondary hover:bg-white",
 };
 
 type Props = {

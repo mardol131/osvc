@@ -17,6 +17,7 @@ import RadioGroup, {
 import { TrendingUp, DollarSign, AlertCircle, Check, User } from "lucide-react";
 import CheckboxToggle from "@/app/_components/molecules/calculator/CheckboxToggle";
 import Select from "@/app/_components/molecules/calculator/Select";
+import BuyButton from "@/app/_components/atoms/BuyButton";
 
 // Paušální daň - sazby pro 2026
 const FLAT_TAX_BAND1_MONTHLY = 9984; // Do 1 mil. Kč
@@ -34,14 +35,17 @@ const INCOME_TAX_RATE = 0.15; // 15% sazba daně z příjmů
 
 // Sociální a zdravotní pojištění (paušální výdaje)
 // Minimální měsíční zálohy (použito pro odhad, vychází z aktuálních hodnot)
-const MIN_HEALTH_MONTHLY_MAIN = 876;
-const MIN_HEALTH_MONTHLY_SECONDARY = 117;
-const MIN_SOCIAL_MONTHLY_MAIN = 1944;
-const MIN_SOCIAL_MONTHLY_SECONDARY = 486;
+const MIN_HEALTH_MONTHLY_MAIN = 3306;
+const MIN_SOCIAL_MONTHLY_MAIN = 5720;
 
 // Sazby pojištění (použijeme pro výpočet z vyměřovacího základu)
 const HEALTH_RATE = 0.135; // 13.5% zdravotní
 const SOCIAL_RATE = 0.095; // 9.5% sociální (6.5% + 3%)
+
+// Slevy na dani
+
+const SLEVA_NA_POPLATNIKA = 30840; // ročně
+const SLEVA_NA_DITE = 15168; // ročně na 1 dítě
 
 const costOptions: RadioOption[] = [
   {
@@ -97,9 +101,7 @@ export default function FlatTaxVsCostCalculator() {
   );
   // Detailed parameters (defaults are editable)
   const [basicTaxpayer, setBasicTaxpayer] = useState<boolean>(true);
-  const [basicTaxpayerAmount, setBasicTaxpayerAmount] = useState<number>(30840);
   const [childCount, setChildCount] = useState<number>(0);
-  const [childCreditPer, setChildCreditPer] = useState<number>(15000);
   const [childZtpCount, setChildZtpCount] = useState<number>(0);
   const [childZtpCreditPer, setChildZtpCreditPer] = useState<number>(50000);
   const [spouseCare, setSpouseCare] = useState<boolean>(false);
@@ -122,28 +124,11 @@ export default function FlatTaxVsCostCalculator() {
   const [interestPaid, setInterestPaid] = useState<number>(0);
   const [otherNonTaxable, setOtherNonTaxable] = useState<number>(0);
 
+  const [showDetails, setShowDetails] = useState<boolean>(false);
+
   const calculations = useMemo(() => {
-    // Paušální daň - použije se vybrané pásmo (pokud je paušální daň dostupná)
-    const canUseFlatTax = annualIncome <= FLAT_TAX_LIMIT;
-    let flatTaxMonthly = 0;
-    let flatTaxBand = "";
-
-    if (canUseFlatTax) {
-      if (selectedBand === "band1") {
-        flatTaxMonthly = FLAT_TAX_BAND1_MONTHLY;
-        flatTaxBand = "do 1 mil. Kč";
-      } else if (selectedBand === "band2") {
-        flatTaxMonthly = FLAT_TAX_BAND2_MONTHLY;
-        flatTaxBand = "1 - 1,5 mil. Kč";
-      } else if (selectedBand === "band3") {
-        flatTaxMonthly = FLAT_TAX_BAND3_MONTHLY;
-        flatTaxBand = "1,5 - 2 mil. Kč";
-      }
-    }
-
-    const flatTaxAnnual = flatTaxMonthly * 12;
-
     // Paušální výdaje (normální režim)
+    //////////////////////////////////////////////////
     const expensesAmount = annualIncome * costPercent;
     const profit = Math.max(0, annualIncome - expensesAmount);
 
@@ -159,22 +144,26 @@ export default function FlatTaxVsCostCalculator() {
     const taxableProfit = Math.max(0, profit - nonTaxableTotal);
 
     // Daň před slevami
-    const taxBeforeCredits = Math.round(taxableProfit * INCOME_TAX_RATE);
+    const incomeTax = Math.round(taxableProfit * INCOME_TAX_RATE);
 
     // Slevy na dani (suma podle nastavení)
-    const totalCredits =
-      (basicTaxpayer ? basicTaxpayerAmount : 0) +
-      childCount * childCreditPer +
-      childZtpCount * childZtpCreditPer +
+    const totalTaxSaleCredits =
+      (basicTaxpayer ? SLEVA_NA_POPLATNIKA : 0) +
       (spouseCare ? spouseCreditAmount : 0) +
       (spouseZtpCare ? spouseZtpAmount : 0) +
       (invalid12 ? invalid12Amount : 0) +
       (invalid3 ? invalid3Amount : 0) +
       (holderZtp ? holderZtpAmount : 0);
 
-    const incomeTax = Math.max(0, taxBeforeCredits - totalCredits);
+    const incomeTaxAfterCredits = Math.max(0, incomeTax - totalTaxSaleCredits);
+
+    const totalTaxBenefits =
+      childCount * SLEVA_NA_DITE + childZtpCount * (SLEVA_NA_DITE * 2);
+
+    const incomeTaxAfterBenefits = incomeTaxAfterCredits - totalTaxBenefits;
 
     // Vyměřovací základ pro pojištění (zjednodušeně 50% ze zisku)
+    //////////////////////////////////////////////
     const assessmentBaseAnnual = profit * 0.5;
 
     // Zdravotní pojištění (roční) s minimem
@@ -187,9 +176,7 @@ export default function FlatTaxVsCostCalculator() {
     // Note: zde počítáme roční minima jako měsíční minima * 12
     // Ve formuláři nemáme informaci o tom, zda je hlavní/vedlejší, takže použijeme obecné hlavní minima pro hrubý odhad
     const minHealthAnnualMain = MIN_HEALTH_MONTHLY_MAIN * 12;
-    const minHealthAnnualSecondary = MIN_HEALTH_MONTHLY_SECONDARY * 12;
     const minSocialAnnualMain = MIN_SOCIAL_MONTHLY_MAIN * 12;
-    const minSocialAnnualSecondary = MIN_SOCIAL_MONTHLY_SECONDARY * 12;
 
     // For this calculator we conservatively use MAIN minima for estimation
     const healthAnnual = Math.round(
@@ -201,14 +188,7 @@ export default function FlatTaxVsCostCalculator() {
 
     const socialHealthInsurance = healthAnnual + socialAnnual;
 
-    const totalCostMethod = incomeTax + socialHealthInsurance;
-
-    // Úspora
-    const savings = totalCostMethod - flatTaxAnnual;
-    const savingsPercentage =
-      totalCostMethod > 0
-        ? ((savings / totalCostMethod) * 100).toFixed(1)
-        : "0.0";
+    const totalCostMethod = incomeTaxAfterBenefits + socialHealthInsurance;
 
     const costPercentLabel =
       costPercent === 0.4
@@ -218,12 +198,6 @@ export default function FlatTaxVsCostCalculator() {
           : "80% (zemědělství)";
 
     return {
-      // Paušální daň
-      flatTaxMonthly,
-      flatTaxAnnual,
-      flatTaxBand,
-      canUseFlatTax,
-
       // Paušální výdaje
       expensesAmount: Math.round(expensesAmount),
       profit: Math.round(profit),
@@ -234,13 +208,86 @@ export default function FlatTaxVsCostCalculator() {
       socialHealthInsurance,
       totalCostMethod,
       costPercentLabel,
+      taxableProfit,
+      incomeTaxAfterCredits,
+      incomeTaxAfterBenefits,
+    };
+  }, [
+    annualIncome,
+    costPercent,
+    selectedBand,
+    pensionPaid,
+    investmentPaid,
+    lifeInsurancePaid,
+    interestPaid,
+    otherNonTaxable,
+    basicTaxpayer,
+    childCount,
+    childZtpCount,
+    childZtpCreditPer,
+    spouseCare,
+    spouseCreditAmount,
+    spouseZtpCare,
+    spouseZtpAmount,
+    invalid12,
+    invalid12Amount,
+    invalid3,
+    invalid3Amount,
+    holderZtp,
+    holderZtpAmount,
+  ]);
 
-      // Porovnání
+  const flatTaxCalculations = useMemo(() => {
+    // Paušální daň - použije se vybrané pásmo (pokud je paušální daň dostupná)
+    const canUseFlatTax = annualIncome <= FLAT_TAX_LIMIT;
+    let flatTaxMonthly = 0;
+    let flatTaxBand = "";
+
+    if (canUseFlatTax) {
+      if (selectedBand === "band1") {
+        flatTaxMonthly = FLAT_TAX_BAND1_MONTHLY;
+        flatTaxBand = "1. pásmo";
+      } else if (selectedBand === "band2") {
+        flatTaxMonthly = FLAT_TAX_BAND2_MONTHLY;
+        flatTaxBand = "2. pásmo";
+      } else if (selectedBand === "band3") {
+        flatTaxMonthly = FLAT_TAX_BAND3_MONTHLY;
+        flatTaxBand = "3. pásmo";
+      }
+    }
+
+    const flatTaxAnnual = flatTaxMonthly * 12;
+    return { flatTaxMonthly, flatTaxAnnual, flatTaxBand, canUseFlatTax };
+  }, [annualIncome, selectedBand]);
+
+  const resultsCalculations = useMemo(() => {
+    // Úspora
+    const savings =
+      calculations.totalCostMethod - flatTaxCalculations.flatTaxAnnual;
+    const savingsPercentage =
+      calculations.totalCostMethod > 0
+        ? ((savings / calculations.totalCostMethod) * 100).toFixed(1)
+        : "0.0";
+
+    const costPercentLabel =
+      costPercent === 0.4
+        ? "40% (IT, poradenství)"
+        : costPercent === 0.6
+          ? "60% (obchod, služby)"
+          : "80% (zemědělství)";
+
+    const isFlatTaxBetter = savings > 0;
+    return {
       savings,
       savingsPercentage,
-      isFlatTaxBetter: canUseFlatTax && savings > 0,
+      costPercentLabel,
+      isFlatTaxBetter,
     };
-  }, [annualIncome, costPercent, selectedBand]);
+  }, [
+    calculations.totalCostMethod,
+    flatTaxCalculations.flatTaxAnnual,
+    costPercent,
+  ]);
 
   const handleSliderChange = (value: number) => {
     setAnnualIncome(value);
@@ -249,10 +296,6 @@ export default function FlatTaxVsCostCalculator() {
   const handleInputChange = (value: number) => {
     setAnnualIncome(Math.min(value, FLAT_TAX_LIMIT * 1.2));
   };
-
-  useEffect(() => {
-    setSelectedBand(deriveBandFromIncome(annualIncome));
-  }, [annualIncome]);
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString("cs-CZ", {
@@ -306,7 +349,7 @@ export default function FlatTaxVsCostCalculator() {
               placeholder="Zadejte roční příjmy"
               helperText="Paušální daň je k dispozici do 2 mil. Kč/rok"
             />
-            {!calculations.canUseFlatTax && (
+            {!flatTaxCalculations.canUseFlatTax && (
               <div className="my-8 p-4 bg-red-50 border-2 border-red-200 rounded-lg flex gap-3">
                 <AlertCircle className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
                 <div>
@@ -345,207 +388,255 @@ export default function FlatTaxVsCostCalculator() {
             {/* Výsledky */}
             <div className="mt-12 mb-5 space-y-6">
               {/* Rozbalitelné parametry pro přesnější výpočet */}
-              <details className="mb-6">
-                <summary className="cursor-pointer text-sm font-semibold text-primary">
-                  Parametry pro přesnější výpočet
-                </summary>
-                <div className="mt-4 p-4 rounded-lg border border-zinc-200 bg-zinc-50">
-                  <div className="space-y-4">
-                    <div className="flex flex-col gap-3">
-                      <p className="font-semibold mb-2">
-                        Slevy na dani (automaticky dopočítané)
-                      </p>
-                      <CheckboxToggle
-                        label="Sleva na poplatníka"
-                        checked={basicTaxpayer}
-                        onChange={setBasicTaxpayer}
-                        amount={basicTaxpayerAmount}
-                      />
-                      <CheckboxToggle
-                        label="Na manžela/manželku pečující o dítě do 3 let"
-                        checked={spouseCare}
-                        onChange={setSpouseCare}
-                        amount={spouseCreditAmount}
-                      />
-                      <CheckboxToggle
-                        label="Manžel/manželka s průkazem ZTP/P pečující o dítě"
-                        checked={spouseZtpCare}
-                        onChange={setSpouseZtpCare}
-                        amount={spouseZtpAmount}
-                      />
-                      <CheckboxToggle
-                        label="Invalidní důchod 1. nebo 2. stupně"
-                        checked={invalid12}
-                        onChange={setInvalid12}
-                        amount={invalid12Amount}
-                      />
-                      <CheckboxToggle
-                        label="Invalidní důchod 3. stupně"
-                        checked={invalid3}
-                        onChange={setInvalid3}
-                        amount={invalid3Amount}
-                      />
-                      <CheckboxToggle
-                        label="Držitel průkazu ZTP/P"
-                        checked={holderZtp}
-                        onChange={setHolderZtp}
-                        amount={holderZtpAmount}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-3">
-                      <p className="font-semibold mb-2">Počet dětí</p>
-                      <div className="flex flex-row gap-4 items-center justify-between">
-                        <div className="flex gap-4 items-center">
-                          <div className="flex flex-col">
-                            <label
-                              htmlFor="childCount"
-                              className="text-xs text-zinc-600 mb-1"
-                            >
-                              Počet dětí
-                            </label>
-                            <div className="border border-zinc-300 rounded-lg px-3 py-2 min-w-[120px] bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-                              <select
-                                className="w-full"
-                                id="childCount"
-                                value={childCount}
-                                onChange={(e) => {
-                                  const newChildCount = Number(e.target.value);
-                                  setChildCount(newChildCount);
-                                  if (childZtpCount > newChildCount) {
-                                    setChildZtpCount(newChildCount);
-                                  }
-                                }}
+              <div className="mb-6">
+                <Button
+                  onClick={() => setShowDetails(!showDetails)}
+                  text={`${showDetails ? "Skrýt" : "Zobrazit"} parametry pro přesnější výpočet`}
+                  variant="outlined"
+                  size="xs"
+                />
+                {showDetails && (
+                  <div className="mt-4 p-4 rounded-lg border border-zinc-200 bg-secondary/5">
+                    <div className="space-y-4">
+                      <div className="flex flex-col gap-3">
+                        <p className="font-semibold mb-2">
+                          Slevy na dani (automaticky dopočítané)
+                        </p>
+                        <CheckboxToggle
+                          label="Sleva na poplatníka"
+                          checked={basicTaxpayer}
+                          onChange={setBasicTaxpayer}
+                          amount={SLEVA_NA_POPLATNIKA}
+                        />
+                        <CheckboxToggle
+                          label="Na manžela/manželku pečující o dítě do 3 let"
+                          checked={spouseCare}
+                          onChange={setSpouseCare}
+                          amount={spouseCreditAmount}
+                        />
+                        <CheckboxToggle
+                          label="Manžel/manželka s průkazem ZTP/P pečující o dítě"
+                          checked={spouseZtpCare}
+                          onChange={setSpouseZtpCare}
+                          amount={spouseZtpAmount}
+                        />
+                        <CheckboxToggle
+                          label="Invalidní důchod 1. nebo 2. stupně"
+                          checked={invalid12}
+                          onChange={setInvalid12}
+                          amount={invalid12Amount}
+                        />
+                        <CheckboxToggle
+                          label="Invalidní důchod 3. stupně"
+                          checked={invalid3}
+                          onChange={setInvalid3}
+                          amount={invalid3Amount}
+                        />
+                        <CheckboxToggle
+                          label="Držitel průkazu ZTP/P"
+                          checked={holderZtp}
+                          onChange={setHolderZtp}
+                          amount={holderZtpAmount}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <p className="font-semibold mb-2">Počet dětí</p>
+                        <div className="flex flex-row gap-4 items-center justify-between">
+                          <div className="flex gap-4 items-center">
+                            <div className="flex flex-col">
+                              <label
+                                htmlFor="childCount"
+                                className="text-xs text-zinc-600 mb-1"
                               >
-                                {Array.from({ length: 11 }, (_, i) => (
-                                  <option key={i} value={i}>
-                                    {i}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          </div>
-                          <div className="flex flex-col">
-                            <label
-                              htmlFor="childZtpCount"
-                              className="text-xs text-zinc-600 mb-1"
-                            >
-                              Počet dětí ZTP/P
-                            </label>
-                            <div className="border border-zinc-300 rounded-lg px-3 py-2 min-w-[140px] bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-                              <select
-                                className="w-full"
-                                id="childZtpCount"
-                                value={childZtpCount}
-                                onChange={(e) => {
-                                  const newZtpCount = Number(e.target.value);
-                                  setChildZtpCount(
-                                    Math.min(newZtpCount, childCount),
-                                  );
-                                }}
-                              >
-                                {Array.from(
-                                  { length: childCount + 1 },
-                                  (_, i) => (
+                                Počet dětí
+                              </label>
+                              <div className="border border-zinc-300 rounded-lg px-3 py-2 min-w-[120px] bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+                                <select
+                                  className="w-full"
+                                  id="childCount"
+                                  value={childCount}
+                                  onChange={(e) => {
+                                    const newChildCount = Number(
+                                      e.target.value,
+                                    );
+                                    setChildCount(newChildCount);
+                                    if (childZtpCount > newChildCount) {
+                                      setChildZtpCount(newChildCount);
+                                    }
+                                  }}
+                                >
+                                  {Array.from({ length: 11 }, (_, i) => (
                                     <option key={i} value={i}>
                                       {i}
                                     </option>
-                                  ),
-                                )}
-                              </select>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            <div className="flex flex-col">
+                              <label
+                                htmlFor="childZtpCount"
+                                className="text-xs text-zinc-600 mb-1"
+                              >
+                                Počet dětí ZTP/P
+                              </label>
+                              <div className="border border-zinc-300 rounded-lg px-3 py-2 min-w-[140px] bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+                                <select
+                                  className="w-full"
+                                  id="childZtpCount"
+                                  value={childZtpCount}
+                                  onChange={(e) => {
+                                    const newZtpCount = Number(e.target.value);
+                                    setChildZtpCount(
+                                      Math.min(newZtpCount, childCount),
+                                    );
+                                  }}
+                                >
+                                  {Array.from(
+                                    { length: childCount + 1 },
+                                    (_, i) => (
+                                      <option key={i} value={i}>
+                                        {i}
+                                      </option>
+                                    ),
+                                  )}
+                                </select>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="">
-                          <p>Sleva na děti:&nbsp;</p>
-                          <p className="">
-                            {formatCurrency(
-                              childCount * childCreditPer +
-                                childZtpCount *
-                                  (childZtpCreditPer - childCreditPer),
-                            )}
-                          </p>
+                          <div className="">
+                            <p>Sleva na děti:&nbsp;</p>
+                            <p className="">
+                              {formatCurrency(
+                                childCount * SLEVA_NA_DITE +
+                                  childZtpCount * (SLEVA_NA_DITE * 2),
+                              )}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <p className="font-semibold mb-2">
-                        Nezdanitelné částky (zadejte ročně)
-                      </p>
-                      <div className="space-y-2">
-                        <NumberInput
-                          value={pensionPaid}
-                          onChange={setPensionPaid}
-                          placeholder="Zaplacené penzijní (Kč/rok)"
-                          label="Zaplacené penzijní připojištění"
-                        />
-                        <NumberInput
-                          value={investmentPaid}
-                          onChange={setInvestmentPaid}
-                          placeholder="Zaplacené investiční (Kč/rok)"
-                          label="Zaplacené investiční připojištění"
-                        />
-                        <NumberInput
-                          value={lifeInsurancePaid}
-                          onChange={setLifeInsurancePaid}
-                          placeholder="Zaplacené životní připojištění (Kč/rok)"
-                          label="Zaplacené životní připojištění"
-                        />
-                        <NumberInput
-                          value={interestPaid}
-                          onChange={setInterestPaid}
-                          placeholder="Zaplacené úroky (Kč/rok)"
-                          label="Zaplacené úroky"
-                        />
-                        <NumberInput
-                          value={otherNonTaxable}
-                          onChange={setOtherNonTaxable}
-                          placeholder="Ostatní nezdanitelné (Kč/rok)"
-                          label="Ostatní nezdanitelné částky"
-                        />
+                      <div>
+                        <p className="font-semibold mb-2">
+                          Nezdanitelné částky (zadejte ročně)
+                        </p>
+                        <div className="space-y-2">
+                          <NumberInput
+                            value={pensionPaid}
+                            onChange={setPensionPaid}
+                            placeholder="Zaplacené penzijní (Kč/rok)"
+                            label="Zaplacené penzijní připojištění"
+                          />
+                          <NumberInput
+                            value={investmentPaid}
+                            onChange={setInvestmentPaid}
+                            placeholder="Zaplacené investiční (Kč/rok)"
+                            label="Zaplacené investiční připojištění"
+                          />
+                          <NumberInput
+                            value={lifeInsurancePaid}
+                            onChange={setLifeInsurancePaid}
+                            placeholder="Zaplacené životní připojištění (Kč/rok)"
+                            label="Zaplacené životní připojištění"
+                          />
+                          <NumberInput
+                            value={interestPaid}
+                            onChange={setInterestPaid}
+                            placeholder="Zaplacené úroky (Kč/rok)"
+                            label="Zaplacené úroky"
+                          />
+                          <NumberInput
+                            value={otherNonTaxable}
+                            onChange={setOtherNonTaxable}
+                            placeholder="Ostatní nezdanitelné (Kč/rok)"
+                            label="Ostatní nezdanitelné částky"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </details>
+                )}
+              </div>
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Paušální výdaje */}
                 <CalculationBreakdown
                   title={`Paušální výdaje (${Math.round(costPercent * 100)}%)`}
                   items={[
                     {
+                      type: "calculation",
                       label: "Uplatněné výdaje",
                       value: formatCurrency(calculations.expensesAmount),
                       description: "Paušální % z příjmů",
                     },
                     {
-                      label: "Odhadovaný zisk",
+                      type: "calculation",
+
+                      label: "Zisk před zdaněním",
                       value: formatCurrency(calculations.profit),
                       description: "Příjmy − paušální výdaje",
                     },
                     {
+                      type: "divider",
+                      label: "Výpočet sociálního a zdravotního pojištění",
+                    },
+                    {
+                      type: "calculation",
+
                       label: "Vyměřovací základ (ročně)",
                       value: formatCurrency(calculations.assessmentBaseAnnual),
                       description: "50% ze zisku (odhad)",
                     },
                     {
-                      label: "Daň z příjmů",
-                      value: formatCurrency(calculations.incomeTax),
-                      description: "15% z vyměřitelného základu",
-                    },
-                    {
+                      type: "calculation",
+
                       label: "Zdravotní pojištění (ročně)",
                       value: formatCurrency(calculations.healthAnnual),
                       description:
                         "13.5% z vyměřovacího základu; minimum aplikováno",
                     },
                     {
+                      type: "calculation",
+
                       label: "Sociální pojištění (ročně)",
                       value: formatCurrency(calculations.socialAnnual),
                       description:
                         "9.5% z vyměřovacího základu; minimum aplikováno",
                     },
+                    {
+                      type: "divider",
+                      label: "Výpočet daně",
+                    },
+                    {
+                      type: "calculation",
+
+                      label: "Daňový základ",
+                      value: formatCurrency(calculations.taxableProfit),
+                      description: "Příjmy − paušální výdaje",
+                    },
+                    {
+                      type: "calculation",
+                      label: "Daň z příjmů",
+                      value: formatCurrency(calculations.incomeTax),
+                      description: "15% z vyměřitelného základu",
+                    },
+                    {
+                      type: "calculation",
+
+                      label: "Daň po slevách",
+                      value: formatCurrency(calculations.incomeTaxAfterCredits),
+                      description: "Daň po odečtení slev",
+                    },
+                    {
+                      type: "calculation",
+
+                      label: "Výsledná daň/daňový bonus (přeplatek)",
+                      value: formatCurrency(
+                        calculations.incomeTaxAfterBenefits,
+                      ),
+                      description: "Daň po daňovém zvýhodnění",
+                    },
                   ]}
                   result={{
+                    type: "calculation",
                     label: "Celkem (ročně)",
                     value: formatCurrency(calculations.totalCostMethod),
                     description: "Daň + pojištění",
@@ -557,20 +648,24 @@ export default function FlatTaxVsCostCalculator() {
                   title="Paušální daň"
                   items={[
                     {
+                      type: "calculation",
                       label: `Pásmo`,
-                      value: calculations.flatTaxBand || "—",
+                      value: flatTaxCalculations.flatTaxBand || "—",
                       description: "Vybrané pásmo paušální daně",
                     },
                     {
+                      type: "calculation",
                       label: `Měsíční platba`,
                       value:
-                        formatCurrency(calculations.flatTaxMonthly) + "/měs.",
+                        formatCurrency(flatTaxCalculations.flatTaxMonthly) +
+                        "/měs.",
                       description: "Fixní měsíční částka",
                     },
                   ]}
                   result={{
+                    type: "calculation",
                     label: "Roční platba",
-                    value: formatCurrency(calculations.flatTaxAnnual),
+                    value: formatCurrency(flatTaxCalculations.flatTaxAnnual),
                     description: "Souhrn za rok",
                   }}
                   className="flex flex-col justify-between"
@@ -581,25 +676,25 @@ export default function FlatTaxVsCostCalculator() {
               <div className="mt-8 pt-8 border-t-2 border-zinc-200">
                 <div
                   className={`p-6 rounded-xl ${
-                    calculations.isFlatTaxBetter
+                    resultsCalculations.isFlatTaxBetter
                       ? "bg-green-50 border-2 border-green-200"
                       : "bg-orange-50 border-2 border-orange-200"
                   }`}
                 >
                   <div className="flex gap-3 mb-3">
-                    {calculations.isFlatTaxBetter ? (
+                    {resultsCalculations.isFlatTaxBetter ? (
                       <Check className="w-6 h-6 text-green-600 shrink-0" />
                     ) : (
                       <TrendingUp className="w-6 h-6 text-orange-600 shrink-0" />
                     )}
                     <h4
                       className={`text-lg font-bebas ${
-                        calculations.isFlatTaxBetter
+                        resultsCalculations.isFlatTaxBetter
                           ? "text-green-900"
                           : "text-orange-900"
                       }`}
                     >
-                      {calculations.isFlatTaxBetter
+                      {resultsCalculations.isFlatTaxBetter
                         ? "Paušální daň se vám vyplatí"
                         : "Paušální výdaje jsou lepší"}
                     </h4>
@@ -609,7 +704,7 @@ export default function FlatTaxVsCostCalculator() {
                     <div className="flex justify-between items-center">
                       <span
                         className={
-                          calculations.isFlatTaxBetter
+                          resultsCalculations.isFlatTaxBetter
                             ? "text-green-800"
                             : "text-orange-800"
                         }
@@ -618,19 +713,21 @@ export default function FlatTaxVsCostCalculator() {
                       </span>
                       <span
                         className={`text-2xl font-bebas ${
-                          calculations.isFlatTaxBetter
+                          resultsCalculations.isFlatTaxBetter
                             ? "text-green-900"
                             : "text-orange-900"
                         }`}
                       >
-                        {calculations.isFlatTaxBetter ? "+" : "-"}
-                        {formatCurrency(Math.abs(calculations.savings) / 12)}
+                        {resultsCalculations.isFlatTaxBetter ? "+" : "-"}
+                        {formatCurrency(
+                          Math.abs(resultsCalculations.savings) / 12,
+                        )}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span
                         className={
-                          calculations.isFlatTaxBetter
+                          resultsCalculations.isFlatTaxBetter
                             ? "text-green-700"
                             : "text-orange-700"
                         }
@@ -639,20 +736,20 @@ export default function FlatTaxVsCostCalculator() {
                       </span>
                       <span
                         className={`text-lg font-semibold ${
-                          calculations.isFlatTaxBetter
+                          resultsCalculations.isFlatTaxBetter
                             ? "text-green-800"
                             : "text-orange-800"
                         }`}
                       >
-                        {calculations.isFlatTaxBetter ? "+" : "-"}
-                        {formatCurrency(Math.abs(calculations.savings))}
+                        {resultsCalculations.isFlatTaxBetter ? "+" : "-"}
+                        {formatCurrency(Math.abs(resultsCalculations.savings))}
                       </span>
                     </div>
-                    {calculations.savingsPercentage !== "0.0" && (
+                    {resultsCalculations.savingsPercentage !== "0.0" && (
                       <div className="flex justify-between items-center text-sm pt-2 border-t border-current/20">
                         <span
                           className={
-                            calculations.isFlatTaxBetter
+                            resultsCalculations.isFlatTaxBetter
                               ? "text-green-700"
                               : "text-orange-700"
                           }
@@ -661,12 +758,12 @@ export default function FlatTaxVsCostCalculator() {
                         </span>
                         <span
                           className={
-                            calculations.isFlatTaxBetter
+                            resultsCalculations.isFlatTaxBetter
                               ? "text-green-800"
                               : "text-orange-800"
                           }
                         >
-                          {calculations.savingsPercentage}%
+                          {resultsCalculations.savingsPercentage}%
                         </span>
                       </div>
                     )}
