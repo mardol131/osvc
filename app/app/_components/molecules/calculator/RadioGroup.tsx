@@ -12,6 +12,7 @@ type Props = {
   value: string | number | boolean;
   onChange: (value: string | number | boolean) => void;
   name: string;
+  description?: string;
 };
 
 export default function RadioGroup({
@@ -20,12 +21,16 @@ export default function RadioGroup({
   value,
   onChange,
   name,
+  description,
 }: Props) {
   return (
     <div className="flex flex-col justify-between">
       <label className="block text-lg font-semibold text-primary mb-4">
         {label}
       </label>
+      {description && (
+        <p className="text-base text-textP mb-4">{description}</p>
+      )}
       <div className="space-y-3">
         {options.map((option) => (
           <label

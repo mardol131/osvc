@@ -18,6 +18,7 @@ import { TrendingUp, DollarSign, AlertCircle, Check, User } from "lucide-react";
 import CheckboxToggle from "@/app/_components/molecules/calculator/CheckboxToggle";
 import Select from "@/app/_components/molecules/calculator/Select";
 import BuyButton from "@/app/_components/atoms/BuyButton";
+import Divider from "./calculator/Divider";
 
 // Paušální daň - sazby pro 2026
 const FLAT_TAX_BAND1_MONTHLY = 9984; // Do 1 mil. Kč
@@ -83,6 +84,25 @@ const bandOptions: RadioOption[] = [
   },
 ];
 
+const costDistribution: RadioOption[] = [
+  {
+    value: "undefined",
+    label: "Rozdělení příjmu dle výdajových paušálů neznám",
+    description: "",
+  },
+  {
+    value: "60-80",
+    label:
+      "75 % příjmů pochází z činností, na které se vztahuje 60% nebo 80% paušál",
+    description: "",
+  },
+  {
+    value: "80",
+    label: "75 % příjmů pochází z činností, na které se vztahuje 80% paušál",
+    description: "",
+  },
+];
+
 type CostPercentType =
   | typeof COST_PERCENT_40
   | typeof COST_PERCENT_60
@@ -103,6 +123,9 @@ export default function TaxesCalculator({ modes }: Props) {
   const [selectedBand, setSelectedBand] = useState<string>(() =>
     deriveBandFromIncome(1000000),
   );
+  const [selectedCostDistribution, setSelectedCostDistribution] =
+    useState<string>("undefined");
+
   // Detailed parameters (defaults are editable)
   const [basicTaxpayer, setBasicTaxpayer] = useState<boolean>(true);
   const [childCount, setChildCount] = useState<number>(0);
@@ -318,10 +341,38 @@ export default function TaxesCalculator({ modes }: Props) {
       return "Daňová kalkulačka";
     }
   }, [modes]);
+
+  useEffect(() => {
+    if (annualIncome <= 1000000) {
+      setSelectedBand("band1");
+      return;
+    } else if (annualIncome <= 1500000) {
+      if (selectedCostDistribution === "undefined") {
+        setSelectedBand("band2");
+        return;
+      } else if (selectedCostDistribution === "60-80") {
+        setSelectedBand("band1");
+        return;
+      } else if (selectedCostDistribution === "80") {
+        setSelectedBand("band1");
+        return;
+      }
+    } else if (annualIncome <= 2000000) {
+      if (selectedCostDistribution === "undefined") {
+        setSelectedBand("band3");
+        return;
+      } else if (selectedCostDistribution === "60-80") {
+        setSelectedBand("band2");
+        return;
+      } else if (selectedCostDistribution === "80") {
+        setSelectedBand("band1");
+        return;
+      }
+    }
+  }, [annualIncome, selectedCostDistribution]);
   return (
     <div className="bg-white rounded-2xl border-2 border-zinc-200 p-8 md:p-12">
       <h2 className="text-3xl md:text-4xl font-bebas mb-8">{header}</h2>
-
       {/* Input - Roční příjmy */}
       <div className="mb-8">
         <RangeInput
@@ -340,7 +391,6 @@ export default function TaxesCalculator({ modes }: Props) {
           ]}
         />
       </div>
-
       <NumberInput
         value={annualIncome}
         onChange={handleInputChange}
@@ -361,38 +411,49 @@ export default function TaxesCalculator({ modes }: Props) {
           </div>
         </div>
       )}
-      {/* Výběr paušálu */}
-      <div className="my-10 pt-8 border-t border-zinc-200">
-        <div
-          className={`grid ${modes.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"} gap-6`}
-        >
-          {modes.includes("costBased") && (
+      <Divider />
+      {modes.includes("flatTax") && (
+        <>
+          <div className={`grid gap-6`}>
             <RadioGroup
-              label="Druh paušálních výdajů (režim s paušálními výdaji)"
-              name="costPercent"
-              value={costPercent}
-              onChange={(val) => setCostPercent(val as CostPercentType)}
-              options={costOptions}
+              description="Autorská činnost a svobodná povolání mají 40% výdajový paušál. Zemědělská, lesní a vodohospodářská činnost a řemeslné živnosti mají 80% výdajový paušál. Zbytek živností má 60% výdajový paušál."
+              label="Rozdělení příjmů dle výdajového paušálu - důležité pro výpočet paušální daně"
+              name="costDistribution"
+              value={selectedCostDistribution}
+              onChange={(val) => setSelectedCostDistribution(String(val))}
+              options={costDistribution}
             />
-          )}
-          {modes.includes("flatTax") && (
-            <RadioGroup
-              label="Pásmo paušální daně"
-              name="flatTaxBand"
-              value={selectedBand}
-              onChange={(val) => setSelectedBand(String(val))}
-              options={bandOptions}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Upozornění - překročení limitu */}
-
-      {/* Výsledky */}
-      <div className="mt-12 mb-5 space-y-6">
-        {/* Rozbalitelné parametry pro přesnější výpočet */}
+          </div>
+          <Divider />
+        </>
+      )}
+      <div
+        className={`grid ${modes.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"} gap-6`}
+      >
         {modes.includes("costBased") && (
+          <RadioGroup
+            label="Druh paušálních výdajů (režim s paušálními výdaji)"
+            name="costPercent"
+            value={costPercent}
+            onChange={(val) => setCostPercent(val as CostPercentType)}
+            options={costOptions}
+          />
+        )}
+        {modes.includes("flatTax") && (
+          <RadioGroup
+            label="Pásmo paušální daně (mění se automaticky dle dříve zvolených možností)"
+            name="flatTaxBand"
+            value={selectedBand}
+            onChange={(val) => setSelectedBand(String(val))}
+            options={bandOptions}
+          />
+        )}
+      </div>
+      <Divider />
+
+      {/* Rozbalitelné parametry pro přesnější výpočet */}
+      {modes.includes("costBased") && (
+        <>
           <div className="mb-6">
             <Button
               onClick={() => setShowDetails(!showDetails)}
@@ -559,178 +620,201 @@ export default function TaxesCalculator({ modes }: Props) {
               </div>
             )}
           </div>
+          <Divider />
+        </>
+      )}
+      <div
+        className={`grid ${modes.length > 1 ? "md:grid-cols-2" : "grid-cols-1"} gap-6`}
+      >
+        {modes.includes("costBased") && (
+          <CalculationBreakdown
+            title={`Paušální výdaje (${Math.round(costPercent * 100)}%)`}
+            items={[
+              {
+                type: "calculation",
+                label: "Uplatněné výdaje",
+                value: formatCurrency(calculations.expensesAmount),
+                description: "Paušální % z příjmů",
+              },
+              {
+                type: "calculation",
+
+                label: "Zisk před zdaněním",
+                value: formatCurrency(calculations.profit),
+                description: "Příjmy − paušální výdaje",
+              },
+              {
+                type: "divider",
+                label: "Výpočet sociálního a zdravotního pojištění",
+              },
+              {
+                type: "calculation",
+
+                label: "Vyměřovací základ (ročně)",
+                value: formatCurrency(calculations.assessmentBaseAnnual),
+                description: "50% ze zisku (odhad)",
+              },
+              {
+                type: "calculation",
+
+                label: "Zdravotní pojištění (ročně)",
+                value: formatCurrency(calculations.healthAnnual),
+                description: "13.5% z vyměřovacího základu; minimum aplikováno",
+              },
+              {
+                type: "calculation",
+
+                label: "Sociální pojištění (ročně)",
+                value: formatCurrency(calculations.socialAnnual),
+                description: "9.5% z vyměřovacího základu; minimum aplikováno",
+              },
+              {
+                type: "divider",
+                label: "Výpočet daně",
+              },
+              {
+                type: "calculation",
+
+                label: "Daňový základ",
+                value: formatCurrency(calculations.taxableProfit),
+                description: "Příjmy − paušální výdaje",
+              },
+              {
+                type: "calculation",
+                label: "Daň z příjmů",
+                value: formatCurrency(calculations.incomeTax),
+                description: "15% z vyměřitelného základu",
+              },
+              {
+                type: "calculation",
+
+                label: "Daň po slevách",
+                value: formatCurrency(calculations.incomeTaxAfterCredits),
+                description: "Daň po odečtení slev",
+              },
+              {
+                type: "calculation",
+
+                label: "Výsledná daň/daňový bonus (přeplatek)",
+                value: formatCurrency(calculations.incomeTaxAfterBenefits),
+                description: "Daň po daňovém zvýhodnění",
+              },
+            ]}
+            result={{
+              type: "calculation",
+              label: "Celkem (ročně)",
+              value: formatCurrency(calculations.totalCostMethod),
+              description: "Daň + pojištění",
+            }}
+            className="flex flex-col justify-between"
+          />
         )}
-        <div
-          className={`grid ${modes.length > 1 ? "md:grid-cols-2" : "grid-cols-1"} gap-6`}
-        >
-          {modes.includes("costBased") && (
-            <CalculationBreakdown
-              title={`Paušální výdaje (${Math.round(costPercent * 100)}%)`}
-              items={[
-                {
-                  type: "calculation",
-                  label: "Uplatněné výdaje",
-                  value: formatCurrency(calculations.expensesAmount),
-                  description: "Paušální % z příjmů",
-                },
-                {
-                  type: "calculation",
-
-                  label: "Zisk před zdaněním",
-                  value: formatCurrency(calculations.profit),
-                  description: "Příjmy − paušální výdaje",
-                },
-                {
-                  type: "divider",
-                  label: "Výpočet sociálního a zdravotního pojištění",
-                },
-                {
-                  type: "calculation",
-
-                  label: "Vyměřovací základ (ročně)",
-                  value: formatCurrency(calculations.assessmentBaseAnnual),
-                  description: "50% ze zisku (odhad)",
-                },
-                {
-                  type: "calculation",
-
-                  label: "Zdravotní pojištění (ročně)",
-                  value: formatCurrency(calculations.healthAnnual),
-                  description:
-                    "13.5% z vyměřovacího základu; minimum aplikováno",
-                },
-                {
-                  type: "calculation",
-
-                  label: "Sociální pojištění (ročně)",
-                  value: formatCurrency(calculations.socialAnnual),
-                  description:
-                    "9.5% z vyměřovacího základu; minimum aplikováno",
-                },
-                {
-                  type: "divider",
-                  label: "Výpočet daně",
-                },
-                {
-                  type: "calculation",
-
-                  label: "Daňový základ",
-                  value: formatCurrency(calculations.taxableProfit),
-                  description: "Příjmy − paušální výdaje",
-                },
-                {
-                  type: "calculation",
-                  label: "Daň z příjmů",
-                  value: formatCurrency(calculations.incomeTax),
-                  description: "15% z vyměřitelného základu",
-                },
-                {
-                  type: "calculation",
-
-                  label: "Daň po slevách",
-                  value: formatCurrency(calculations.incomeTaxAfterCredits),
-                  description: "Daň po odečtení slev",
-                },
-                {
-                  type: "calculation",
-
-                  label: "Výsledná daň/daňový bonus (přeplatek)",
-                  value: formatCurrency(calculations.incomeTaxAfterBenefits),
-                  description: "Daň po daňovém zvýhodnění",
-                },
-              ]}
-              result={{
+        {/* Paušální daň */}
+        {modes.includes("flatTax") && (
+          <CalculationBreakdown
+            title="Paušální daň"
+            items={[
+              {
                 type: "calculation",
-                label: "Celkem (ročně)",
-                value: formatCurrency(calculations.totalCostMethod),
-                description: "Daň + pojištění",
-              }}
-              className="flex flex-col justify-between"
-            />
-          )}
-          {/* Paušální daň */}
-          {modes.includes("flatTax") && (
-            <CalculationBreakdown
-              title="Paušální daň"
-              items={[
-                {
-                  type: "calculation",
-                  label: `Pásmo`,
-                  value: flatTaxCalculations.flatTaxBand || "—",
-                  description: "Vybrané pásmo paušální daně",
-                },
-                {
-                  type: "calculation",
-                  label: `Měsíční platba`,
-                  value:
-                    formatCurrency(flatTaxCalculations.flatTaxMonthly) +
-                    "/měs.",
-                  description: "Fixní měsíční částka",
-                },
-              ]}
-              result={{
+                label: `Pásmo`,
+                value: flatTaxCalculations.flatTaxBand || "—",
+                description: "Vybrané pásmo paušální daně",
+              },
+              {
                 type: "calculation",
-                label: "Roční platba",
-                value: formatCurrency(flatTaxCalculations.flatTaxAnnual),
-                description: "Souhrn za rok",
-              }}
-              className="flex flex-col justify-between"
-            />
-          )}
-        </div>
+                label: `Měsíční platba`,
+                value:
+                  formatCurrency(flatTaxCalculations.flatTaxMonthly) + "/měs.",
+                description: "Fixní měsíční částka",
+              },
+            ]}
+            result={{
+              type: "calculation",
+              label: "Roční platba",
+              value: formatCurrency(flatTaxCalculations.flatTaxAnnual),
+              description: "Souhrn za rok",
+            }}
+            className="flex flex-col justify-between"
+          />
+        )}
+      </div>
 
-        {/* Porovnání */}
-        {modes.length === 2 && (
-          <div className="mt-8 pt-8 border-t-2 border-zinc-200">
-            <div
-              className={`p-6 rounded-xl ${
-                resultsCalculations.isFlatTaxBetter
-                  ? "bg-green-50 border-2 border-green-200"
-                  : "bg-orange-50 border-2 border-orange-200"
-              }`}
-            >
-              <div className="flex gap-3 mb-3">
-                {resultsCalculations.isFlatTaxBetter ? (
-                  <Check className="w-6 h-6 text-green-600 shrink-0" />
-                ) : (
-                  <TrendingUp className="w-6 h-6 text-orange-600 shrink-0" />
-                )}
-                <h4
-                  className={`text-lg font-bebas ${
+      {/* Porovnání */}
+      {modes.length === 2 && (
+        <>
+          {" "}
+          <Divider />
+          <div
+            className={`p-6 rounded-xl ${
+              resultsCalculations.isFlatTaxBetter
+                ? "bg-green-50 border-2 border-green-200"
+                : "bg-orange-50 border-2 border-orange-200"
+            }`}
+          >
+            <div className="flex gap-3 mb-3">
+              {resultsCalculations.isFlatTaxBetter ? (
+                <Check className="w-6 h-6 text-green-600 shrink-0" />
+              ) : (
+                <TrendingUp className="w-6 h-6 text-orange-600 shrink-0" />
+              )}
+              <h4
+                className={`text-lg font-bebas ${
+                  resultsCalculations.isFlatTaxBetter
+                    ? "text-green-900"
+                    : "text-orange-900"
+                }`}
+              >
+                {resultsCalculations.isFlatTaxBetter
+                  ? "Paušální daň se vám vyplatí"
+                  : "Paušální výdaje jsou lepší"}
+              </h4>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span
+                  className={
+                    resultsCalculations.isFlatTaxBetter
+                      ? "text-green-800"
+                      : "text-orange-800"
+                  }
+                >
+                  Měsíční úspora/prodlení
+                </span>
+                <span
+                  className={`text-2xl font-bebas ${
                     resultsCalculations.isFlatTaxBetter
                       ? "text-green-900"
                       : "text-orange-900"
                   }`}
                 >
-                  {resultsCalculations.isFlatTaxBetter
-                    ? "Paušální daň se vám vyplatí"
-                    : "Paušální výdaje jsou lepší"}
-                </h4>
+                  {resultsCalculations.isFlatTaxBetter ? "+" : "-"}
+                  {formatCurrency(Math.abs(resultsCalculations.savings) / 12)}
+                </span>
               </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span
-                    className={
-                      resultsCalculations.isFlatTaxBetter
-                        ? "text-green-800"
-                        : "text-orange-800"
-                    }
-                  >
-                    Měsíční úspora/prodlení
-                  </span>
-                  <span
-                    className={`text-2xl font-bebas ${
-                      resultsCalculations.isFlatTaxBetter
-                        ? "text-green-900"
-                        : "text-orange-900"
-                    }`}
-                  >
-                    {resultsCalculations.isFlatTaxBetter ? "+" : "-"}
-                    {formatCurrency(Math.abs(resultsCalculations.savings) / 12)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-sm">
+                <span
+                  className={
+                    resultsCalculations.isFlatTaxBetter
+                      ? "text-green-700"
+                      : "text-orange-700"
+                  }
+                >
+                  Roční úspora/prodlení
+                </span>
+                <span
+                  className={`text-lg font-semibold ${
+                    resultsCalculations.isFlatTaxBetter
+                      ? "text-green-800"
+                      : "text-orange-800"
+                  }`}
+                >
+                  {resultsCalculations.isFlatTaxBetter ? "+" : "-"}
+                  {formatCurrency(Math.abs(resultsCalculations.savings))}
+                </span>
+              </div>
+              {resultsCalculations.savingsPercentage !== "0.0" && (
+                <div className="flex justify-between items-center text-sm pt-2 border-t border-current/20">
                   <span
                     className={
                       resultsCalculations.isFlatTaxBetter
@@ -738,50 +822,29 @@ export default function TaxesCalculator({ modes }: Props) {
                         : "text-orange-700"
                     }
                   >
-                    Roční úspora/prodlení
+                    Procento úspory
                   </span>
                   <span
-                    className={`text-lg font-semibold ${
+                    className={
                       resultsCalculations.isFlatTaxBetter
                         ? "text-green-800"
                         : "text-orange-800"
-                    }`}
+                    }
                   >
-                    {resultsCalculations.isFlatTaxBetter ? "+" : "-"}
-                    {formatCurrency(Math.abs(resultsCalculations.savings))}
+                    {resultsCalculations.savingsPercentage}%
                   </span>
                 </div>
-                {resultsCalculations.savingsPercentage !== "0.0" && (
-                  <div className="flex justify-between items-center text-sm pt-2 border-t border-current/20">
-                    <span
-                      className={
-                        resultsCalculations.isFlatTaxBetter
-                          ? "text-green-700"
-                          : "text-orange-700"
-                      }
-                    >
-                      Procento úspory
-                    </span>
-                    <span
-                      className={
-                        resultsCalculations.isFlatTaxBetter
-                          ? "text-green-800"
-                          : "text-orange-800"
-                      }
-                    >
-                      {resultsCalculations.savingsPercentage}%
-                    </span>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           </div>
-        )}
-      </div>
-
+        </>
+      )}
       {/* Tipy */}
       {modes.length === 2 && (
-        <TipBox text="Paušální daň je vhodná pro jednoduché podnikání bez DPH. Nemusíte podávat daňové přiznání - jen platíte měsíčně. Naopak paušální výdaje se vyplatí, máte-li vyšší skutečné náklady a chcete si uplatnit daňové slevy." />
+        <>
+          <Divider />
+          <TipBox text="Paušální daň je vhodná pro jednoduché podnikání bez DPH. Nemusíte podávat daňové přiznání - jen platíte měsíčně. Naopak paušální výdaje se vyplatí, máte-li vyšší skutečné náklady a chcete si uplatnit daňové slevy." />
+        </>
       )}
     </div>
   );

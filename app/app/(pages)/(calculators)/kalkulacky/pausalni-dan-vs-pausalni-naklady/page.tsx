@@ -21,7 +21,7 @@ export default function FlatTaxVsCostCalculator() {
         <div className="w-full max-w-3xl mx-auto">
           {/* Kalkulátor */}
 
-          <TaxesCalculator modes={["flatTax", "costBased"]} />
+          <TaxesCalculator modes={["costBased", "flatTax"]} />
           {/* Informační karty */}
           <div className="mt-12 grid md:grid-cols-2 gap-6">
             <InfoCard
