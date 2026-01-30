@@ -9,6 +9,31 @@ export const metadata: Metadata = {
   title: "OSVČ365: Vy podnikáte, my hlídáme byrokracii.",
   description:
     "Jste OSVČ? Stát vás na nové povinnosti neupozorní, jen pokutuje. My hlídáme zákony a termíny, posíláme upozornění a šetříme nervy.",
+  keywords: [
+    "OSVČ",
+    "podnikání",
+    "byrokracie",
+    "daňové přiznání",
+    "evidence příjmů",
+    "upozornění na termíny",
+    "správa podnikání",
+    "účetnictví pro OSVČ",
+    "daňové povinnosti",
+    "podnikatelské služby",
+  ],
+  creator: "OSVČ365 tým",
+  applicationName: "OSVČ365",
+  category: "business",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/logo-osvc.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "OSVČ365",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({

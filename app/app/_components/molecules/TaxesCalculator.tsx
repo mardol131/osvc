@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, use } from "react";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import Button from "@/app/_components/atoms/Button";
 import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
@@ -9,7 +9,10 @@ import RangeInput from "@/app/_components/molecules/calculator/RangeInput";
 import NumberInput from "@/app/_components/molecules/calculator/NumberInput";
 import CurrencyDisplay from "@/app/_components/molecules/calculator/CurrencyDisplay";
 import InfoCard from "@/app/_components/molecules/calculator/InfoCard";
-import CalculationBreakdown from "@/app/_components/molecules/calculator/CalculationBreakdown";
+import CalculationBreakdown, {
+  BreakdownItem,
+  CalculationBreakdownProps,
+} from "@/app/_components/molecules/calculator/CalculationBreakdown";
 import TipBox from "@/app/_components/molecules/calculator/TipBox";
 import RadioGroup, {
   type RadioOption,
@@ -38,12 +41,12 @@ const INCOME_TAX_RATE = 0.15; // 15% sazba daně z příjmů
 
 // Minimální příjem pro vedlejší činnost (pro odhad pojištění)
 const MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY = 117521;
-const MIN_SOCIAL_MONTHLY_PAYMENT_WHEN_SECONDARY = 1574;
 
 // Sociální a zdravotní pojištění (paušální výdaje)
 // Minimální měsíční zálohy (použito pro odhad, vychází z aktuálních hodnot)
-const MIN_HEALTH_MONTHLY_MAIN = 3306;
-const MIN_SOCIAL_MONTHLY_MAIN = 5720;
+const MIN_HEALTH_MONTHLY_MAIN = 3143;
+const MIN_SOCIAL_MONTHLY_MAIN = 4759;
+const MIN_SOCIAL_MONTHLY_SECONDARY = 1574;
 
 // Sazby pojištění (použijeme pro výpočet z vyměřovacího základu)
 const HEALTH_RATE = 0.135; // 13.5% zdravotní
@@ -81,17 +84,17 @@ const bandOptions: RadioOption[] = [
   {
     value: "band1",
     label: "Pásmo 1",
-    description: "8 239 Kč/měs.",
+    description: `${FLAT_TAX_BAND1_MONTHLY} Kč/měs.`,
   },
   {
     value: "band2",
     label: "Pásmo 2",
-    description: "16 745 Kč/měs.",
+    description: `${FLAT_TAX_BAND2_MONTHLY} Kč/měs.`,
   },
   {
     value: "band3",
     label: "Pásmo 3",
-    description: "27 139 Kč/měs.",
+    description: `${FLAT_TAX_BAND3_MONTHLY} Kč/měs.`,
   },
 ];
 
@@ -117,13 +120,26 @@ const costDistribution: RadioOption[] = [
 const isActivityPrimary: RadioOption[] = [
   {
     value: true,
-    label: "Podnikán na hlavní výdělečnou činnost",
+    label: "Podnikám na hlavní výdělečnou činnost",
     description: "",
   },
   {
     value: false,
-    label: "Podnikán na vedlejší výdělečnou činnost",
+    label: "Podnikám na vedlejší výdělečnou činnost",
+  },
+];
+
+const useDetailedOptions: RadioOption[] = [
+  {
+    value: true,
+    label: "Chci započítávat daňové slevy a zvýhodnění",
     description: "",
+  },
+  {
+    value: false,
+    label: "Nechci započítávat daňové slevy a zvýhodnění",
+    description:
+      "Např. pokud podnikáte na vedlejší činnost a jste zároveň zaměstnanec, takže za vás uplatňuje slevy a zvýhodnění zaměstnavatel.",
   },
 ];
 
@@ -133,33 +149,53 @@ type CostPercentType =
   | typeof COST_PERCENT_80;
 
 type Props = {
-  modes: ("flatTax" | "costBased")[];
+  useCostRateRange?: boolean;
+  useCostRateOptions?: boolean;
+  useTaxRateOptions?: boolean;
+  useDetailedParameters?: boolean;
+  useEarningsBeforeTaxResult?: boolean;
+  useSocialHealthInsuranceResult?: boolean;
+  useIncomeTaxResult?: boolean;
+  useFlatTaxCalculation?: boolean;
+  useCostBasedCalculation?: boolean;
   useSecondaryActivity?: boolean;
+  allowToChoseDetailedOptions?: boolean;
   title: string;
   tipBox?: string;
 };
 
 export default function TaxesCalculator({
-  modes,
+  useCostRateRange,
+  useCostRateOptions,
+  useTaxRateOptions,
+  useDetailedParameters,
+  useEarningsBeforeTaxResult,
+  useSocialHealthInsuranceResult,
+  useIncomeTaxResult,
+  useFlatTaxCalculation,
+  useCostBasedCalculation,
   useSecondaryActivity,
+  allowToChoseDetailedOptions,
   title,
   tipBox,
 }: Props) {
-  const [annualIncome, setAnnualIncome] = useState<number>(1000000);
-  const [costPercent, setCostPercent] = useState<CostPercentType>(0.6);
+  const [annualIncome, setAnnualIncome] = useState<number>(800000);
+  const [costPercent, setCostPercent] =
+    useState<CostPercentType>(COST_PERCENT_60);
+
   const deriveBandFromIncome = (income: number) => {
     if (income <= 1000000) return "band1";
     if (income <= 1500000) return "band2";
     return "band3";
   };
   const [selectedBand, setSelectedBand] = useState<string>(() =>
-    deriveBandFromIncome(1000000),
+    deriveBandFromIncome(annualIncome),
   );
   const [selectedCostDistribution, setSelectedCostDistribution] =
     useState<string>("undefined");
 
-  const [isSecondaryActivity, setIsSecondaryActivity] =
-    useState<boolean>(false);
+  const [isPrimaryActivity, setIsPrimaryActivity] = useState<boolean>(true);
+  const [useBenefits, setUseBenefits] = useState<boolean>(true);
   // Detailed parameters (defaults are editable)
   const [basicTaxpayer, setBasicTaxpayer] = useState<boolean>(true);
   const [spouseCare, setSpouseCare] = useState<boolean>(false);
@@ -180,8 +216,6 @@ export default function TaxesCalculator({
   const [childrenFields, setChildrenFields] = useState<
     { id: string; age: string; ztp: boolean }[]
   >([]);
-
-  console.log(childrenFields);
 
   const addChildren = () => {
     setChildrenFields((prev) => [
@@ -237,7 +271,12 @@ export default function TaxesCalculator({
       (invalid3 ? INVALIDITA_3_STUPNE : 0) +
       (holderZtp ? DRZITEL_ZTP : 0);
 
-    const incomeTaxAfterCredits = Math.max(0, incomeTax - totalTaxSaleCredits);
+    let incomeTaxBeforeCredits = incomeTax;
+    if (useBenefits) {
+      incomeTaxBeforeCredits -= totalTaxSaleCredits;
+    }
+
+    const incomeTaxAfterCredits = Math.max(0, incomeTaxBeforeCredits);
 
     let childBenefit = 0;
 
@@ -260,7 +299,8 @@ export default function TaxesCalculator({
 
     const totalTaxBenefits = childBenefit;
 
-    const incomeTaxAfterBenefits = incomeTaxAfterCredits - totalTaxBenefits;
+    const incomeTaxAfterBenefits =
+      incomeTaxAfterCredits - (useBenefits ? totalTaxBenefits : 0);
 
     // Vyměřovací základ pro pojištění (zjednodušeně 50% ze zisku)
     //////////////////////////////////////////////
@@ -275,20 +315,33 @@ export default function TaxesCalculator({
     // Minima podle typu činnosti (hlavní/vedlejší) - použijeme roční hodnoty
     // Note: zde počítáme roční minima jako měsíční minima * 12
     // Ve formuláři nemáme informaci o tom, zda je hlavní/vedlejší, takže použijeme obecné hlavní minima pro hrubý odhad
-    const minHealthAnnualMain = MIN_HEALTH_MONTHLY_MAIN * 12;
-    const minSocialAnnualMain = MIN_SOCIAL_MONTHLY_MAIN * 12;
+    const minHealthAnnualMain = isPrimaryActivity
+      ? MIN_HEALTH_MONTHLY_MAIN * 12
+      : 0;
+    const minSocialAnnualMain =
+      !isPrimaryActivity &&
+      assessmentBaseAnnual > MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY
+        ? MIN_SOCIAL_MONTHLY_SECONDARY * 12
+        : MIN_SOCIAL_MONTHLY_MAIN * 12;
 
     // For this calculator we conservatively use MAIN minima for estimation
-    const healthAnnual = Math.round(
-      Math.max(healthAnnualRaw, minHealthAnnualMain),
-    );
-    const socialAnnual = Math.round(
-      Math.max(socialAnnualRaw, minSocialAnnualMain),
-    );
+    const healthAnnual = Math.max(healthAnnualRaw, minHealthAnnualMain);
+    const socialAnnual =
+      assessmentBaseAnnual < MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY
+        ? 0
+        : Math.max(socialAnnualRaw, minSocialAnnualMain);
 
     const socialHealthInsurance = healthAnnual + socialAnnual;
 
-    const totalCostMethod = incomeTaxAfterBenefits + socialHealthInsurance;
+    let totalCostMethod = 0;
+
+    if (useSocialHealthInsuranceResult) {
+      totalCostMethod += socialHealthInsurance;
+    }
+
+    if (useIncomeTaxResult) {
+      totalCostMethod += incomeTaxAfterBenefits;
+    }
 
     const costPercentLabel =
       costPercent === 0.4
@@ -299,9 +352,9 @@ export default function TaxesCalculator({
 
     return {
       // Paušální výdaje
-      expensesAmount: Math.round(expensesAmount),
-      profit: Math.round(profit),
-      assessmentBaseAnnual: Math.round(assessmentBaseAnnual),
+      expensesAmount: expensesAmount,
+      profit: profit,
+      assessmentBaseAnnual: assessmentBaseAnnual,
       incomeTax,
       healthAnnual,
       socialAnnual,
@@ -329,6 +382,8 @@ export default function TaxesCalculator({
     invalid3,
     holderZtp,
     childrenFields,
+    isPrimaryActivity,
+    useBenefits,
   ]);
 
   const flatTaxCalculations = useMemo(() => {
@@ -352,7 +407,7 @@ export default function TaxesCalculator({
 
     const flatTaxAnnual = flatTaxMonthly * 12;
     return { flatTaxMonthly, flatTaxAnnual, flatTaxBand, canUseFlatTax };
-  }, [annualIncome, selectedBand]);
+  }, [annualIncome, selectedBand, isPrimaryActivity]);
 
   const resultsCalculations = useMemo(() => {
     // Úspora
@@ -399,6 +454,116 @@ export default function TaxesCalculator({
     });
   };
 
+  const resultsCostBasedBreakdownItems: CalculationBreakdownProps["items"] =
+    useMemo(() => {
+      const array: CalculationBreakdownProps["items"] = [];
+
+      if (useEarningsBeforeTaxResult) {
+        array.push(
+          {
+            type: "calculation",
+            label: "Celkový příjem",
+            value: formatCurrency(
+              calculations.profit + calculations.expensesAmount,
+            ),
+            description: "Paušální % z příjmů",
+          },
+          {
+            type: "calculation",
+            label: "Uplatněné výdaje",
+            value: formatCurrency(calculations.expensesAmount),
+            description: "Paušální % z příjmů",
+          },
+          {
+            type: "calculation",
+
+            label: "Zisk před zdaněním",
+            value: formatCurrency(calculations.profit),
+            description: "Příjmy − paušální výdaje",
+          },
+        );
+      }
+
+      if (useSocialHealthInsuranceResult) {
+        array.push(
+          {
+            type: "divider",
+            label: "Výpočet sociálního a zdravotního pojištění",
+          },
+          {
+            type: "calculation",
+
+            label: "Vyměřovací základ (ročně)",
+            value: formatCurrency(calculations.assessmentBaseAnnual),
+            description: "50% ze zisku (odhad)",
+          },
+          {
+            type: "calculation",
+
+            label: "Zdravotní pojištění (ročně)",
+            value: formatCurrency(calculations.healthAnnual),
+            description: "13.5% z vyměřovacího základu; minimum aplikováno",
+          },
+          {
+            type: "calculation",
+
+            label: "Sociální pojištění (ročně)",
+            value: formatCurrency(calculations.socialAnnual),
+            description: "9.5% z vyměřovacího základu; minimum aplikováno",
+          },
+        );
+      }
+
+      if (useIncomeTaxResult) {
+        array.push(
+          {
+            type: "divider",
+            label: "Výpočet daně",
+          },
+          {
+            type: "calculation",
+
+            label: "Daňový základ",
+            value: formatCurrency(calculations.taxableProfit),
+            description: "Příjmy − paušální výdaje",
+          },
+          {
+            type: "calculation",
+            label: "Daň z příjmů",
+            value: formatCurrency(calculations.incomeTax),
+            description: "15% z vyměřitelného základu",
+          },
+        );
+      }
+
+      if (useIncomeTaxResult && isPrimaryActivity) {
+        array.push(
+          {
+            type: "calculation",
+
+            label: "Daň po slevách",
+            value: formatCurrency(calculations.incomeTaxAfterCredits),
+            description: "Daň po odečtení slev",
+          },
+          {
+            type: "calculation",
+
+            label: "Výsledná daň/daňový bonus (přeplatek)",
+            value: formatCurrency(calculations.incomeTaxAfterBenefits),
+            description: "Daň po daňovém zvýhodnění",
+          },
+        );
+      }
+
+      return array;
+    }, [
+      useEarningsBeforeTaxResult,
+      useSocialHealthInsuranceResult,
+      useIncomeTaxResult,
+      isPrimaryActivity,
+      calculations,
+    ]);
+
   useEffect(() => {
     if (annualIncome <= 1000000) {
       setSelectedBand("band1");
@@ -429,14 +594,16 @@ export default function TaxesCalculator({
   }, [annualIncome, selectedCostDistribution]);
   return (
     <div className="bg-white rounded-2xl border-2 border-zinc-200 p-8 md:p-12">
-      <h2 className="text-3xl md:text-4xl font-bebas mb-8">{title}</h2>
+      <h2 className="text-3xl md:text-4xl text-center font-bebas mb-8">
+        {title}
+      </h2>
       {/* Input - Roční příjmy */}
       <div className="mb-8">
         <RangeInput
           label="Roční příjmy"
           min={100000}
           max={2400000}
-          step={30000}
+          step={10000}
           value={annualIncome}
           onChange={handleSliderChange}
           marks={[
@@ -475,15 +642,31 @@ export default function TaxesCalculator({
             <RadioGroup
               label="Je vaše podnikání hlavní nebo vedlejší výdělečná činnost?"
               name="costDistribution"
-              value={isSecondaryActivity}
-              onChange={(val) => setIsSecondaryActivity(val === "true")}
+              value={isPrimaryActivity}
+              onChange={(val) =>
+                setIsPrimaryActivity(val === "true" || val === true)
+              }
               options={isActivityPrimary}
             />
           </div>
           <Divider />
         </>
       )}
-      {modes.includes("flatTax") && (
+      {allowToChoseDetailedOptions && (
+        <>
+          <div className={`grid gap-6`}>
+            <RadioGroup
+              label="Chcete využívat daňové slevy a zvýhodnění?"
+              name="useBenefits"
+              value={useBenefits}
+              onChange={(val) => setUseBenefits(val === "true" || val === true)}
+              options={useDetailedOptions}
+            />
+          </div>
+          <Divider />
+        </>
+      )}
+      {useCostRateRange && (
         <>
           <div className={`grid gap-6`}>
             <RadioGroup
@@ -499,9 +682,9 @@ export default function TaxesCalculator({
         </>
       )}
       <div
-        className={`grid ${modes.includes("costBased") && modes.includes("flatTax") ? "md:grid-cols-2" : "md:grid-cols-1"} gap-6`}
+        className={`grid ${useCostRateOptions && useTaxRateOptions ? "md:grid-cols-2" : "md:grid-cols-1"} gap-6`}
       >
-        {modes.includes("costBased") && (
+        {useCostRateOptions && (
           <RadioGroup
             label="Druh paušálních výdajů (režim s paušálními výdaji)"
             name="costPercent"
@@ -510,7 +693,7 @@ export default function TaxesCalculator({
             options={costOptions}
           />
         )}
-        {modes.includes("flatTax") && (
+        {useTaxRateOptions && (
           <RadioGroup
             label="Pásmo paušální daně (mění se automaticky dle dříve zvolených možností)"
             name="flatTaxBand"
@@ -523,7 +706,7 @@ export default function TaxesCalculator({
       <Divider />
 
       {/* Rozbalitelné parametry pro přesnější výpočet */}
-      {modes.includes("costBased") && (
+      {useDetailedParameters && isPrimaryActivity && (
         <>
           <div className="mb-6">
             <Button
@@ -689,101 +872,25 @@ export default function TaxesCalculator({
         </>
       )}
       <div
-        className={`grid ${modes.includes("flatTax") && modes.includes("costBased") ? "md:grid-cols-2" : "grid-cols-1"} gap-6`}
+        className={`grid ${useCostBasedCalculation && useFlatTaxCalculation ? "md:grid-cols-2" : "grid-cols-1"} gap-6`}
       >
-        {modes.includes("costBased") && (
+        {useCostBasedCalculation && (
           <CalculationBreakdown
             title={`Paušální výdaje (${Math.round(costPercent * 100)}%)`}
-            items={[
-              {
-                type: "calculation",
-                label: "Celkový příjem",
-                value: formatCurrency(
-                  calculations.profit + calculations.expensesAmount,
-                ),
-                description: "Paušální % z příjmů",
-              },
-              {
-                type: "calculation",
-                label: "Uplatněné výdaje",
-                value: formatCurrency(calculations.expensesAmount),
-                description: "Paušální % z příjmů",
-              },
-              {
-                type: "calculation",
-
-                label: "Zisk před zdaněním",
-                value: formatCurrency(calculations.profit),
-                description: "Příjmy − paušální výdaje",
-              },
-              {
-                type: "divider",
-                label: "Výpočet sociálního a zdravotního pojištění",
-              },
-              {
-                type: "calculation",
-
-                label: "Vyměřovací základ (ročně)",
-                value: formatCurrency(calculations.assessmentBaseAnnual),
-                description: "50% ze zisku (odhad)",
-              },
-              {
-                type: "calculation",
-
-                label: "Zdravotní pojištění (ročně)",
-                value: formatCurrency(calculations.healthAnnual),
-                description: "13.5% z vyměřovacího základu; minimum aplikováno",
-              },
-              {
-                type: "calculation",
-
-                label: "Sociální pojištění (ročně)",
-                value: formatCurrency(calculations.socialAnnual),
-                description: "9.5% z vyměřovacího základu; minimum aplikováno",
-              },
-              {
-                type: "divider",
-                label: "Výpočet daně",
-              },
-              {
-                type: "calculation",
-
-                label: "Daňový základ",
-                value: formatCurrency(calculations.taxableProfit),
-                description: "Příjmy − paušální výdaje",
-              },
-              {
-                type: "calculation",
-                label: "Daň z příjmů",
-                value: formatCurrency(calculations.incomeTax),
-                description: "15% z vyměřitelného základu",
-              },
-              {
-                type: "calculation",
-
-                label: "Daň po slevách",
-                value: formatCurrency(calculations.incomeTaxAfterCredits),
-                description: "Daň po odečtení slev",
-              },
-              {
-                type: "calculation",
-
-                label: "Výsledná daň/daňový bonus (přeplatek)",
-                value: formatCurrency(calculations.incomeTaxAfterBenefits),
-                description: "Daň po daňovém zvýhodnění",
-              },
-            ]}
+            items={resultsCostBasedBreakdownItems}
             result={{
               type: "calculation",
               label: "Roční platba",
               value: formatCurrency(calculations.totalCostMethod),
-              description: "Daň + pojištění",
+              description: !isPrimaryActivity
+                ? "Bez slev a zvýhodnění (vedlejší činnost)"
+                : "",
             }}
             className="flex flex-col justify-between"
           />
         )}
         {/* Paušální daň */}
-        {modes.includes("flatTax") && (
+        {useFlatTaxCalculation && (
           <CalculationBreakdown
             title="Paušální daň"
             items={[
@@ -805,7 +912,6 @@ export default function TaxesCalculator({
               type: "calculation",
               label: "Roční platba",
               value: formatCurrency(flatTaxCalculations.flatTaxAnnual),
-              description: "Souhrn za rok",
             }}
             className="flex flex-col justify-between"
           />
@@ -813,9 +919,8 @@ export default function TaxesCalculator({
       </div>
 
       {/* Porovnání */}
-      {modes.length === 2 && (
+      {useFlatTaxCalculation && useCostBasedCalculation && (
         <>
-          {" "}
           <Divider />
           <div
             className={`p-6 rounded-xl ${

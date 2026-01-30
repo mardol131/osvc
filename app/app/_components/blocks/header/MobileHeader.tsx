@@ -7,6 +7,7 @@ import logo from "@/public/logo-osvc.png";
 import Image from "next/image";
 import Link from "next/link";
 import { useClickOutside } from "@/app/_hooks/useClickOutside";
+import { calculators } from "@/app/_data/calculators";
 
 export default function MobileHeader() {
   const [toggle, setToggle] = useState<boolean>(false);
@@ -98,58 +99,39 @@ export default function MobileHeader() {
                 Kontakt
               </button>
             </li>
-            {process.env.NEXT_PUBLIC_IS_TEST_ENV === "true" && (
-              <li className="relative">
-                <button
-                  onClick={() => {
-                    setToolsOpen(!toolsOpen);
-                  }}
-                  className="hover:text-secondary transition-colors duration-200 cursor-pointer text-left flex items-center gap-1"
-                >
-                  Nástroje
-                  <IoChevronDown
-                    className={`text-base transition-transform duration-300 ${
-                      toolsOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+            <li className="relative">
+              <button
+                onClick={() => {
+                  setToolsOpen(!toolsOpen);
+                }}
+                className="hover:text-secondary transition-colors duration-200 cursor-pointer text-left flex items-center gap-1"
+              >
+                Nástroje
+                <IoChevronDown
+                  className={`text-base transition-transform duration-300 ${
+                    toolsOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
 
-                {toolsOpen && (
-                  <div className="mt-3 ml-0 space-y-2 py-2 bg-zinc-50 rounded-lg border border-zinc-100">
+              {toolsOpen && (
+                <div className="mt-3 ml-0 space-y-2 py-2 bg-zinc-50 rounded-lg border border-zinc-100">
+                  {calculators.map((calculator) => (
                     <Link
-                      href="/kalkulacky/dph-registrace"
+                      key={calculator.title}
+                      href={calculator.href}
                       onClick={() => {
                         setToggle(false);
                         setToolsOpen(false);
                       }}
                       className="block px-4 py-2 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald text-left"
                     >
-                      Kalkulátor DPH
+                      {calculator.title}
                     </Link>
-                    <Link
-                      href="/kalkulacky/pojistne-osvč"
-                      onClick={() => {
-                        setToggle(false);
-                        setToolsOpen(false);
-                      }}
-                      className="block px-4 py-2 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald text-left"
-                    >
-                      Kalkulátor pojistného
-                    </Link>
-                    <Link
-                      href="/kalkulacky/zdravotni-pojisteni"
-                      onClick={() => {
-                        setToggle(false);
-                        setToolsOpen(false);
-                      }}
-                      className="block px-4 py-2 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald text-left"
-                    >
-                      Kalkulátor zdravotní pojistné
-                    </Link>
-                  </div>
-                )}
-              </li>
-            )}
+                  ))}
+                </div>
+              )}
+            </li>
 
             <li className="mt-4">
               <a

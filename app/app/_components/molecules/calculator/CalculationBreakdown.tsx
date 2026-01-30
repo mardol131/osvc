@@ -9,7 +9,7 @@ export type BreakdownItem = {
   type: "calculation";
 };
 
-type Props = {
+export type CalculationBreakdownProps = {
   title: string;
   items: (
     | BreakdownItem
@@ -27,7 +27,7 @@ export default function CalculationBreakdown({
   items,
   result,
   className = "",
-}: Props) {
+}: CalculationBreakdownProps) {
   return (
     <div className={className}>
       <div>

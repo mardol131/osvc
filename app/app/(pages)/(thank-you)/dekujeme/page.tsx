@@ -1,14 +1,12 @@
-import React from "react";
-import Link from "next/link";
-import {
-  FaCheckCircle,
-  FaEnvelope,
-  FaMobileAlt,
-  FaCalendarAlt,
-  FaHome,
-} from "react-icons/fa";
-import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import Button from "@/app/_components/atoms/Button";
+import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Děkujeme za vaši objednávku",
+  description:
+    "Děkujeme za vaši objednávku! Služba je nyní aktivní. Zkontrolujte svůj e-mail pro potvrzení a další informace.",
+};
 
 export default function Page() {
   return (

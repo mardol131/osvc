@@ -6,14 +6,24 @@ import SectionWrapper from "./SectionWrapper";
 import Button from "../atoms/Button";
 
 type Props = {
-  options: {
-    heading: string;
-    buttonText: string;
-    subheading: string;
-    inputType: "email" | "text";
-    dataDestination: string;
+  options?: {
+    heading?: string;
+    buttonText?: string;
+    subheading?: string;
+    inputType?: "email" | "text";
+    dataDestination?: string;
     placeholder?: string;
   };
+};
+
+const baseData = {
+  heading: "Přihlaste se k odběru novinek",
+  subheading:
+    "Zadejte svůj e-mail a my vám budeme pravidelně zasílat novinky týkající se nových funkcí, aktualizací a tipů.",
+  buttonText: "Přihlásit se",
+  inputType: "email",
+  dataDestination: "/api/email/subscribe",
+  placeholder: "Váš e-mail",
 };
 
 export default function OneStringInputCta({ options }: Props) {
@@ -22,14 +32,17 @@ export default function OneStringInputCta({ options }: Props) {
 
   async function handleSubmit() {
     try {
-      const response = await fetch(options.dataDestination, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        options?.dataDestination || baseData.dataDestination,
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email }),
         },
-        body: JSON.stringify({ email: email }),
-      });
+      );
 
       if (response.ok) {
         setResponseOk(true);
@@ -67,22 +80,24 @@ export default function OneStringInputCta({ options }: Props) {
         ) : (
           <div className="relative z-10">
             <div className="mb-6">
-              <h3 className="mb-3">{options.heading}</h3>
-              <p className="text-zinc-300 text-lg">{options.subheading}</p>
+              <h3 className="mb-3">{options?.heading || baseData.heading}</h3>
+              <p className="text-zinc-300 text-lg">
+                {options?.subheading || baseData.subheading}
+              </p>
             </div>
             <div className="flex md:flex-row flex-col md:gap-4 gap-4">
               <input
-                placeholder={options.placeholder}
+                placeholder={options?.placeholder || baseData.placeholder}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                 }}
-                type={options.inputType}
+                type={options?.inputType || baseData.inputType}
                 className="bg-white/95 backdrop-blur-sm rounded-xl min-h-14 px-5 w-full text-primary font-oswald text-lg placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-secondary transition-all shadow-md"
               />
               <Button
                 className="md:text-nowrap"
-                text={options.buttonText}
+                text={options?.buttonText || baseData.buttonText}
                 htmlType="submit"
                 size="md"
               />

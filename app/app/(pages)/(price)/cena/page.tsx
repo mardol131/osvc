@@ -1,12 +1,16 @@
-import NumberOfClients from "@/app/_components/blocks/NumberOfClients";
+import Button from "@/app/_components/atoms/Button";
+import Comparison from "@/app/_components/sections/Comparison";
+import { servicePrice } from "@/app/_data/pricing";
 import OneStringInputCta from "../../../_components/blocks/OneStringInputCta";
 import EntitiesWithoutLegalAdvice from "../../../_components/sections/EntitiesWithoutLegalAdvice";
 import HeroMidAlign from "../../../_components/sections/hero/HeroMidAlign";
 import PricingTextAndBubble from "../../../_components/sections/pricing/PricingTextAndBubble";
-import HeroButtons from "../_components/HeroButtons";
-import Comparison from "@/app/_components/sections/Comparison";
-import Button from "@/app/_components/atoms/Button";
-import { servicePrice } from "@/app/_data/pricing";
+
+export const metadata = {
+  title: "OSVČ365: Cena",
+  description:
+    "Zjistěte cenu služby OSVČ365 a jak vám může pomoci s hlídáním vašich podnikatelských povinností.",
+};
 
 export default async function page() {
   return (

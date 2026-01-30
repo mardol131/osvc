@@ -4,6 +4,7 @@ import Button from "../../atoms/Button";
 import { HiHome, HiCurrencyDollar, HiQuestionMarkCircle } from "react-icons/hi";
 import { MdEmail, MdPhone, MdBusiness } from "react-icons/md";
 import { IoDocument } from "react-icons/io5";
+import { calculators } from "@/app/_data/calculators";
 
 export default function Footer() {
   return (
@@ -50,7 +51,6 @@ export default function Footer() {
                 Otázky
               </Link>
             </div>
-
             {/* Kontakt */}
             <div className="flex flex-col gap-4">
               <h4 className="text-textLight mb-2">Kontakt</h4>
@@ -73,7 +73,6 @@ export default function Footer() {
                 IČO: 10796509
               </p>
             </div>
-
             {/* Dokumenty */}
             <div className="flex flex-col gap-4">
               <h4 className="text-textLight mb-2">Dokumenty</h4>
@@ -94,7 +93,22 @@ export default function Footer() {
                 Ochrana osobních údajů (GDPR)
               </Link>
             </div>
-
+            <div className="flex flex-col gap-4">
+              <h4 className="text-textLight mb-2">Nástroje</h4>
+              {calculators.map((calc) => {
+                const Icon = calc.icon;
+                return (
+                  <Link
+                    key={calc.id}
+                    href={calc.href}
+                    className="text-zinc-300 hover:text-secondary transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <Icon className="text-secondary w-5 h-5" />
+                    {calc.title}
+                  </Link>
+                );
+              })}
+            </div>{" "}
             {/* Členství */}
             <div className="flex flex-col items-start gap-4">
               <h4 className="text-textLight mb-2">Váš účet</h4>
@@ -119,6 +133,8 @@ export default function Footer() {
             <p>
               © {new Date().getFullYear()} OSVČ365. Všechna práva vyhrazena.
             </p>
+            {/* Nástroje - Kalkulačky */}
+
             <p className="text-zinc-500">
               Pomáháme živnostníkům zvládat byrokracii
             </p>

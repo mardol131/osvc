@@ -15,7 +15,7 @@ export default function InfoCard({ icon, title, description }: Props) {
         </div>
         <h4 className="text-xl font-bebas">{title}</h4>
       </div>
-      <p className="text-textP text-sm leading-relaxed">{description}</p>
+      <p className="text-textP text-lg leading-relaxed">{description}</p>
     </div>
   );
 }

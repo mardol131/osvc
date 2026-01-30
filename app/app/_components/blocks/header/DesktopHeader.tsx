@@ -7,6 +7,7 @@ import Button from "../../atoms/Button";
 import { useState, useRef } from "react";
 import { IoChevronDown } from "react-icons/io5";
 import { useClickOutside } from "@/app/_hooks/useClickOutside";
+import { calculators } from "@/app/_data/calculators";
 
 export default function DesktopHeader() {
   const [toolsOpen, setToolsOpen] = useState<boolean>(false);
@@ -76,48 +77,37 @@ export default function DesktopHeader() {
               O nás
             </button>
           </li>
-          {process.env.NEXT_PUBLIC_IS_TEST_ENV === "true" && (
-            <li className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => {
-                  setToolsOpen(!toolsOpen);
-                }}
-                className="hover:text-secondary transition-colors duration-200 cursor-pointer relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full flex items-center gap-1"
-              >
-                Nástroje
-                <IoChevronDown
-                  className={`text-base transition-transform duration-300 ${
-                    toolsOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
+          <li className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => {
+                setToolsOpen(!toolsOpen);
+              }}
+              className="hover:text-secondary transition-colors duration-200 cursor-pointer relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full flex items-center gap-1"
+            >
+              Nástroje
+              <IoChevronDown
+                className={`text-base transition-transform duration-300 ${
+                  toolsOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
-              {toolsOpen && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-zinc-200 rounded-lg shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="flex flex-col">
+            {toolsOpen && (
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-zinc-200 rounded-lg shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="flex flex-col p-5 gap-4">
+                  {calculators.map((calculator) => (
                     <Link
-                      href="/kalkulacky/dph-registrace"
-                      className="px-4 py-3 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald border-b border-zinc-100 last:border-b-0 first:rounded-t-lg last:rounded-b-lg"
+                      key={calculator.title}
+                      href={calculator.href}
+                      className="hover:text-secondary transition-colors duration-200 cursor-pointer relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full"
                     >
-                      Kalkulátor DPH
+                      {calculator.title}
                     </Link>
-                    <Link
-                      href="/kalkulacky/pojistne-osvč"
-                      className="px-4 py-3 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald border-b border-zinc-100 last:border-b-0 first:rounded-t-lg last:rounded-b-lg"
-                    >
-                      Kalkulátor pojistného
-                    </Link>
-                    <Link
-                      href="/kalkulacky/zdravotni-pojisteni"
-                      className="px-4 py-3 hover:bg-secondary/10 transition-colors duration-200 text-primary font-oswald border-b border-zinc-100 last:border-b-0 first:rounded-t-lg last:rounded-b-lg"
-                    >
-                      Kalkulátor zdravotní pojistné
-                    </Link>
-                  </div>
+                  ))}
                 </div>
-              )}
-            </li>
-          )}
+              </div>
+            )}
+          </li>
         </ul>
 
         <Button

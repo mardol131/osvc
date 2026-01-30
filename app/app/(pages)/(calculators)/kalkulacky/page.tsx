@@ -3,49 +3,13 @@ import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
 import OneStringInputCta from "@/app/_components/blocks/OneStringInputCta";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import { TrendingUp, Coins, Heart, Calculator, BarChart3 } from "lucide-react";
+import { calculators } from "@/app/_data/calculators";
 
-const calculators = [
-  {
-    id: "odvody-osvc",
-    title: "Kalkulačka odvodů OSVČ",
-    description:
-      "Spočítejte si, kolik budete muset platit na sociální a zdravotní pojištění podle vašich příjmů.",
-    icon: Coins,
-    href: "/kalkulacky/odvody-osvc",
-  },
-  {
-    id: "zdravotni-pojisteni",
-    title: "Kalkulačka zdravotního pojištění",
-    description:
-      "Zjistěte částku zdravotního pojištění pro OSVČ podle vašeho odhadu příjmů.",
-    icon: Heart,
-    href: "/kalkulacky/zdravotni-pojisteni",
-  },
-  {
-    id: "socialni-pojisteni",
-    title: "Kalkulačka sociálního pojištění",
-    description:
-      "Zjistěte částku sociálního pojištění pro OSVČ podle vašeho odhadu příjmů.",
-    icon: Heart,
-    href: "/kalkulacky/socialni-pojisteni",
-  },
-  {
-    id: "dan-z-prijmu",
-    title: "Kalkulačka daně z příjmů",
-    description:
-      "Spočítejte si, kolik budete platit na dani z příjmů podle vašich tržeb a výdajů.",
-    icon: Calculator,
-    href: "/kalkulacky/dan-z-prijmu",
-  },
-  {
-    id: "pausalni-dan-vs-pausalni-naklady",
-    title: "Paušální náklady vs. paušální daň",
-    description:
-      "Porovnejte, která forma zdanění je pro vás výhodnější - paušální náklady nebo paušální daň.",
-    icon: BarChart3,
-    href: "/kalkulacky/pausalni-dan-vs-pausalni-naklady",
-  },
-];
+export const metadata = {
+  title: "OSVČ365: Kalkulačky pro OSVČ",
+  description:
+    "Objevte naše bezplatné kalkulačky pro OSVČ, které vám pomohou s výpočtem odvodů, daní a dalších podnikatelských povinností.",
+};
 
 export default function page() {
   return (
@@ -53,7 +17,7 @@ export default function page() {
       <HeroMidAlign
         options={{
           heading: "Nástroje pro OSVČ",
-          text: "Sada bezplatných kalkulaček, které vám pomůžou s nejčastějšími otázkami. Spočítejte si pokud máte povinnost DPH, kolik budete platit na pojištění, a další.",
+          text: "Sada bezplatných kalkulaček, které vám pomůžou s nejčastějšími otázkami. Spočítejte si výši plateb na sociální a zdravotní pojištění, daně z příjmu, nebo třeba porovnejte, jestli se víc vyplatí využívat paušální výdaje nebo vstoupit do režimu paušální daně.",
           buttonsColumns: 1,
         }}
       />
@@ -65,8 +29,8 @@ export default function page() {
               Dostupné kalkulačky
             </h2>
             <p className="text-lg text-textP">
-              Vyberte si kalkulačku, která vás zajímá a spočítejte si své
-              situaci.
+              Vyberte si kalkulačku, která vás zajímá a spočítejte si své daně
+              nebo odvody.
             </p>
           </div>
 

@@ -9,6 +9,11 @@ import { notFound } from "next/navigation";
 
 import EditSubscription from "./_components/EditSubscription";
 
+export const metadata = {
+  title: "OSVČ365: Měsíční přehled povinností",
+  description: "Přehled povinností na základě vašeho předplatného OSVČ365.",
+};
+
 export type CustomMessage = {
   heading: string;
   notifications: Notification[];

@@ -5,6 +5,12 @@ import { getCollection } from "@/app/_functions/backend";
 import { notFound } from "next/navigation";
 import { stringify } from "qs-esm";
 
+export const metadata = {
+  title: "Správa předplatného",
+  description:
+    "Spravujte své předměty podnikání a přizpůsobte své předplatné podle vašich potřeb.",
+};
+
 export default async function SubscriptionManagementPage({
   params,
 }: {
