@@ -8,9 +8,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}`,
     },
     {
-      url: `${baseUrl}/kalkulacky`,
-    },
-    {
       url: `${baseUrl}/koupit-predplatne`,
     },
     {
@@ -20,16 +17,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/otazky`,
     },
     {
-      url: `${baseUrl}/koupit-predplatne`,
-    },
-    {
-      url: `${baseUrl}/cena`,
-    },
-    {
       url: `${baseUrl}/obchodni-podminky.pdf`,
     },
     {
       url: `${baseUrl}/gdpr.pdf`,
+    },
+    {
+      url: `${baseUrl}/kalkulacky`,
     },
     {
       url: `${baseUrl}/kalkulacky/dan-z-prijmu`,
