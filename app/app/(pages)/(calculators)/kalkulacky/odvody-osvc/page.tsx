@@ -8,7 +8,7 @@ import { DollarSign, TrendingUp } from "lucide-react";
 export const metadata = {
   title: "OSVČ365: Odvody OSVČ",
   description:
-    "Zjistěte, jaká bude na konci roku vaše daňová povinnost a platba za sociální a zdravotní pojištění.",
+    "Zjistěte, jaká bude vaše daňová povinnost a kolik zaplatíte na sociálním a zdravotním pojištění jako OSVČ. Kalkulačka odvodů vám pomůže jednoduše spočítat všechny povinné platby a získat přehled o vašich závazcích vůči státu.",
 };
 
 export default function page() {

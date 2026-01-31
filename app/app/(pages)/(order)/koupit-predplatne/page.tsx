@@ -6,7 +6,7 @@ import { stringify } from "qs-esm";
 export const metadata = {
   title: "OSVČ365: Koupit předplatné",
   description:
-    "Zabezpečte si klidné podnikání s OSVČ365. Koupit předplatné a nechte nás hlídat vaše podnikatelské povinnosti.",
+    "Informace o předplatném služby OSVČ365. Přehled možností, výhod a postupu, jak si aktivovat službu pro automatické hlídání podnikatelských povinností a termínů.",
 };
 
 export default async function Page() {

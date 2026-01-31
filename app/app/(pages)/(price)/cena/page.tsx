@@ -9,7 +9,7 @@ import PricingTextAndBubble from "../../../_components/sections/pricing/PricingT
 export const metadata = {
   title: "OSVČ365: Cena",
   description:
-    "Zjistěte cenu služby OSVČ365 a jak vám může pomoci s hlídáním vašich podnikatelských povinností.",
+    "Aktuální ceník služby OSVČ365. Přehled roční ceny a srovnání s běžnými náklady na správu podnikatelských povinností. Informace o tom, co je v ceně zahrnuto a jaké výhody služba nabízí.",
 };
 
 export default async function page() {

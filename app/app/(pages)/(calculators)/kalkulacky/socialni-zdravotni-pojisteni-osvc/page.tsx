@@ -6,9 +6,9 @@ import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
 import { DollarSign, TrendingUp } from "lucide-react";
 
 export const metadata = {
-  title: "OSVČ365: Daň z příjmu",
+  title: "OSVČ365: Sociální a zdravotní pojištění OSVČ",
   description:
-    "Zjistěte, jaká bude na konci roku vaše daňová povinnost a platba za sociální a zdravotní pojištění.",
+    "Zjistěte, kolik musíte jako OSVČ odvádět na sociálním a zdravotním pojištění. Kalkulačka vám pomůže rychle spočítat měsíční i roční povinné platby a získat přehled o vašich závazcích vůči státu.",
 };
 
 export default function page() {

@@ -8,7 +8,7 @@ import { DollarSign, TrendingUp } from "lucide-react";
 export const metadata = {
   title: "OSVČ365: Paušální daň vs. Paušální výdaje",
   description:
-    "Porovnejte paušální daň a paušální výdaje pomocí naší kalkulačky a zjistěte, která možnost je pro vás výhodnější.",
+    "Porovnejte paušální daň a paušální výdaje pro OSVČ. Zjistěte, která varianta je pro vás výhodnější, kolik můžete ušetřit a jaké jsou hlavní rozdíly. Kalkulačka vám pomůže najít optimální daňový režim podle vaší situace.",
 };
 
 export default function page() {

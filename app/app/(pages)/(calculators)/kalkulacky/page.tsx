@@ -1,23 +1,15 @@
 import Button from "@/app/_components/atoms/Button";
-import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
 import OneStringInputCta from "@/app/_components/blocks/OneStringInputCta";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
-import {
-  TrendingUp,
-  Coins,
-  Heart,
-  Calculator,
-  BarChart3,
-  DollarSign,
-} from "lucide-react";
-import { calculators } from "@/app/_data/calculators";
 import InfoCard from "@/app/_components/molecules/calculator/InfoCard";
+import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
+import { calculators } from "@/app/_data/calculators";
 import { BiQuestionMark } from "react-icons/bi";
 
 export const metadata = {
   title: "OSVČ365: Kalkulačky pro OSVČ",
   description:
-    "Objevte naše bezplatné kalkulačky pro OSVČ, které vám pomohou s výpočtem odvodů, daní a dalších podnikatelských povinností.",
+    "Vyzkoušejte online kalkulačky pro OSVČ. Spočítejte si jednoduše daně, sociální a zdravotní pojištění nebo porovnejte různé daňové režimy. Získejte přehled o svých povinnostech a optimalizujte své podnikání.",
 };
 
 export default function page() {

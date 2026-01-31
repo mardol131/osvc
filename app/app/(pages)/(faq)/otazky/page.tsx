@@ -5,7 +5,7 @@ import Faq from "@/app/_components/sections/faq/Faq";
 export const metadata = {
   title: "OSVČ365: Často kladené otázky",
   description:
-    "Najděte odpovědi na nejčastější otázky ohledně našich služeb a předplatného.",
+    "Hledáte odpovědi na nejčastější otázky k OSVČ365? Zjistěte vše o službách, předplatném, funkcích a výhodách předplatného. Přehledné FAQ pro podnikatele a zájemce o naše služby.",
 };
 
 export default function page({}) {
@@ -14,7 +14,7 @@ export default function page({}) {
       <HeroMidAlign
         options={{
           heading: "Často kladené otázky",
-          text: "Najděte odpovědi na nejčastější otázky ohledně našich služeb a členství.",
+          text: "Najděte odpovědi na nejčastější otázky ohledně našich služeb a předplatného.",
           buttonsColumns: 1,
         }}
       />
