@@ -10,6 +10,14 @@ export const calculators = [
     href: "/kalkulacky/odvody-osvc",
   },
   {
+    id: "pausalni-dan-vs-pausalni-vydaje",
+    title: "Paušální výdaje vs. paušální daň",
+    description:
+      "Porovnejte, která forma zdanění je pro vás výhodnější - paušální výdaje nebo paušální daň.",
+    icon: Calculator,
+    href: "/kalkulacky/pausalni-dan-vs-pausalni-vydaje",
+  },
+  {
     id: "socialni-zdravotni-pojisteni",
     title: "Kalkulačka sociálního a zdravotního pojištění",
     description:
@@ -24,13 +32,5 @@ export const calculators = [
       "Spočítejte si, kolik budete platit na dani z příjmů podle vašich tržeb a výdajů.",
     icon: Calculator,
     href: "/kalkulacky/dan-z-prijmu",
-  },
-  {
-    id: "pausalni-dan-vs-pausalni-naklady",
-    title: "Paušální náklady vs. paušální daň",
-    description:
-      "Porovnejte, která forma zdanění je pro vás výhodnější - paušální náklady nebo paušální daň.",
-    icon: Calculator,
-    href: "/kalkulacky/pausalni-dan-vs-pausalni-naklady",
   },
 ];

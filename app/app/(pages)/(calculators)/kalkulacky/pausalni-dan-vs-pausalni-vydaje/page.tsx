@@ -18,7 +18,7 @@ export default function page() {
         options={{
           heading: "Paušální daň vs. Paušální výdaje",
           secondHeading: "Která varianta se vám vyplatí?",
-          text: "Porovnávejte paušální daň (zjednodušený režim bez DPH) s tradičním režimem paušálních výdajů. Zjistěte, jaký režim je pro vás výhodnější a kolik můžete měsíčně ušetřit.",
+          text: "Porovnávejte paušální daň s tradičním režimem paušálních výdajů. Zjistěte, jaký režim je pro vás výhodnější a kolik můžete měsíčně ušetřit.",
           buttonsColumns: 1,
         }}
       />

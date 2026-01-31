@@ -88,7 +88,6 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
-  sharp,
   plugins: [],
-  cors: ['http://localhost:3000', process.env.NEXT_PUBLIC_WEBSITE_URL || ''],
+  cors: ['http://localhost:3000', process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://osvc365.cz'],
 })

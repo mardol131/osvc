@@ -1,102 +1,101 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, use } from "react";
-import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import Button from "@/app/_components/atoms/Button";
-import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
-import OneStringInputCta from "@/app/_components/blocks/OneStringInputCta";
-import RangeInput from "@/app/_components/molecules/calculator/RangeInput";
-import NumberInput from "@/app/_components/molecules/calculator/NumberInput";
-import CurrencyDisplay from "@/app/_components/molecules/calculator/CurrencyDisplay";
-import InfoCard from "@/app/_components/molecules/calculator/InfoCard";
 import CalculationBreakdown, {
-  BreakdownItem,
   CalculationBreakdownProps,
 } from "@/app/_components/molecules/calculator/CalculationBreakdown";
-import TipBox from "@/app/_components/molecules/calculator/TipBox";
+import CheckboxToggle from "@/app/_components/molecules/calculator/CheckboxToggle";
+import NumberInput from "@/app/_components/molecules/calculator/NumberInput";
 import RadioGroup, {
   type RadioOption,
 } from "@/app/_components/molecules/calculator/RadioGroup";
-import { TrendingUp, DollarSign, AlertCircle, Check, User } from "lucide-react";
-import CheckboxToggle from "@/app/_components/molecules/calculator/CheckboxToggle";
+import RangeInput from "@/app/_components/molecules/calculator/RangeInput";
 import Select from "@/app/_components/molecules/calculator/Select";
-import BuyButton from "@/app/_components/atoms/BuyButton";
-import Divider from "./calculator/Divider";
+import TipBox from "@/app/_components/molecules/calculator/TipBox";
+import { AlertCircle, Check, TrendingUp } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+import Divider from "./calculator/Divider";
 
-// Paušální daň - sazby pro 2026
-const FLAT_TAX_BAND1_MONTHLY = 9984; // Do 1 mil. Kč
-const FLAT_TAX_BAND2_MONTHLY = 16745; // 1 - 1,5 mil. Kč
-const FLAT_TAX_BAND3_MONTHLY = 27139; // 1,5 - 2 mil. Kč
-const FLAT_TAX_LIMIT = 2000000; // Max limit pro paušální daň
+const data = {
+  2025: {
+    // Paušální daň - sazby pro 2026
+    FLAT_TAX_BAND1_MONTHLY: 8716, // Do 1 mil. Kč
+    FLAT_TAX_BAND2_MONTHLY: 16745, // 1 - 1,5 mil. Kč
+    FLAT_TAX_BAND3_MONTHLY: 27139, // 1,5 - 2 mil. Kč
+    FLAT_TAX_LIMIT: 2000000, // Max limit pro paušální daň
 
-// Paušální výdaje - procenta podle typu činnosti
-const COST_PERCENT_40 = 0.4; // 40% paušál - IT, poradenství
-const COST_PERCENT_60 = 0.6; // 60% paušál - obchod, služby
-const COST_PERCENT_80 = 0.8; // 80% paušál - zemědělství, lesnictví
+    // Paušální výdaje - procenta podle typu činnosti
+    COST_PERCENT_40: 0.4, // 40% paušál - IT, poradenství
+    COST_PERCENT_60: 0.6, // 60% paušál - obchod, služby
+    COST_PERCENT_80: 0.8, // 80% paušál - zemědělství, lesnictví
 
-// Daňová sazba
-const INCOME_TAX_RATE = 0.15; // 15% sazba daně z příjmů
+    // Daňová sazba
+    INCOME_TAX_RATE: 0.15, // 15% sazba daně z příjmů
 
-// Minimální příjem pro vedlejší činnost (pro odhad pojištění)
-const MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY = 117521;
+    // Minimální příjem pro vedlejší činnost (pro odhad pojištění)
+    MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY: 111736,
 
-// Sociální a zdravotní pojištění (paušální výdaje)
-// Minimální měsíční zálohy (použito pro odhad, vychází z aktuálních hodnot)
-const MIN_HEALTH_MONTHLY_MAIN = 3143;
-const MIN_SOCIAL_MONTHLY_MAIN = 4759;
-const MIN_SOCIAL_MONTHLY_SECONDARY = 1574;
+    // Sociální a zdravotní pojištění (paušální výdaje)
+    // Minimální měsíční zálohy (použito pro odhad, vychází z aktuálních hodnot)
+    MIN_HEALTH_MONTHLY_MAIN: 3143,
+    MIN_SOCIAL_MONTHLY_MAIN: 4759,
+    MIN_SOCIAL_MONTHLY_SECONDARY: 1496,
 
-// Sazby pojištění (použijeme pro výpočet z vyměřovacího základu)
-const HEALTH_RATE = 0.135; // 13.5% zdravotní
-const SOCIAL_RATE = 0.095; // 9.5% sociální (6.5% + 3%)
+    // Sazby pojištění (použijeme pro výpočet z vyměřovacího základu)
+    HEALTH_RATE: 0.135, // 13.5% zdravotní
+    SOCIAL_RATE: 0.095, // 9.5% sociální (6.5% + 3%)
 
-// Slevy na dani
+    // Slevy na dani
 
-const SLEVA_NA_POPLATNIKA = 30840; // ročně
-const SLEVA_NA_DITE = [15204, 22320, 27840]; // první, druhé, třetí a další dítě
-const SLEVA_NA_MANZELKU = 24840;
-const SLEVA_NA_MANZELKU_DITE_ZTP = 49680;
-const INVALIDITA_1_2_STUPNE = 2520;
-const INVALIDITA_3_STUPNE = 5040;
-const DRZITEL_ZTP = 16140;
-
-const costOptions: RadioOption[] = [
-  {
-    value: COST_PERCENT_40,
-    label: "40% paušál",
-    description: "Autorská činnost, svobodná povolání atd.",
+    SLEVA_NA_POPLATNIKA: 30840, // ročně
+    SLEVA_NA_DITE: [15204, 22320, 27840], // první, druhé, třetí a další dítě
+    SLEVA_NA_MANZELKU: 24840,
+    SLEVA_NA_MANZELKU_DITE_ZTP: 49680,
+    INVALIDITA_1_2_STUPNE: 2520,
+    INVALIDITA_3_STUPNE: 5040,
+    DRZITEL_ZTP: 16140,
   },
-  {
-    value: COST_PERCENT_60,
-    label: "60% paušál",
-    description: "Zejména volné živnosti",
-  },
-  {
-    value: COST_PERCENT_80,
-    label: "80% paušál",
-    description: "Zemědělství, lesnictví, řemeslné atd.",
-  },
-];
+  2026: {
+    // Paušální daň - sazby pro 2026
+    FLAT_TAX_BAND1_MONTHLY: 9984, // Do 1 mil. Kč
+    FLAT_TAX_BAND2_MONTHLY: 16745, // 1 - 1,5 mil. Kč
+    FLAT_TAX_BAND3_MONTHLY: 27139, // 1,5 - 2 mil. Kč
+    FLAT_TAX_LIMIT: 2000000, // Max limit pro paušální daň
 
-const bandOptions: RadioOption[] = [
-  {
-    value: "band1",
-    label: "Pásmo 1",
-    description: `${FLAT_TAX_BAND1_MONTHLY} Kč/měs.`,
+    // Paušální výdaje - procenta podle typu činnosti
+    COST_PERCENT_40: 0.4, // 40% paušál - IT, poradenství
+    COST_PERCENT_60: 0.6, // 60% paušál - obchod, služby
+    COST_PERCENT_80: 0.8, // 80% paušál - zemědělství, lesnictví
+
+    // Daňová sazba
+    INCOME_TAX_RATE: 0.15, // 15% sazba daně z příjmů
+
+    // Minimální příjem pro vedlejší činnost (pro odhad pojištění)
+    MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY: 117521,
+
+    // Sociální a zdravotní pojištění (paušální výdaje)
+    // Minimální měsíční zálohy (použito pro odhad, vychází z aktuálních hodnot)
+    MIN_HEALTH_MONTHLY_MAIN: 3306,
+    MIN_SOCIAL_MONTHLY_MAIN: 5720,
+    MIN_SOCIAL_MONTHLY_SECONDARY: 1574,
+
+    // Sazby pojištění (použijeme pro výpočet z vyměřovacího základu)
+    HEALTH_RATE: 0.135, // 13.5% zdravotní
+    SOCIAL_RATE: 0.095, // 9.5% sociální (6.5% + 3%)
+
+    // Slevy na dani
+
+    SLEVA_NA_POPLATNIKA: 30840, // ročně
+    SLEVA_NA_DITE: [15204, 22320, 27840], // první, druhé, třetí a další dítě
+    SLEVA_NA_MANZELKU: 24840,
+    SLEVA_NA_MANZELKU_DITE_ZTP: 49680,
+    INVALIDITA_1_2_STUPNE: 2520,
+    INVALIDITA_3_STUPNE: 5040,
+    DRZITEL_ZTP: 16140,
   },
-  {
-    value: "band2",
-    label: "Pásmo 2",
-    description: `${FLAT_TAX_BAND2_MONTHLY} Kč/měs.`,
-  },
-  {
-    value: "band3",
-    label: "Pásmo 3",
-    description: `${FLAT_TAX_BAND3_MONTHLY} Kč/měs.`,
-  },
-];
+};
 
 const costDistribution: RadioOption[] = [
   {
@@ -143,11 +142,6 @@ const useDetailedOptions: RadioOption[] = [
   },
 ];
 
-type CostPercentType =
-  | typeof COST_PERCENT_40
-  | typeof COST_PERCENT_60
-  | typeof COST_PERCENT_80;
-
 type Props = {
   useCostRateRange?: boolean;
   useCostRateOptions?: boolean;
@@ -160,6 +154,7 @@ type Props = {
   useCostBasedCalculation?: boolean;
   useSecondaryActivity?: boolean;
   allowToChoseDetailedOptions?: boolean;
+  useYearSelection?: boolean;
   title: string;
   tipBox?: string;
 };
@@ -176,42 +171,105 @@ export default function TaxesCalculator({
   useCostBasedCalculation,
   useSecondaryActivity,
   allowToChoseDetailedOptions,
+  useYearSelection = true,
   title,
   tipBox,
 }: Props) {
-  const [annualIncome, setAnnualIncome] = useState<number>(800000);
-  const [costPercent, setCostPercent] =
-    useState<CostPercentType>(COST_PERCENT_60);
-
+  const [year, setYear] = useState<keyof typeof data>(2026);
+  const {
+    FLAT_TAX_BAND1_MONTHLY,
+    FLAT_TAX_BAND2_MONTHLY,
+    FLAT_TAX_BAND3_MONTHLY,
+    FLAT_TAX_LIMIT,
+    COST_PERCENT_40,
+    COST_PERCENT_60,
+    COST_PERCENT_80,
+    INCOME_TAX_RATE,
+    MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY,
+    MIN_HEALTH_MONTHLY_MAIN,
+    MIN_SOCIAL_MONTHLY_MAIN,
+    MIN_SOCIAL_MONTHLY_SECONDARY,
+    HEALTH_RATE,
+    SOCIAL_RATE,
+    SLEVA_NA_POPLATNIKA,
+    SLEVA_NA_DITE,
+    SLEVA_NA_MANZELKU,
+    SLEVA_NA_MANZELKU_DITE_ZTP,
+    INVALIDITA_1_2_STUPNE,
+    INVALIDITA_3_STUPNE,
+    DRZITEL_ZTP,
+  } = data[year];
+  type CostPercentType =
+    | typeof COST_PERCENT_40
+    | typeof COST_PERCENT_60
+    | typeof COST_PERCENT_80;
   const deriveBandFromIncome = (income: number) => {
     if (income <= 1000000) return "band1";
     if (income <= 1500000) return "band2";
     return "band3";
   };
+
+  const costOptions: RadioOption[] = useMemo(() => {
+    return [
+      {
+        value: COST_PERCENT_40,
+        label: "40% paušál",
+        description: "Autorská činnost, svobodná povolání atd.",
+      },
+      {
+        value: COST_PERCENT_60,
+        label: "60% paušál",
+        description: "Zejména volné živnosti",
+      },
+      {
+        value: COST_PERCENT_80,
+        label: "80% paušál",
+        description: "Zemědělství, lesnictví, řemeslné atd.",
+      },
+    ];
+  }, [COST_PERCENT_40, COST_PERCENT_60, COST_PERCENT_80]);
+  const bandOptions: RadioOption[] = useMemo(() => {
+    return [
+      {
+        value: "band1",
+        label: "Pásmo 1",
+        description: `${FLAT_TAX_BAND1_MONTHLY} Kč/měs.`,
+      },
+      {
+        value: "band2",
+        label: "Pásmo 2",
+        description: `${FLAT_TAX_BAND2_MONTHLY} Kč/měs.`,
+      },
+      {
+        value: "band3",
+        label: "Pásmo 3",
+        description: `${FLAT_TAX_BAND3_MONTHLY} Kč/měs.`,
+      },
+    ];
+  }, [FLAT_TAX_BAND1_MONTHLY, FLAT_TAX_BAND2_MONTHLY, FLAT_TAX_BAND3_MONTHLY]);
+
+  const [annualIncome, setAnnualIncome] = useState<number>(800000);
+  const [costPercent, setCostPercent] =
+    useState<CostPercentType>(COST_PERCENT_60);
+
   const [selectedBand, setSelectedBand] = useState<string>(() =>
     deriveBandFromIncome(annualIncome),
   );
   const [selectedCostDistribution, setSelectedCostDistribution] =
     useState<string>("undefined");
-
   const [isPrimaryActivity, setIsPrimaryActivity] = useState<boolean>(true);
   const [useBenefits, setUseBenefits] = useState<boolean>(true);
-  // Detailed parameters (defaults are editable)
   const [basicTaxpayer, setBasicTaxpayer] = useState<boolean>(true);
   const [spouseCare, setSpouseCare] = useState<boolean>(false);
-
   const [spouseZtpCare, setSpouseZtpCare] = useState<boolean>(false);
   const [invalid12, setInvalid12] = useState<boolean>(false);
   const [invalid3, setInvalid3] = useState<boolean>(false);
   const [holderZtp, setHolderZtp] = useState<boolean>(false);
-
-  // Nezdanitelne castky
   const [pensionPaid, setPensionPaid] = useState<number>(0);
   const [investmentPaid, setInvestmentPaid] = useState<number>(0);
   const [lifeInsurancePaid, setLifeInsurancePaid] = useState<number>(0);
   const [interestPaid, setInterestPaid] = useState<number>(0);
   const [otherNonTaxable, setOtherNonTaxable] = useState<number>(0);
-
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [childrenFields, setChildrenFields] = useState<
     { id: string; age: string; ztp: boolean }[]
@@ -384,6 +442,27 @@ export default function TaxesCalculator({
     childrenFields,
     isPrimaryActivity,
     useBenefits,
+    FLAT_TAX_BAND1_MONTHLY,
+    FLAT_TAX_BAND2_MONTHLY,
+    FLAT_TAX_BAND3_MONTHLY,
+    FLAT_TAX_LIMIT,
+    COST_PERCENT_40,
+    COST_PERCENT_60,
+    COST_PERCENT_80,
+    INCOME_TAX_RATE,
+    MINIMAL_INCOME_FOR_SECONDARY_ACTIVITY,
+    MIN_HEALTH_MONTHLY_MAIN,
+    MIN_SOCIAL_MONTHLY_MAIN,
+    MIN_SOCIAL_MONTHLY_SECONDARY,
+    HEALTH_RATE,
+    SOCIAL_RATE,
+    SLEVA_NA_POPLATNIKA,
+    SLEVA_NA_DITE,
+    SLEVA_NA_MANZELKU,
+    SLEVA_NA_MANZELKU_DITE_ZTP,
+    INVALIDITA_1_2_STUPNE,
+    INVALIDITA_3_STUPNE,
+    DRZITEL_ZTP,
   ]);
 
   const flatTaxCalculations = useMemo(() => {
@@ -407,7 +486,15 @@ export default function TaxesCalculator({
 
     const flatTaxAnnual = flatTaxMonthly * 12;
     return { flatTaxMonthly, flatTaxAnnual, flatTaxBand, canUseFlatTax };
-  }, [annualIncome, selectedBand, isPrimaryActivity]);
+  }, [
+    annualIncome,
+    selectedBand,
+    isPrimaryActivity,
+    FLAT_TAX_BAND1_MONTHLY,
+    FLAT_TAX_BAND2_MONTHLY,
+    FLAT_TAX_BAND3_MONTHLY,
+    FLAT_TAX_LIMIT,
+  ]);
 
   const resultsCalculations = useMemo(() => {
     // Úspora
@@ -594,10 +681,32 @@ export default function TaxesCalculator({
   }, [annualIncome, selectedCostDistribution]);
   return (
     <div className="bg-white rounded-2xl border-2 border-zinc-200 p-8 md:p-12">
-      <h2 className="text-3xl md:text-4xl text-center font-bebas mb-8">
-        {title}
-      </h2>
-      {/* Input - Roční příjmy */}
+      <div className="mb-8">
+        <h2 className="text-3xl md:text-4xl text-center font-bebas">{title}</h2>
+      </div>
+      {useYearSelection && (
+        <div className="mb-8">
+          <label className="block text-lg font-semibold text-primary mb-4">
+            Zvolte rok, pro který chcete kalkulačku využít
+          </label>
+
+          <div className="p-2 border border-zinc-200 rounded">
+            <select
+              className="w-full"
+              value={year}
+              onChange={(e) => {
+                setYear(Number(e.target.value) as keyof typeof data);
+              }}
+            >
+              {Object.keys(data).map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
       <div className="mb-8">
         <RangeInput
           label="Roční příjmy"
@@ -621,7 +730,7 @@ export default function TaxesCalculator({
         placeholder="Zadejte roční příjmy"
         helperText="Paušální daň je k dispozici do 2 mil. Kč/rok"
       />
-      {!flatTaxCalculations.canUseFlatTax && (
+      {!flatTaxCalculations.canUseFlatTax && useFlatTaxCalculation && (
         <div className="my-8 p-4 bg-red-50 border-2 border-red-200 rounded-lg flex gap-3">
           <AlertCircle className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
           <div>
