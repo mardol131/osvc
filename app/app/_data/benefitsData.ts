@@ -9,24 +9,24 @@ export const benefitsData = {
     {
       icon: "sms",
       title: "SMS a emailová upozornění na blížící se termíny",
-      text: "Připomeneme vám, co se blíží. Daňové přiznání, přehledy, změny zákonů. Včas, srozumitelně a bez stresu.",
+      text: "Několik dní před termínem vám přijde připomínka, abyste na nic nezapomněli. Následně i den předem pro jistotu. Zprávy odesíláme přes email a SMS.",
     },
     {
       icon: "email",
       title: "Měsíční přehledy změn",
-      text: "Žádný marketing, pouze praktické informace. Každý měsíc vám pošleme jasně vysvětlené shrnutí toho nejdůležitějšího pro OSVČ.",
+      text: "Žádný marketing, pouze praktické informace. Každý měsíc vám pošleme jasně vysvětlené shrnutí novinek a povinností pro OSVČ.",
     },
 
     {
       icon: "upozorneni",
       title: "Varování před novými povinnostmi a pokutami",
-      text: "Víme co se mění a dáme vám vědět dřív, než za to začnete platit.",
+      text: "Víme co se mění a dáme vám vědět dřív, než za to začnete platit. Překvapení oceňujeme na narozeniny, ne v podnikání.",
     },
 
     {
       icon: "linky",
       title: "Odkazy na formuláře a oficiální zdroje",
-      text: "Vše důležité na jednom místě – bez zdlouhavého hledání na stránkách úřadů.",
+      text: "Nikdo nemá rád zbytečné hledání. V měsíčním přehledu a u každého upozornění najdete také přímé odkazy na potřebné formuláře a oficiální informace.",
     },
     // {
     //   icon: "calendar",

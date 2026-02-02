@@ -5,6 +5,9 @@ import { ActivityGroup } from "@/app/_data/businessActivities";
 import AddActivityModal from "./add-activity-modal";
 import ActiveActivityCard from "./active-activity-card";
 import InactiveActivityCard from "./inactive-activity-card";
+import { useRouter } from "next/navigation";
+import { Lightbulb } from "lucide-react";
+import Link from "next/link";
 
 interface SubscriptionManagementProps {
   activeGroups: ActivityGroup[];
@@ -25,6 +28,8 @@ export default function SubscriptionManagement({
   const [finalPriceThatWillBePaid, setFinalPriceThatWillBePaid] = useState<
     number | null
   >(null);
+
+  const router = useRouter();
 
   const handleOpenModal = async (group: ActivityGroup) => {
     setSelectedGroup(group);
@@ -63,6 +68,8 @@ export default function SubscriptionManagement({
     setIsModalOpen(false);
     setSelectedGroup(null);
     setIsSubmitting(false);
+
+    router.refresh();
   };
 
   const handleConfirmPurchase = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -104,7 +111,7 @@ export default function SubscriptionManagement({
 
     console.log("POTVRZENO");
 
-    // handleCloseModal();
+    handleCloseModal();
   };
 
   return (
@@ -156,6 +163,27 @@ export default function SubscriptionManagement({
         isSubmitting={isSubmitting}
         finalPriceThatWillBePaid={finalPriceThatWillBePaid}
       />
+
+      {/* Zrušit předplatné */}
+      <div className="mt-16 pt-12 border-t border-zinc-200">
+        <div className="mb-6">
+          <h3 className="text-2xl font-bebas text-primary mb-2">
+            Zrušit předplatné
+          </h3>
+          <p className="text-textP">
+            Pokud chcete zrušit své předplatné, můžete to provést v našem Stripe
+            účtu. Změny se projeví okamžitě.
+          </p>
+        </div>
+        <a
+          href={process.env.NEXT_PUBLIC_SUB_ACCOUNT_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+        >
+          Zrušit předplatné
+        </a>
+      </div>
     </div>
   );
 }

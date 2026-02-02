@@ -7,9 +7,9 @@ export default function Fines() {
   return (
     <SectionWrapper levelTwo={{ className: "items-center" }}>
       <HeadingCenter
-        subheading="Pokuty"
-        heading="Stát neupozorňuje. Jen trestá."
-        text="Nepodali jste formulář včas? Zapomněli jste na povinné oznámení? Netušili jste, že Vám vznikla nová povinnost? Stát Vás na to neupozorní, ale pokutu zašle bez váhání."
+        subheading="Pokuty pro OSVČ"
+        heading="Neustále změny, ale žádné upozornění"
+        text="Nepodali jste formulář včas? Zapomněli jste na povinné oznámení? Netušili jste, že Vám vznikla nová povinnost? Jak už to tak bývá, stát tyto věci většinou nepřipomene."
       />
       <div className="flex xl:flex xl:items-end md:grid md:items-stretch grid-cols-2 xl:gap-0 gap-5 xl:flex-row flex-col min-h-80 items-end justify-center">
         <div className="rounded-xl p-5 xl:bg-zinc-950 bg-primary text-textLight flex flex-col items-center justify-center text-center gap-3 xl:h-80 xl:max-w-70 w-full xl:-rotate-10 xl:shrink-0 xl:translate-x-20 xl:shadow-xl xl:hover:z-40 xl:hover:scale-110 xl:ease-in-out xl:transition-all xl:hover:rotate-0 z-0">
@@ -54,8 +54,9 @@ export default function Fines() {
             Nepřihlášení se k poplatku za televizi a rádio
           </p>
           <p className="">
-            Do databáze ČT se musí zapsat i živnostníci bez zaměstnanců.
-            Regulátor sám o této povinnosti prakticky neinformoval.
+            Do databáze ČT se musí zapsat i živnostníci bez zaměstnanců. Jedná
+            se o povinnost, kterou mnoho OSVČ neznámá nebo ji přehlédne, ačkoliv
+            si ji lze snadno zařídít online.
           </p>
         </div>
         <div className="rounded-xl p-5 xl:bg-zinc-900 bg-primary text-textLight flex flex-col items-center justify-center text-center gap-3 xl:h-100 xl:max-w-70 w-full xl:rotate-5 xl:shrink-0 xl:-translate-x-10 xl:z-10 xl:shadow-xl xl:hover:z-40 xl:hover:scale-110 ease-in-out transition-all hover:rotate-0 z-10">

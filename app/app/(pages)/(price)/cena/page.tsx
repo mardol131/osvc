@@ -47,17 +47,7 @@ export default async function page() {
       />
       <EntitiesWithoutLegalAdvice />
       <Comparison />
-      <OneStringInputCta
-        options={{
-          heading: "Ještě se na to necítíte? Zanechte nám svůj email.",
-          subheading:
-            "Budeme Vás informovat pouze o novinkách v naší službě, žádný zbytečný marketing.",
-          dataDestination: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/ecomail/news`,
-          buttonText: "Odebírat novinky",
-          inputType: "email",
-          placeholder: "Zde zadejte email",
-        }}
-      />
+      <OneStringInputCta />
     </>
   );
 }

@@ -111,17 +111,7 @@ export default function page() {
         </div>
       </SectionWrapper>
 
-      <OneStringInputCta
-        options={{
-          heading: "Chcete vše na jednom místě?",
-          subheading:
-            "OSVC365 vám sleduje všechny povinnosti a upozorňuje na termíny automaticky.",
-          dataDestination: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/ecomail/news`,
-          buttonText: "Koupit službu",
-          inputType: "email",
-          placeholder: "Zde zadejte email",
-        }}
-      />
+      <OneStringInputCta />
     </>
   );
 }

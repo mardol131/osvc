@@ -15,7 +15,7 @@ export default function Hero() {
         <div className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-secondary/10 to-tertiary/10 border border-secondary/30 rounded-full">
           <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
           <p className="text-sm font-semibold text-primary uppercase  ">
-            Pro OSVČ
+            Od živnostníků pro živnostníky
           </p>
         </div>
 
@@ -31,7 +31,7 @@ export default function Hero() {
         <p className="md:text-2xl text-lg text-textP max-w-4xl leading-relaxed">
           Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,
           když se něco změní. Už žádné pokuty ani stres z neznámých povinností.{" "}
-          <span className="text-secondary font-semibold">
+          <span className="text-secondary">
             A za rok to stojí jako tři kafe.
           </span>
         </p>

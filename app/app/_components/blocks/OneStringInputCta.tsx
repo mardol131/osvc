@@ -22,7 +22,7 @@ const baseData = {
     "Zadejte svůj e-mail a my vám budeme pravidelně zasílat novinky týkající se nových funkcí, aktualizací a tipů.",
   buttonText: "Přihlásit se",
   inputType: "email",
-  dataDestination: "/api/email/subscribe",
+  dataDestination: "/api/email/contact/insert",
   placeholder: "Váš e-mail",
 };
 
@@ -66,16 +66,11 @@ export default function OneStringInputCta({ options }: Props) {
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-tertiary/20 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
         {responseOk ? (
-          <div className="flex flex-col md:gap-6 gap-5 items-center w-full text-center py-4 relative z-10">
-            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-6 rounded-full shadow-lg">
-              <FaHandshake className="text-5xl text-white" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-secondary">Děkujeme za podporu!</h3>
-              <p className="text-lg text-zinc-300">
-                Brzy se Vám ozveme s novinkami
-              </p>
-            </div>
+          <div className="flex flex-col md:gap-6 gap-5 items-center w-full text-center py-2 relative z-10">
+            <h3 className="text-white">Děkujeme za podporu!</h3>
+            <p>
+              Odběr novinek můžete kdykoliv zrušit z odkazu v emailové zprávě.
+            </p>
           </div>
         ) : (
           <div className="relative z-10">

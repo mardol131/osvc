@@ -2,6 +2,8 @@ import SubscriptionManagement from "@/app/(pages)/(subscription-management)/spra
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
 import { getCollection } from "@/app/_functions/backend";
+import { Lightbulb } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { stringify } from "qs-esm";
 
@@ -90,7 +92,31 @@ export default async function SubscriptionManagementPage({
           heading="Spravujte své předměty podnikání"
           text="Přehled aktivních předmětů podnikání a možnost dokoupení dalších podle vašich potřeb."
         />
-
+        {/* Info box o přidávání/odebírání předmětů */}
+        <div className="mb-10 w-full md:mb-12 p-6 md:p-8 bg-white border-2 border-secondary/20 rounded-xl">
+          <div className="flex gap-4">
+            <div className="shrink-0">
+              <Lightbulb className="w-6 h-6 text-secondary" strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 className="text-lg font-bebas text-primary mb-3">
+                Nová funkce se chystá
+              </h4>
+              <p className="text-textP leading-relaxed">
+                Brzy budete moci snadno odebírat jednotlivé předměty podnikání
+                bez nutnosti rušit své předplatné. Pokud chcete nějakou skupinu
+                v tuto chvíli vypnout, kontaktujte nás na{" "}
+                <Link
+                  href="mailto:info@osvc365.cz"
+                  className="text-secondary hover:text-secondary/80 transition-colors"
+                >
+                  info@osvc365.cz
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+        </div>
         {/* Správa předplatného */}
         <SubscriptionManagement
           activeGroups={activeGroups}
