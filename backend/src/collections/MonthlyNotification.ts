@@ -109,6 +109,21 @@ export const MonthlyNotifications: CollectionConfig = {
       ],
     },
     {
+      type: 'collapsible',
+      label: 'Testovací email (spouští se při uložení draftu)',
+      admin: {
+        position: 'sidebar',
+        initCollapsed: false,
+      },
+      fields: [
+        {
+          name: 'emailForTest',
+          type: 'email',
+          label: 'E-mailová adresa pro odeslání testovacího e-mailu',
+        },
+      ],
+    },
+    {
       name: 'notifications',
       label: 'Notifikace',
       type: 'array',
@@ -144,8 +159,10 @@ export const MonthlyNotifications: CollectionConfig = {
 
         return doc
       },
-      async ({ doc }) => {
-        if (doc._status === 'draft') {
+    ],
+    beforeChange: [
+      async ({ data }) => {
+        if (data._status === 'draft' && data.emailForTest) {
           type Notification = {
             text: string
             mobileText: string
@@ -162,12 +179,12 @@ export const MonthlyNotifications: CollectionConfig = {
           const customMessages: CustomMessage[] = []
 
           // Group notifications by activity groups
-          if (doc.notifications && Array.isArray(doc.notifications)) {
+          if (data.notifications && Array.isArray(data.notifications)) {
             const groupedByActivityGroup = new Map<string, Notification[]>()
             const activityGroupNames = new Map<string, string>()
 
             // Group notifications by each activity group
-            doc.notifications.forEach((notification: any) => {
+            data.notifications.forEach((notification: any) => {
               if (notification.activityGroups && Array.isArray(notification.activityGroups)) {
                 notification.activityGroups.forEach((activityGroup: any) => {
                   const groupId =
@@ -207,18 +224,21 @@ export const MonthlyNotifications: CollectionConfig = {
 
           const emailBody = await renderMonthlyNotificationEmail({
             messages: customMessages,
-            dateLabel: `${doc.month} ${doc.year}`,
+            dateLabel: `${data.month} ${data.year}`,
             accessLink: `${process.env.WEBSITE_URL}/testovací-access-link`,
           })
 
           const res = await sendEmail(
             'OSVČ365 <info@osvc365.cz>',
-            ['dolezalmartin131@gmail.com'],
+            [data.emailForTest],
             'testovací email - monthly draft',
             emailBody,
           )
 
           console.log('Testovací email odeslán, response:', res)
+
+          data.emailForTest = undefined
+          return data
         }
       },
     ],
