@@ -1,7 +1,7 @@
 import { adminOrApiKeyAuth, apiKeyAuth } from '@/functions/ACL'
 import { jwtSign, type CollectionConfig } from 'payload'
 import crypto from 'crypto'
-import { sendEmail } from 'react-email'
+import { sendEmail } from '@osvc/react-email'
 
 export const Accounts: CollectionConfig = {
   slug: 'accounts',

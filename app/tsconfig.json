@@ -20,7 +20,7 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "react-email": ["../react-email/index.ts"]
+      "react-email": ["../react-email/src/index.ts"]
     }
   },
   "include": [

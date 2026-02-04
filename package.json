@@ -11,7 +11,7 @@
     "qs-esm": "^7.0.3"
   },
   "scripts": {
-    "backend:build": "cd backend && pnpm install && pnpm run build",
+    "backend:build": "turbo run build --filter backend",
     "backend:start": "cd backend && pnpm run start"
   }
 }

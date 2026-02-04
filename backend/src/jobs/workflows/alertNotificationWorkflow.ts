@@ -1,9 +1,8 @@
 import { createAlertNotificationSms, removeDiacritics } from '@/functions/notifications'
-import { renderAlertNotificationEmail } from 'react-email'
 import { Obligation } from '@/payload-types'
-import { getQueueName } from '@/payload.config'
 import { differenceInDays } from 'date-fns'
 import { WorkflowConfig } from 'payload'
+import { renderAlertNotificationEmail } from '@osvc/react-email'
 
 export const alertNotificationWorkflow: WorkflowConfig<any> = {
   slug: 'alertNotificationWorkflow',

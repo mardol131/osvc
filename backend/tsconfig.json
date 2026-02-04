@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@payload-config": ["./src/payload.config.ts"],
-      "react-email": ["../react-email/index.ts"]
+      "react-email": ["../react-email/src/index.ts"]
     },
     "target": "ES2022"
   },
@@ -30,7 +30,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "../react-email/functions/render-email.ts"
+    "../react-email/src/functions/render-email.ts"
   ],
   "exclude": ["node_modules"]
 }

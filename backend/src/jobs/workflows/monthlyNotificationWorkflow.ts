@@ -2,7 +2,7 @@ import { generateAlphanumericId } from '@/functions/generateAlphanumericId'
 import { createGeneralNotificationSms } from '@/functions/notifications'
 import { ActivityGroup } from '@/payload-types'
 import { WorkflowConfig } from 'payload'
-import { renderMonthlyNotificationEmail } from 'react-email'
+import { renderMonthlyNotificationEmail } from '@osvc/react-email'
 
 export type Notification = {
   text: string
@@ -213,20 +213,24 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
           dateLabel: `${monthlyNotification.month} ${monthlyNotification.year}`,
         })
 
-        await tasks.sendEmail(`send-monthly-notification-email-for-subId-${subscribe.id}`, {
-          input: {
-            email: subscribe.email,
-            body: emailBody,
-            subject: 'Měsíční přehled změn a povinností',
-          },
-        })
-        await tasks.sendSms(`send-monthly-notification-sms-for-subId-${subscribe.id}`, {
-          input: {
-            phone: subscribe.phone,
-            phonePrefix: subscribe.phonePrefix,
-            smsBody: smsBody,
-          },
-        })
+        if (monthlyNotification.useEmail) {
+          await tasks.sendEmail(`send-monthly-notification-email-for-subId-${subscribe.id}`, {
+            input: {
+              email: subscribe.email,
+              body: emailBody,
+              subject: 'Měsíční přehled změn a povinností',
+            },
+          })
+        }
+        if (monthlyNotification.useSms) {
+          await tasks.sendSms(`send-monthly-notification-sms-for-subId-${subscribe.id}`, {
+            input: {
+              phone: subscribe.phone,
+              phonePrefix: subscribe.phonePrefix,
+              smsBody: smsBody,
+            },
+          })
+        }
       } catch (error) {
         console.error(`Error sending notification to ${subscribe.email}:`, error)
       }

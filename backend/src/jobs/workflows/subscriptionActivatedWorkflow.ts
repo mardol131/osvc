@@ -1,5 +1,5 @@
 import { WorkflowConfig } from 'payload'
-import { renderConfirmationEmail } from 'react-email'
+import { renderConfirmationEmail } from '@osvc/react-email'
 
 export const subscriptionActivatedWorkflow: WorkflowConfig<any> = {
   slug: 'subscriptionActivatedWorkflow',

@@ -345,6 +345,8 @@ export interface MonthlyNotification {
     | 'Listopad'
     | 'Prosinec';
   year: string;
+  useEmail?: boolean | null;
+  useSms?: boolean | null;
   notifications?:
     | {
         text: string;
@@ -696,6 +698,8 @@ export interface SubscribesSelect<T extends boolean = true> {
 export interface MonthlyNotificationsSelect<T extends boolean = true> {
   month?: T;
   year?: T;
+  useEmail?: T;
+  useSms?: T;
   notifications?:
     | T
     | {

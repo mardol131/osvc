@@ -93,6 +93,18 @@ export const MonthlyNotifications: CollectionConfig = {
             position: 'sidebar',
           },
         },
+        {
+          name: 'useEmail',
+          type: 'checkbox',
+          label: 'Odeslat notifikaci e-mailem',
+          defaultValue: true,
+        },
+        {
+          name: 'useSms',
+          type: 'checkbox',
+          label: 'Odeslat notifikaci SMS zprávou',
+          defaultValue: true,
+        },
       ],
     },
     {

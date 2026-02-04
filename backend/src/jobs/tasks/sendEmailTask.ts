@@ -1,4 +1,5 @@
-import { sendEmail } from 'react-email'
+import { sendEmail } from "@osvc/react-email"
+
 import { Field, TaskConfig } from 'payload'
 
 const sendEmailInputSchema: Field[] = [
