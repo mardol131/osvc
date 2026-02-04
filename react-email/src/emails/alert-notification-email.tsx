@@ -62,7 +62,7 @@ const AlertNotificationEmail = ({
               <>
                 {" - "}
                 <a
-                  style={{ fontWeight: 600, color: colors.orange }}
+                  style={{ fontWeight: 600, color: colors.secondary }}
                   href={link}
                 >
                   Více informací

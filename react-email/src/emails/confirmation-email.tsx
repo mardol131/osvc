@@ -63,7 +63,7 @@ export const ConfirmationEmail = ({ code }: ConfirmationEmailProps) => (
               </Heading>
               <Text
                 style={{
-                  backgroundColor: colors.orange,
+                  backgroundColor: colors.secondary,
                   color: colors.whiteText,
                   borderRadius: "5px",
                   border: "1px solid #eee",

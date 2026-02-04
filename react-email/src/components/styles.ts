@@ -24,14 +24,14 @@ const h1 = {
 };
 
 const linkStyle = {
-  color: colors.orange,
+  color: colors.secondary,
   fontFamily: fonts.basic,
   fontSize: "14px",
   textDecoration: "underline",
 };
 
 const button = {
-  backgroundColor: colors.orange,
+  backgroundColor: colors.secondary,
   border: "none",
   padding: "10px 20px",
   color: colors.whiteText,

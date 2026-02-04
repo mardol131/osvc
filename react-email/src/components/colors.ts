@@ -1,5 +1,6 @@
 export const colors = {
-  orange: "#faa20a",
+  secondary: "#faa20a",
+  primary: "#0073e6",
   lightText: "#555555",
   text: "black",
   whiteText: "#ffffff",

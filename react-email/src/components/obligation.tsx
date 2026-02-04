@@ -1,6 +1,7 @@
 import { Text } from "@react-email/components";
 import { text } from "./styles";
 import { format } from "date-fns";
+import { colors } from "./colors";
 
 export type ObligationProps = {
   notification: {
@@ -19,7 +20,7 @@ export const Obligation = ({ notification }: ObligationProps) => {
           {notification.link ? (
             <>
               <a
-                style={{ fontWeight: 600, color: "#f59f0a" }}
+                style={{ fontWeight: 600, color: colors.secondary }}
                 href={notification.link}
               >
                 Více informací
@@ -33,7 +34,7 @@ export const Obligation = ({ notification }: ObligationProps) => {
             }}
           />
           {notification.date ? (
-            <span style={{ fontWeight: 600 }}>
+            <span style={{ fontWeight: 600, color: colors.text }}>
               Do {format(new Date(notification.date), "d. M. yyyy")}
             </span>
           ) : null}
