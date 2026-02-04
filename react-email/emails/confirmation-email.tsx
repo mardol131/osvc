@@ -11,22 +11,21 @@ import {
   Text,
 } from "@react-email/components";
 
-interface Props {
+export type ConfirmationEmailProps = {
   code?: string;
-}
+};
 
-export const ConfirmationEmail = ({ code }: Props) => (
+export const ConfirmationEmail = ({ code }: ConfirmationEmailProps) => (
   <Html>
     <Head />
     <Body style={main}>
       <Preview>Potvrzujeme přihlášení k odběru služeb</Preview>
       <Container style={container}>
-        <Heading style={h1}>OSVČ365: Potvrzení nákupu</Heading>
+        <Heading style={h1}>OSVČ365: Předplatné je aktivováno</Heading>
 
         <Text style={{ ...text, marginBottom: "14px" }}>
-          Děkujeme, že jste se přihlásili k odběru služeb OSVČ365. Od této
-          chvíle Vám budeme pravidelně zasílat užitečné informace, povinnosti a
-          novinky týkající se živností v České republice.
+          Od této chvíle Vám budeme pravidelně zasílat užitečné informace,
+          povinnosti a novinky týkající se živností v České republice.
         </Text>
         {code && (
           <>
@@ -97,7 +96,7 @@ export const ConfirmationEmail = ({ code }: Props) => (
 
 ConfirmationEmail.PreviewProps = {
   code: "sparo-ndigo-amurt-secan",
-} as Props;
+} as ConfirmationEmailProps;
 
 export default ConfirmationEmail;
 const main = {

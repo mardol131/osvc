@@ -1,8 +1,5 @@
-import {
-  createAlertNotificationEmail,
-  createAlertNotificationSms,
-  removeDiacritics,
-} from '@/functions/notifications'
+import { createAlertNotificationSms, removeDiacritics } from '@/functions/notifications'
+import { renderAlertNotificationEmail } from '@/functions/render-email'
 import { Obligation } from '@/payload-types'
 import { getQueueName } from '@/payload.config'
 import { differenceInDays } from 'date-fns'
@@ -98,15 +95,6 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
         header = `Zbývá ${dayGap} ${dayGap === 1 ? 'den' : dayGap <= 4 ? 'dny' : 'dní'} pro splnění povinnosti`
       }
 
-      const emailBody = createAlertNotificationEmail({
-        text: obligation.text,
-        description: obligation.description,
-        date: obligation.date,
-        link: obligation.link || undefined,
-        accessLink: access && `${process.env.WEBSITE_URL}/${access.accessId}`,
-        header: header,
-      })
-
       const smsBody = createAlertNotificationSms({
         mobileText: obligation.mobileText || obligation.text,
         date: obligation.date,
@@ -116,7 +104,14 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
       await tasks.sendEmail('send-alert-notification-email', {
         input: {
           email: subscribe.email,
-          body: emailBody,
+          body: await renderAlertNotificationEmail({
+            date: new Date(obligation.date),
+            dayGap,
+            heading: obligation.text,
+            description: obligation.description,
+            link: obligation.link || undefined,
+            accessLink: access && `${process.env.WEBSITE_URL}/${access.accessId}`,
+          }),
           subject: 'Připomínka nadcházející povinnosti',
         },
       })

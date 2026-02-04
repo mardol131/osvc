@@ -1,4 +1,4 @@
-import { createConfirmationEmail } from '@/functions/notifications'
+import { renderConfirmationEmail } from '@/functions/render-email'
 import { WorkflowConfig } from 'payload'
 
 export const subscriptionActivatedWorkflow: WorkflowConfig<any> = {
@@ -17,9 +17,9 @@ export const subscriptionActivatedWorkflow: WorkflowConfig<any> = {
   queue: 'subscriptionActivatedQueue',
   retries: 3,
   handler: async ({ job, tasks }) => {
-    const emailBody = createConfirmationEmail(job.input.promotionCode)
+    const emailBody = await renderConfirmationEmail({ code: job.input.promotionCode })
 
-    await tasks.sendEmail('send-confirmation-email', {
+    await tasks.sendEmail('send-activation-email', {
       input: {
         email: job.input.email,
         subject: 'Potvrzení aktivace předplatného',
@@ -27,6 +27,7 @@ export const subscriptionActivatedWorkflow: WorkflowConfig<any> = {
       },
     })
 
-    console.log('Confirmation email sent to', job.input.email)
+    console.log('Activation email sent to', job.input.email)
+    console.log('With promotion code:', job.input.promotionCode)
   },
 }

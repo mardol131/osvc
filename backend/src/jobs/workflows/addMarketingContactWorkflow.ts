@@ -1,7 +1,4 @@
-import { getQueueName } from '@/payload.config'
 import { WorkflowConfig } from 'payload'
-import { createObligationInputSchema } from '../tasks/createObligationTask'
-import { createConfirmationEmail } from '@/functions/notifications'
 
 export const addMarketingContactWorkflow: WorkflowConfig<any> = {
   slug: 'addMarketingContactWorkflow',

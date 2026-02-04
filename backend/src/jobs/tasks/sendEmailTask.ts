@@ -1,4 +1,4 @@
-import { sendEmail } from '@/functions/notifications'
+import { sendEmail } from 'react-email'
 import { Field, TaskConfig } from 'payload'
 
 const sendEmailInputSchema: Field[] = [

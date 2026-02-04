@@ -1,8 +1,6 @@
 import { generateAlphanumericId } from '@/functions/generateAlphanumericId'
-import {
-  createGeneralNotificationEmail,
-  createGeneralNotificationSms,
-} from '@/functions/notifications'
+import { createGeneralNotificationSms } from '@/functions/notifications'
+import { renderMonthlyNotificationEmail } from '@/functions/render-email'
 import { ActivityGroup } from '@/payload-types'
 import { WorkflowConfig } from 'payload'
 
@@ -203,7 +201,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
           return (b.notifications.length || 0) - (a.notifications.length || 0)
         })
 
-        const emailBody = createGeneralNotificationEmail({
+        const emailBody = await renderMonthlyNotificationEmail({
           messages: customMessages,
           dateLabel: `${monthlyNotification.month} ${monthlyNotification.year}`,
           accessLink: `${process.env.WEBSITE_URL}/${accessResponse.accessId}`,

@@ -42,6 +42,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.1(react@19.2.1)
+      react-email:
+        specifier: workspace:*
+        version: link:../react-email
       react-icons:
         specifier: ^5.5.0
         version: 5.5.0(react@19.2.1)
@@ -112,6 +115,9 @@ importers:
       react-dom:
         specifier: 19.2.1
         version: 19.2.1(react@19.2.1)
+      react-email:
+        specifier: workspace:*
+        version: link:../react-email
       sharp:
         specifier: 0.34.2
         version: 0.34.2
@@ -186,6 +192,9 @@ importers:
       react-email:
         specifier: 5.1.1
         version: 5.1.1
+      typescript:
+        specifier: 5.7.3
+        version: 5.7.3
 
 packages:
 
@@ -2976,6 +2985,7 @@ packages:
   glob@11.1.0:
     resolution: {integrity: sha512-vuNwKSaKiqm7g0THUBu2x7ckSs3XJLXE+2ssL7/MfTGPLLcrJQ/4Uq1CjPTtO5cCIiRxqvN6Twy1qOwhL0Xjcw==}
     engines: {node: 20 || >=22}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   globals@14.0.0:
