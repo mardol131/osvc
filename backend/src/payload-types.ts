@@ -348,6 +348,7 @@ export interface MonthlyNotification {
   useEmail?: boolean | null;
   useSms?: boolean | null;
   emailForTest?: string | null;
+  phoneForTest?: string | null;
   notifications?:
     | {
         text: string;
@@ -702,6 +703,7 @@ export interface MonthlyNotificationsSelect<T extends boolean = true> {
   useEmail?: T;
   useSms?: T;
   emailForTest?: T;
+  phoneForTest?: T;
   notifications?:
     | T
     | {

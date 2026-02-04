@@ -1,4 +1,5 @@
 import { adminOrApiKeyAuth } from '@/functions/ACL'
+import { createGeneralNotificationSms, sendSms } from '@/functions/notifications'
 import { renderMonthlyNotificationEmail, sendEmail } from '@osvc/react-email'
 import { set } from 'date-fns'
 import type { CollectionConfig, Field } from 'payload'
@@ -121,6 +122,11 @@ export const MonthlyNotifications: CollectionConfig = {
           type: 'email',
           label: 'E-mailová adresa pro odeslání testovacího e-mailu',
         },
+        {
+          name: 'phoneForTest',
+          type: 'text',
+          label: 'Telefonní číslo pro odeslání testovací SMS zprávy',
+        },
       ],
     },
     {
@@ -162,17 +168,19 @@ export const MonthlyNotifications: CollectionConfig = {
     ],
     beforeChange: [
       async ({ data }) => {
-        if (data._status === 'draft' && data.emailForTest) {
+        if (data._status === 'draft') {
           type Notification = {
             text: string
             mobileText: string
             link?: string | null
             description: string
             date?: string | null
+            activityGroups: string[]
           }
 
           type CustomMessage = {
             heading: string
+            mobileHeading?: string | null
             notifications: Notification[]
             order?: number | null
           }
@@ -222,24 +230,48 @@ export const MonthlyNotifications: CollectionConfig = {
             return (b.notifications.length || 0) - (a.notifications.length || 0)
           })
 
-          const emailBody = await renderMonthlyNotificationEmail({
-            messages: customMessages,
-            dateLabel: `${data.month} ${data.year}`,
-            accessLink: `${process.env.WEBSITE_URL}/testovací-access-link`,
-          })
+          if (data.emailForTest) {
+            try {
+              const emailBody = await renderMonthlyNotificationEmail({
+                messages: customMessages,
+                dateLabel: `${data.month} ${data.year}`,
+                accessLink: `${process.env.WEBSITE_URL}/testovací-access-link`,
+              })
 
-          const res = await sendEmail(
-            'OSVČ365 <info@osvc365.cz>',
-            [data.emailForTest],
-            'testovací email - monthly draft',
-            emailBody,
-          )
+              const res = await sendEmail(
+                'OSVČ365 <info@osvc365.cz>',
+                [data.emailForTest],
+                'testovací email - monthly draft',
+                emailBody,
+              )
 
-          console.log('Testovací email odeslán, response:', res)
+              console.log('Testovací email odeslán, response:', res)
+            } catch {
+              console.error('Chyba při odesílání testovacího emailu na adresu:', data.emailForTest)
+            }
+          }
+
+          if (data.phoneForTest) {
+            const smsBody = createGeneralNotificationSms({
+              messages: customMessages.filter((msg) => msg.notifications.length > 0),
+              accessId: 'testovací-access-id',
+              dateLabel: `${data.month} ${data.year}`,
+            })
+
+            try {
+              const smsRes = await sendSms(smsBody, `${data.phoneForTest}`)
+
+              console.log(smsRes)
+            } catch (error) {
+              console.error(`Error sending monthly notification to ${data.phoneForTest}:`, error)
+              throw error
+            }
+          }
 
           data.emailForTest = undefined
-          return data
+          data.phoneForTest = undefined
         }
+        return data
       },
     ],
   },
