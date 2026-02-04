@@ -1,8 +1,8 @@
 import { generateAlphanumericId } from '@/functions/generateAlphanumericId'
 import { createGeneralNotificationSms } from '@/functions/notifications'
-import { renderMonthlyNotificationEmail } from '@/functions/render-email'
 import { ActivityGroup } from '@/payload-types'
 import { WorkflowConfig } from 'payload'
+import { renderMonthlyNotificationEmail } from 'react-email'
 
 export type Notification = {
   text: string

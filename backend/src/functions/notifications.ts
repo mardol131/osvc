@@ -1,4 +1,4 @@
-import { CustomMessage, Notification } from '@/jobs/workflows/monthlyNotificationWorkflow'
+import { CustomMessage } from '@/jobs/workflows/monthlyNotificationWorkflow'
 import { format } from 'date-fns'
 
 export async function sendSms(message: string, phoneNumber: string) {

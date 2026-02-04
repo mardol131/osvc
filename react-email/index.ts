@@ -1,17 +1,8 @@
 // Export all email components from react-email workspace
 
-export {
-  AlertNotificationEmail,
-  AlertNotificationEmailProps,
-} from "./emails/alert-notification-email";
-export {
-  ConfirmationEmail,
-  ConfirmationEmailProps,
-} from "./emails/confirmation-email";
-export {
-  MonthlyNotificationEmail,
-  MonthlyNotificationEmailProps,
-} from "./emails/monthly-notification-email";
+export { renderAlertNotificationEmail } from "./functions/render-email";
+export { renderMonthlyNotificationEmail } from "./functions/render-email";
+export { renderConfirmationEmail } from "./functions/render-email";
 
 export { sendEmail } from "./functions/send-email";
 

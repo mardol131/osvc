@@ -1,5 +1,5 @@
-import { renderConfirmationEmail } from '@/functions/render-email'
 import { WorkflowConfig } from 'payload'
+import { renderConfirmationEmail } from 'react-email'
 
 export const subscriptionActivatedWorkflow: WorkflowConfig<any> = {
   slug: 'subscriptionActivatedWorkflow',

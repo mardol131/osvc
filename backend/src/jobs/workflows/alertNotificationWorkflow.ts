@@ -1,5 +1,5 @@
 import { createAlertNotificationSms, removeDiacritics } from '@/functions/notifications'
-import { renderAlertNotificationEmail } from '@/functions/render-email'
+import { renderAlertNotificationEmail } from 'react-email'
 import { Obligation } from '@/payload-types'
 import { getQueueName } from '@/payload.config'
 import { differenceInDays } from 'date-fns'

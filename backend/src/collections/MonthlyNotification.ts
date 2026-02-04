@@ -1,11 +1,6 @@
-import { adminOrApiKeyAuth, apiKeyAuth } from '@/functions/ACL'
-import {
-  createGeneralNotificationEmail,
-  createGeneralNotificationSms,
-} from '@/functions/notifications'
-import { ActivityGroup, Subscribe } from '@/payload-types'
-import { format, set, setDate } from 'date-fns'
-import type { CollectionConfig, Field, Option } from 'payload'
+import { adminOrApiKeyAuth } from '@/functions/ACL'
+import { set } from 'date-fns'
+import type { CollectionConfig, Field } from 'payload'
 
 export const notificationFields: Field[] = [
   { name: 'text', type: 'textarea', required: true },
