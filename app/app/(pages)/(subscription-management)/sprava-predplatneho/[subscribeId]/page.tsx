@@ -75,8 +75,13 @@ export default async function SubscriptionManagementPage({
     (group: any) => (typeof group === "string" ? group : group.id),
   );
 
-  const activeGroups = allActivityGroups.filter((group: any) =>
-    userActivityGroupIds?.includes(group.id),
+  const generalGroup = allActivityGroups.find(
+    (group: any) => group.slug === "general",
+  );
+
+  const activeGroups = allActivityGroups.filter(
+    (group: any) =>
+      userActivityGroupIds?.includes(group.id) && group.slug !== "general",
   );
 
   const inactiveGroups = allActivityGroups.filter(
@@ -119,6 +124,7 @@ export default async function SubscriptionManagementPage({
         </div>
         {/* Správa předplatného */}
         <SubscriptionManagement
+          generalGroup={generalGroup}
           activeGroups={activeGroups}
           inactiveGroups={inactiveGroups}
           subscribeId={subscribes[0].id}

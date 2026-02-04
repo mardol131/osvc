@@ -25,8 +25,16 @@ export const metadata: Metadata = {
   applicationName: "OSVČ365",
   category: "business",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: [
+      {
+        url: "/favicon-32x32.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-dark-32x32.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
     apple: "/logo-osvc.png",
   },
   appleWebApp: {

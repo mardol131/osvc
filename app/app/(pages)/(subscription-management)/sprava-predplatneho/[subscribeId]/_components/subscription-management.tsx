@@ -10,12 +10,14 @@ import { Lightbulb } from "lucide-react";
 import Link from "next/link";
 
 interface SubscriptionManagementProps {
+  generalGroup?: ActivityGroup;
   activeGroups: ActivityGroup[];
   inactiveGroups: ActivityGroup[];
   subscribeId: string | { id: string };
 }
 
 export default function SubscriptionManagement({
+  generalGroup,
   activeGroups,
   inactiveGroups,
   subscribeId,
@@ -119,6 +121,20 @@ export default function SubscriptionManagement({
       id="subscription-management"
       className="w-full mx-auto mt-16 pt-12 border-t border-zinc-200"
     >
+      {/* Základní předplatné */}
+      {generalGroup && (
+        <div className="mb-10 md:mb-12">
+          <div className="mb-4">
+            <h5 className="text-primary mb-1">
+              Základní předplatné (nelze smazat bez zrušení celého předplatného)
+            </h5>
+          </div>
+          <div className="flex flex-col gap-3 md:gap-4">
+            <ActiveActivityCard key={generalGroup.id} group={generalGroup} />
+          </div>
+        </div>
+      )}
+
       {/* Aktivní skupiny */}
       {activeGroups.length > 0 && (
         <div className="mb-10 md:mb-12">
