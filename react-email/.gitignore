@@ -47,3 +47,5 @@ next-env.d.ts
 .dist
 
 dist
+
+node_modules

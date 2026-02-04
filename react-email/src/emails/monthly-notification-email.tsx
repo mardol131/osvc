@@ -10,6 +10,19 @@ import {
   Text,
 } from "@react-email/components";
 import { format } from "date-fns";
+import {
+  button,
+  container,
+  footer,
+  h1,
+  linkStyle,
+  main,
+  text,
+} from "../components/styles";
+import { Obligation } from "../components/obligation";
+import { Footer } from "../components/footer";
+import { AccessButton } from "../components/accessButton";
+
 export type Notification = {
   text: string;
   mobileText: string;
@@ -30,11 +43,11 @@ export type MonthlyNotificationEmailProps = {
   accessLink: string;
 };
 
-export const MonthlyNotificationEmail = ({
+export default function MonthlyNotificationEmail({
   messages,
   dateLabel,
   accessLink,
-}: MonthlyNotificationEmailProps) => {
+}: MonthlyNotificationEmailProps) {
   if (messages.length === 0) {
     return (
       <Html>
@@ -84,7 +97,7 @@ export const MonthlyNotificationEmail = ({
               <Link
                 href="https://osvc365.cz"
                 target="_blank"
-                style={{ ...link, color: "#898989" }}
+                style={{ ...linkStyle, color: "#898989" }}
               >
                 OSVČ365
               </Link>
@@ -136,89 +149,19 @@ export const MonthlyNotificationEmail = ({
               </Heading>
               <ul style={{ marginTop: "12px", marginBottom: "24px" }}>
                 {message.notifications.map((notification, idx) => (
-                  <li key={idx}>
-                    <Text style={{ ...text }}>
-                      {notification.text} -{" "}
-                      {notification.link ? (
-                        <>
-                          <a
-                            style={{ fontWeight: 600, color: "#f59f0a" }}
-                            href={notification.link}
-                          >
-                            Více informací
-                          </a>{" "}
-                        </>
-                      ) : null}
-                      <br
-                        style={{
-                          ...text,
-                          whiteSpace: "nowrap",
-                          fontWeight: 700,
-                        }}
-                      />
-                      {notification.date ? (
-                        <span style={{ fontWeight: 600 }}>
-                          Do {format(new Date(notification.date), "d. M. yyyy")}
-                        </span>
-                      ) : null}
-                    </Text>
-                  </li>
+                  <Obligation key={idx} notification={notification} />
                 ))}
               </ul>
             </div>
           ))}
-          <Link href={accessLink} target="_blank">
-            <button
-              style={{
-                backgroundColor: "#f59f0a",
-                border: "none",
-                padding: "10px 20px",
-                color: "#fff",
-                cursor: "pointer",
-                borderRadius: "5px",
-                fontWeight: "500",
-                textDecoration: "none",
-                fontSize: "16px",
-              }}
-            >
-              Detailní informace
-            </button>
-          </Link>
+          <AccessButton href={accessLink} />
 
-          <Text style={text}>
-            S pozdravem,
-            <br />
-            Tým OSVČ365
-          </Text>
-
-          <Img
-            src={`https://www.osvc365.cz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-osvc.9507aaa6.png&w=128&q=75`}
-            width="32"
-            height="32"
-            alt="OSVČ365 Logo"
-          />
-          <Text style={footer}>
-            <Link
-              href="https://osvc365.cz"
-              target="_blank"
-              style={{ ...link, color: "#898989" }}
-            >
-              OSVČ365
-            </Link>
-          </Text>
-          <Text style={{ ...footer, marginTop: 0 }}>
-            © {new Date().getFullYear()} OSVČ365. Všechna práva vyhrazena.
-          </Text>
-          <Text style={{ ...footer, marginTop: 0 }}>
-            Údaje v tomto emailu nelze považovat za právní či daňové
-            poradenství. Pro konkrétní situace doporučujeme konzultaci s
-            odborníkem.
-          </Text>
+          <Footer />
         </Container>
       </Body>
     </Html>
   );
-};
+}
 
 MonthlyNotificationEmail.PreviewProps = {
   messages: [
@@ -270,60 +213,3 @@ MonthlyNotificationEmail.PreviewProps = {
   dateLabel: "Březen 2025",
   accessLink: "https://osvc365.cz/prihlaseni",
 } as MonthlyNotificationEmailProps;
-
-export default MonthlyNotificationEmail;
-const main = {
-  backgroundColor: "#ffffff",
-};
-
-const container = {
-  paddingLeft: "12px",
-  paddingRight: "12px",
-  margin: "0 auto",
-};
-
-const h1 = {
-  color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "24px",
-  fontWeight: "bold",
-  margin: "40px 0",
-  padding: "0",
-};
-
-const link = {
-  color: "#2754C5",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "14px",
-  textDecoration: "underline",
-};
-
-const text = {
-  color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "14px",
-  margin: "24px 0",
-};
-
-const footer = {
-  color: "#898989",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "12px",
-  lineHeight: "22px",
-  marginTop: "12px",
-  marginBottom: "24px",
-};
-
-const code = {
-  display: "inline-block",
-  padding: "16px 4.5%",
-  width: "90.5%",
-  backgroundColor: "#f4f4f4",
-  borderRadius: "5px",
-  border: "1px solid #eee",
-  color: "#333",
-};
