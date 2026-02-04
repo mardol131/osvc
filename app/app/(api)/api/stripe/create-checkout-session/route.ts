@@ -1,6 +1,12 @@
 import { ActivityGroup } from "@/app/_data/businessActivities";
 import { productKind } from "@/app/_data/productKind";
-import { getCollection } from "@/app/_functions/backend";
+import {
+  createAccount,
+  createPassword,
+  createSubscribe,
+  getCollection,
+} from "@/app/_functions/backend";
+import { generateAlphanumericId } from "@/app/_functions/generateAlphanumericId";
 import { stringify } from "qs-esm";
 
 import Stripe from "stripe";
@@ -10,7 +16,8 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   if (
-    (!("activityGroups" in body) && body.activityGroups.length === 0) ||
+    !("activityGroups" in body) ||
+    body.activityGroups.length === 0 ||
     !("email" in body) ||
     !("phone" in body) ||
     !("phonePrefix" in body) ||
@@ -23,6 +30,10 @@ export async function POST(request: Request) {
         headers: { "Content-Type": "application/json" },
       },
     );
+  }
+
+  if (body.terms !== true) {
+    throw new Error("Failed to create password for new account");
   }
 
   const items = body.activityGroups.map((group: ActivityGroup) => {
@@ -61,18 +72,73 @@ export async function POST(request: Request) {
       { encodeValuesOnly: true },
     );
 
-    const userAccount = await getCollection({
+    const userAccounts = await getCollection({
       collectionSlug: "accounts",
       query: query,
       apiKey: process.env.CMS_API_KEY,
     });
 
+    let accountId: string | undefined = userAccounts[0]?.id;
+
+    if (!userAccounts[0]) {
+      const password = generateAlphanumericId(12);
+
+      let passwordDoc;
+      try {
+        passwordDoc = await createPassword({ password });
+      } catch (err) {
+        throw new Error(`Failed to create password: ${err}`);
+      }
+
+      console.log("passwordDoc", passwordDoc);
+
+      if (!passwordDoc?.id) {
+        throw new Error("Failed to create password for new account");
+      }
+
+      const newAccount = await createAccount({
+        email: body.email,
+        password: password,
+        passwordRelation: passwordDoc.id,
+        terms: body.terms,
+        marketing: body.marketing || false,
+      });
+
+      console.log("newAccount", newAccount);
+
+      accountId = newAccount.id;
+    }
+
+    if (!accountId) {
+      throw new Error("Account ID is undefined");
+    }
+
+    const subscriptionResponse = await createSubscribe({
+      email: body.email,
+      phone: body.phone,
+      phonePrefix: body.phonePrefix,
+      activityGroups: body.activityGroups.map(
+        (item: { id: string }) => item.id,
+      ),
+      terms: body.terms,
+      marketing: body.marketing || false,
+      active: false,
+      promotionCode: promotionCode.code,
+      account: accountId,
+    });
+
+    if (!subscriptionResponse?.id) {
+      throw new Error("Failed to create subscribe");
+    }
+
+    console.log("subscriptionResponse", subscriptionResponse);
+
     const session = await stripe.checkout.sessions.create({
       success_url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/dekujeme`,
       line_items: items,
-      customer: userAccount[0]?.stripe.customerId || undefined,
+      customer: userAccounts[0]?.stripe.customerId || undefined,
       mode: "subscription",
-      customer_email: userAccount[0]?.stripe.customerId
+      customer_email: userAccounts[0]?.stripe.customerId
         ? undefined
         : body.email,
       allow_promotion_codes: true,
@@ -87,10 +153,11 @@ export async function POST(request: Request) {
           activityGroups: JSON.stringify(
             body.activityGroups.map((item: { id: string }) => item.id),
           ),
+          cmsSubscribeId: subscriptionResponse.id,
           terms: body.terms,
           marketing: body.marketing || false,
           promotionCode: promotionCode.code,
-          accountId: userAccount[0]?.id,
+          accountId: accountId || "",
         },
       },
     });
@@ -98,7 +165,7 @@ export async function POST(request: Request) {
     return new Response(
       JSON.stringify({ result: "success", checkoutUrl: session.url }),
       {
-        status: 201,
+        status: 200,
         headers: { "Content-Type": "application/json" },
       },
     );

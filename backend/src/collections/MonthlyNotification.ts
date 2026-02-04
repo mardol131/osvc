@@ -1,4 +1,4 @@
-import { apiKeyAuth } from '@/functions/ACL'
+import { adminOrApiKeyAuth, apiKeyAuth } from '@/functions/ACL'
 import {
   createGeneralNotificationEmail,
   createGeneralNotificationSms,
@@ -40,10 +40,7 @@ export const MonthlyNotifications: CollectionConfig = {
   slug: 'monthly-notifications',
   access: {
     read: ({ req }) => {
-      if (req.user && req.user?.role.includes('admin')) return true
-      const apiKey = req.headers.get('authorization')
-      if (!apiKey) return false
-      return apiKeyAuth(apiKey)
+      return adminOrApiKeyAuth(req)
     },
   },
   versions: {

@@ -1,21 +1,3 @@
-export async function createDraftSubscribe(activityGroups: string[]) {
-  const response = await fetch(`${process.env.CMS_URL}/api/draft-subscribes`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `users API-Key ${process.env.CMS_API_KEY}`,
-    },
-    body: JSON.stringify({
-      activityGroups: activityGroups,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to create customer: ${response.statusText}`);
-  }
-  return response.json();
-}
-
 export async function createSubscribe({
   email,
   phone,
@@ -36,7 +18,7 @@ export async function createSubscribe({
   marketing?: boolean;
   active?: boolean;
   promotionCode?: string;
-  stripeSubscribeId: string;
+  stripeSubscribeId?: string;
   account: string;
 }) {
   const response = await fetch(`${process.env.CMS_URL}/api/subscribes`, {
@@ -58,14 +40,138 @@ export async function createSubscribe({
       account: account,
     }),
   });
+  const data = await response.json();
 
   if (!response.ok) {
-    console.log(response);
+    console.log("createSubscribe response", data);
 
     throw new Error(`Failed to create customer: ${response.statusText}`);
   }
+  return data.doc;
+}
+
+export async function createPassword({ password }: { password: string }) {
+  const response = await fetch(`${process.env.CMS_URL}/api/passwords`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `users API-Key ${process.env.CMS_API_KEY}`,
+    },
+    body: JSON.stringify({
+      password: password,
+    }),
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    console.log("createPassword response", data);
+    throw new Error(`Failed to create password: ${response.statusText}`);
+  }
+  console.log("createPassword data", data);
+  return data.doc;
+}
+
+export async function createAccount({
+  email,
+  password,
+  passwordRelation,
+  stripeCustomerId,
+  terms,
+  marketing,
+}: {
+  email: string;
+  password: string;
+  passwordRelation: string;
+  stripeCustomerId?: string;
+  terms?: boolean;
+  marketing?: boolean;
+}) {
+  const response = await fetch(`${process.env.CMS_URL}/api/accounts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `users API-Key ${process.env.CMS_API_KEY}`,
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password,
+      passwordRelation: passwordRelation,
+      stripe: {
+        customerId: stripeCustomerId,
+      },
+      terms: terms ? "true" : "false",
+      marketing: marketing ? "true" : "false",
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    console.log("createAccount response", data);
+    throw new Error(`Failed to create account: ${response.statusText}`);
+  }
+  console.log("createAccount data", data);
+  return data.doc;
+}
+
+// general endpoints
+
+export async function updateRecord({
+  collectionSlug,
+  recordId,
+  apiKey,
+  body,
+}: {
+  collectionSlug:
+    | "subscribes"
+    | "monthly-notifications"
+    | "accesses"
+    | "accounts";
+  recordId: string;
+  apiKey?: string;
+  body: Record<string, any>;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
+      },
+      body: JSON.stringify(body),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`,
+    );
+  }
   const data = await response.json();
   return data.doc;
+}
+
+export async function login(email: string, password: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/users/login`,
+    {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`Login failed: ${response.statusText}`);
+  }
+  const data = await response.json();
+  return data;
 }
 
 export async function getCollection({
@@ -140,96 +246,6 @@ export async function getSingleRecord({
     throw new Error(
       `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`,
     );
-  }
-  const data = await response.json();
-  return data;
-}
-
-export async function createAccount({
-  email,
-  stripeCustomerId,
-  terms,
-  marketing,
-}: {
-  email: string;
-  stripeCustomerId: string;
-  terms?: boolean;
-  marketing?: boolean;
-}) {
-  const response = await fetch(`${process.env.CMS_URL}/api/accounts`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `users API-Key ${process.env.CMS_API_KEY}`,
-    },
-    body: JSON.stringify({
-      email: email,
-      stripe: {
-        customerId: stripeCustomerId,
-      },
-      terms: terms ? "true" : "false",
-      marketing: marketing ? "true" : "false",
-    }),
-  });
-
-  if (!response.ok) {
-    console.log("createAccount response", response);
-    throw new Error(`Failed to create account: ${response.statusText}`);
-  }
-  const data = await response.json();
-  console.log("createAccount data", data);
-  return data;
-}
-
-export async function updateRecord({
-  collectionSlug,
-  recordId,
-  apiKey,
-  body,
-}: {
-  collectionSlug: "subscribes" | "monthly-notifications" | "accesses";
-  recordId: string;
-  apiKey?: string;
-  body: Record<string, any>;
-}) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
-      },
-      body: JSON.stringify(body),
-    },
-  );
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`,
-    );
-  }
-  const data = await response.json();
-  return data.doc;
-}
-
-export async function login(email: string, password: string) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/users/login`,
-    {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-      credentials: "include",
-    },
-  );
-  if (!response.ok) {
-    throw new Error(`Login failed: ${response.statusText}`);
   }
   const data = await response.json();
   return data;

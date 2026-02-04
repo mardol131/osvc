@@ -1,14 +1,20 @@
-import { apiKeyAuth } from '@/functions/ACL'
+import { adminOrApiKeyAuth } from '@/functions/ACL'
 import type { CollectionConfig } from 'payload'
 
 export const Accesses: CollectionConfig = {
   slug: 'accesses',
   access: {
     read: ({ req }) => {
-      if (req.user && req.user?.role.includes('admin')) return true
-      const apiKey = req.headers.get('authorization')
-      if (!apiKey) return false
-      return apiKeyAuth(apiKey)
+      return adminOrApiKeyAuth(req)
+    },
+    delete: ({ req }) => {
+      return adminOrApiKeyAuth(req)
+    },
+    update: ({ req }) => {
+      return adminOrApiKeyAuth(req)
+    },
+    create: ({ req }) => {
+      return adminOrApiKeyAuth(req)
     },
   },
   fields: [

@@ -549,16 +549,17 @@ export function createConfirmationEmail(code: string) {
                   <td>
                     <h1
                       style="color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-size:24px;font-weight:bold;margin:40px 0;padding:0">
-                      OSVČ365: Potvrzení nákupu
+                      OSVČ365: Předplatné je aktivní
                     </h1>
                     <p
                       style="font-size:14px;line-height:24px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin:24px 0;margin-bottom:14px;margin-top:24px;margin-right:0;margin-left:0">
-                      Děkujeme, že jste se přihlásili k odběru služeb OSVČ365.
                       Od této chvíle Vám budeme pravidelně zasílat užitečné
                       informace, povinnosti a novinky týkající se živností v
                       České republice.
                     </p>
-                    <p
+                  ${
+                    code
+                      ? `  <p
                       style="font-size:14px;line-height:24px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin:24px 0;margin-bottom:14px;margin-top:24px;margin-right:0;margin-left:0">
                       Níže naleznete slevový kód, který můžete darovat svým
                       známým nebo využít pro svůj další nákup.
@@ -572,7 +573,9 @@ export function createConfirmationEmail(code: string) {
                         style="font-size:18px;line-height:24px;background-color:orange;color:white;border-radius:5px;border:1px solid #eee;padding:16px 4.5%;width:90.5%;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;text-align:center;font-weight:bold;margin-top:16px;margin-bottom:16px">
                         ${code}
                       </p>
-                    </div>
+                    </div>`
+                      : ''
+                  }
                     <p
                       style="font-size:14px;line-height:24px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin:24px 0;margin-top:24px;margin-right:0;margin-bottom:24px;margin-left:0">
                       S pozdravem,<br />Tým OSVČ365

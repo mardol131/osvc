@@ -1,6 +1,5 @@
-import { apiKeyAuth } from '@/functions/ACL'
+import { adminOrApiKeyAuth } from '@/functions/ACL'
 import { generateAlphanumericId } from '@/functions/generateAlphanumericId'
-import { addYears } from 'date-fns'
 import type { CollectionConfig } from 'payload'
 
 export const Subscribes: CollectionConfig = {
@@ -10,23 +9,13 @@ export const Subscribes: CollectionConfig = {
   },
   access: {
     create: async ({ req }) => {
-      if (req.user && req.user?.role.includes('admin')) return true
-      const apiKey = req.headers.get('authorization')
-      if (!apiKey) return false
-      return apiKeyAuth(apiKey)
+      return adminOrApiKeyAuth(req)
     },
     read: async ({ req }) => {
-      if (req.user && req.user?.role.includes('admin')) return true
-      const apiKey = req.headers.get('authorization')
-      if (!apiKey) return false
-      return apiKeyAuth(apiKey)
+      return adminOrApiKeyAuth(req)
     },
     update: async ({ req }) => {
-      if (req.user && req.user?.role.includes('admin')) return true
-      const apiKey = req.headers.get('authorization')
-
-      if (!apiKey) return false
-      return apiKeyAuth(apiKey)
+      return adminOrApiKeyAuth(req)
     },
   },
   fields: [
@@ -77,6 +66,12 @@ export const Subscribes: CollectionConfig = {
       defaultValue: false,
     },
     {
+      name: 'promocodeAlreadySent',
+      type: 'checkbox',
+      label: 'Promokód již byl odeslán',
+      defaultValue: false,
+    },
+    {
       name: 'promotionCode',
       type: 'text',
       admin: {
@@ -89,7 +84,6 @@ export const Subscribes: CollectionConfig = {
       admin: {
         readOnly: true,
       },
-      required: true,
     },
     {
       name: 'subscribeId',
@@ -108,22 +102,44 @@ export const Subscribes: CollectionConfig = {
   ],
   hooks: {
     afterChange: [
-      async ({ doc, req: { payload }, operation }) => {
+      async ({ doc, previousDoc, req: { payload }, operation }) => {
         if (operation === 'create') {
-          await payload.jobs.queue({
-            workflow: 'subscriptionCreatedWorkflow',
-            input: {
-              promotionCode: doc.promotionCode,
-              email: doc.email,
-            },
-          })
-
           await payload.jobs.queue({
             workflow: 'addMarketingContactWorkflow',
             input: {
               subscriptionId: doc.id,
             },
           })
+        }
+
+        if (
+          operation === 'update' &&
+          previousDoc &&
+          previousDoc.active === false &&
+          doc.active === true
+        ) {
+          console.log({
+            previousDoc,
+            doc,
+          })
+          if (previousDoc.promocodeAlreadySent === false && doc.promocodeAlreadySent === true) {
+            console.log('Email with promotion code')
+            await payload.jobs.queue({
+              workflow: 'subscriptionActivatedWorkflow',
+              input: {
+                promotionCode: doc.promotionCode,
+                email: doc.email,
+              },
+            })
+          } else if (doc.promocodeAlreadySent === true) {
+            console.log('Email without promotion code')
+            await payload.jobs.queue({
+              workflow: 'subscriptionActivatedWorkflow',
+              input: {
+                email: doc.email,
+              },
+            })
+          }
         }
 
         return doc

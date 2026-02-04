@@ -5,7 +5,7 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
-import { Accesses } from './collections/Access'
+import { Accesses } from './collections/Accesses'
 import { ActivityGroups } from './collections/ActivityGroups'
 import { Media } from './collections/Media'
 import { MonthlyNotifications } from './collections/MonthlyNotification'
@@ -18,9 +18,10 @@ import { sendEmailTask } from './jobs/tasks/sendEmailTask'
 import { sendSmsTask } from './jobs/tasks/sendSmsTask'
 import { alertNotificationWorkflow } from './jobs/workflows/alertNotificationWorkflow'
 import { monthlyNotificationsWorkflow } from './jobs/workflows/monthlyNotificationWorkflow'
-import { subscriptionCreatedWorkflow } from './jobs/workflows/subscriptionCreatedWorkflow'
+import { subscriptionActivatedWorkflow } from './jobs/workflows/subscriptionActivatedWorkflow'
 import { addMarketingContactWorkflow } from './jobs/workflows/addMarketingContactWorkflow'
 import { Accounts } from './collections/Accounts'
+import { Passwords } from './collections/Passwords'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -29,7 +30,7 @@ export const getQueueName = (
   name:
     | 'monthlyNotificationsQueue'
     | 'alertNotificationsQueue'
-    | 'subscriptionCreatedQueue'
+    | 'subscriptionActivatedQueue'
     | 'addMarketingContactQueue',
 ) => {
   return name
@@ -48,8 +49,8 @@ export default buildConfig({
         queue: getQueueName('alertNotificationsQueue'),
       },
       {
-        cron: process.env.CRON_SUBSCRIPTION_CREATED_QUEUE || '* * * * *',
-        queue: getQueueName('subscriptionCreatedQueue'),
+        cron: process.env.CRON_SUBSCRIPTION_ACTIVATED_QUEUE || '* * * * *',
+        queue: getQueueName('subscriptionActivatedQueue'),
       },
       {
         cron: process.env.CRON_ADD_MARKETING_CONTACT_QUEUE || '0 15 * * *',
@@ -60,7 +61,7 @@ export default buildConfig({
     workflows: [
       monthlyNotificationsWorkflow,
       alertNotificationWorkflow,
-      subscriptionCreatedWorkflow,
+      subscriptionActivatedWorkflow,
       addMarketingContactWorkflow,
     ],
   },
@@ -79,6 +80,7 @@ export default buildConfig({
     Accesses,
     Obligations,
     Accounts,
+    Passwords,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

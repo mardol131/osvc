@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    accounts: AccountAuthOperations;
   };
   blocks: {};
   collections: {
@@ -75,6 +76,7 @@ export interface Config {
     accesses: Access;
     obligations: Obligation;
     accounts: Account;
+    passwords: Password;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -91,6 +93,7 @@ export interface Config {
     accesses: AccessesSelect<false> | AccessesSelect<true>;
     obligations: ObligationsSelect<false> | ObligationsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
+    passwords: PasswordsSelect<false> | PasswordsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -104,9 +107,13 @@ export interface Config {
   globals: {};
   globalsSelect: {};
   locale: null;
-  user: User & {
-    collection: 'users';
-  };
+  user:
+    | (User & {
+        collection: 'users';
+      })
+    | (Account & {
+        collection: 'accounts';
+      });
   jobs: {
     tasks: {
       sendEmail: TaskSendEmail;
@@ -121,12 +128,30 @@ export interface Config {
     workflows: {
       monthlyNotificationsWorkflow: WorkflowMonthlyNotificationsWorkflow;
       alertNotificationWorkflow: WorkflowAlertNotificationWorkflow;
-      subscriptionCreatedWorkflow: WorkflowSubscriptionCreatedWorkflow;
+      subscriptionActivatedWorkflow: WorkflowSubscriptionActivatedWorkflow;
       addMarketingContactWorkflow: WorkflowAddMarketingContactWorkflow;
     };
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface AccountAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -250,8 +275,9 @@ export interface Subscribe {
   terms: boolean;
   marketing?: boolean | null;
   active?: boolean | null;
+  promocodeAlreadySent?: boolean | null;
   promotionCode?: string | null;
-  stripeSubscribeId: string;
+  stripeSubscribeId?: string | null;
   subscribeId: string;
   account?: (string | null) | Account;
   updatedAt: string;
@@ -263,12 +289,39 @@ export interface Subscribe {
  */
 export interface Account {
   id: string;
-  email: string;
-  stripe: {
-    customerId: string;
+  stripe?: {
+    customerId?: string | null;
   };
   terms: boolean;
   marketing?: boolean | null;
+  magicToken?: string | null;
+  magicTokenExpiration?: string | null;
+  passwordRelation: string | Password;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "passwords".
+ */
+export interface Password {
+  id: string;
+  password: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -443,7 +496,7 @@ export interface PayloadJob {
     | (
         | 'monthlyNotificationsWorkflow'
         | 'alertNotificationWorkflow'
-        | 'subscriptionCreatedWorkflow'
+        | 'subscriptionActivatedWorkflow'
         | 'addMarketingContactWorkflow'
       )
     | null;
@@ -492,12 +545,21 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'accounts';
         value: string | Account;
+      } | null)
+    | ({
+        relationTo: 'passwords';
+        value: string | Password;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'accounts';
+        value: string | Account;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -507,10 +569,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'accounts';
+        value: string | Account;
+      };
   key?: string | null;
   value?:
     | {
@@ -614,6 +681,7 @@ export interface SubscribesSelect<T extends boolean = true> {
   terms?: T;
   marketing?: T;
   active?: T;
+  promocodeAlreadySent?: T;
   promotionCode?: T;
   stripeSubscribeId?: T;
   subscribeId?: T;
@@ -676,7 +744,6 @@ export interface ObligationsSelect<T extends boolean = true> {
  * via the `definition` "accounts_select".
  */
 export interface AccountsSelect<T extends boolean = true> {
-  email?: T;
   stripe?:
     | T
     | {
@@ -684,6 +751,32 @@ export interface AccountsSelect<T extends boolean = true> {
       };
   terms?: T;
   marketing?: T;
+  magicToken?: T;
+  magicTokenExpiration?: T;
+  passwordRelation?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "passwords_select".
+ */
+export interface PasswordsSelect<T extends boolean = true> {
+  password?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -832,9 +925,9 @@ export interface WorkflowAlertNotificationWorkflow {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "WorkflowSubscriptionCreatedWorkflow".
+ * via the `definition` "WorkflowSubscriptionActivatedWorkflow".
  */
-export interface WorkflowSubscriptionCreatedWorkflow {
+export interface WorkflowSubscriptionActivatedWorkflow {
   input: {
     promotionCode?: string | null;
     email: string;

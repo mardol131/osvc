@@ -1,15 +1,12 @@
-import { getQueueName } from '@/payload.config'
-import { WorkflowConfig } from 'payload'
-import { createObligationInputSchema } from '../tasks/createObligationTask'
 import { createConfirmationEmail } from '@/functions/notifications'
+import { WorkflowConfig } from 'payload'
 
-export const subscriptionCreatedWorkflow: WorkflowConfig<any> = {
-  slug: 'subscriptionCreatedWorkflow',
+export const subscriptionActivatedWorkflow: WorkflowConfig<any> = {
+  slug: 'subscriptionActivatedWorkflow',
   inputSchema: [
     {
       type: 'text',
       name: 'promotionCode',
-      required: false,
     },
     {
       type: 'text',
@@ -17,7 +14,7 @@ export const subscriptionCreatedWorkflow: WorkflowConfig<any> = {
       required: true,
     },
   ],
-  queue: 'subscriptionCreatedQueue',
+  queue: 'subscriptionActivatedQueue',
   retries: 3,
   handler: async ({ job, tasks }) => {
     const emailBody = createConfirmationEmail(job.input.promotionCode)

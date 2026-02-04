@@ -10,8 +10,6 @@ export const Users: CollectionConfig = {
     useAPIKey: true,
   },
   fields: [
-    // Email added by default
-    // Add more fields as needed
     {
       name: 'role',
       type: 'select',

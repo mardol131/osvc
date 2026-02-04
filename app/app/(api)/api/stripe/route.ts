@@ -1,9 +1,10 @@
 import Stripe from "stripe";
 import {
   createAccount,
+  createPassword,
   createSubscribe,
   updateRecord,
-} from "../../../../_functions/backend";
+} from "../../../_functions/backend";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
@@ -35,17 +36,17 @@ export async function POST(request: Request) {
         }
 
         if (data.metadata.productKind === "general_subscription") {
-          const subscriptionId =
+          const stripeSubscriptionId =
             typeof data.subscription === "string"
               ? data.subscription
               : data.subscription?.id;
 
-          if (!subscriptionId) {
+          if (!stripeSubscriptionId) {
             throw new Error("Missing subscription ID");
           }
 
           const subscription =
-            await stripe.subscriptions.retrieve(subscriptionId);
+            await stripe.subscriptions.retrieve(stripeSubscriptionId);
 
           if (!subscription.metadata) {
             throw new Error("Missing subscription metadata");
@@ -57,36 +58,29 @@ export async function POST(request: Request) {
               : subscription.customer.id;
 
           let accountId = subscription.metadata.accountId;
+          let subscriptionId = subscription.metadata.cmsSubscribeId;
 
           console.log("accountId", accountId);
 
-          if (!accountId) {
-            const newAccount = await createAccount({
-              email: subscription.metadata.email,
-              stripeCustomerId: customer,
-              terms: JSON.parse(subscription.metadata.terms),
-              marketing: JSON.parse(subscription.metadata.marketing),
-            });
-
-            accountId = newAccount.doc.id;
-          }
-
-          const subscriptionResponse = await createSubscribe({
-            email: subscription.metadata.email,
-            phone: subscription.metadata.phone,
-            phonePrefix: subscription.metadata.phonePrefix,
-            activityGroups: JSON.parse(subscription.metadata.activityGroups),
-            terms: JSON.parse(subscription.metadata.terms),
-            marketing: JSON.parse(subscription.metadata.marketing),
-            active: true,
-            promotionCode: subscription.metadata.promotionCode,
-            stripeSubscribeId: subscription.id,
-            account: accountId,
+          await updateRecord({
+            collectionSlug: "accounts",
+            recordId: accountId,
+            apiKey: process.env.CMS_API_KEY,
+            body: {
+              stripe: {
+                customerId: customer,
+              },
+            },
           });
 
-          await stripe.subscriptions.update(subscription.id, {
-            metadata: {
-              cmsSubscribeId: subscriptionResponse.id,
+          await updateRecord({
+            collectionSlug: "subscribes",
+            recordId: subscriptionId,
+            apiKey: process.env.CMS_API_KEY,
+            body: {
+              active: true,
+              stripeSubscribeId: stripeSubscriptionId,
+              alreadyActivatedInPast: true,
             },
           });
         }
@@ -117,6 +111,10 @@ export async function POST(request: Request) {
     }
   } catch (err) {
     console.error(`Error processing event: ${err}`);
+    return new Response(JSON.stringify({ error: String(err) }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
   return new Response(JSON.stringify({ result: "success" }), {
     status: 201,
