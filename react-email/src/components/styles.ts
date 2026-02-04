@@ -75,6 +75,116 @@ const code = {
   color: colors.codeText,
 };
 
+const headerTable = {
+  width: "100%",
+  marginBottom: "32px",
+};
+
+const logo = {
+  verticalAlign: "middle" as const,
+};
+
+const brandText = {
+  fontFamily: fonts.basic,
+  fontSize: "15px",
+  fontWeight: "600" as const,
+  color: "#0f172a",
+  margin: "0",
+  padding: "0 0 0 8px",
+  verticalAlign: "middle" as const,
+  display: "inline-block" as const,
+};
+
+const sectionCard = {
+  backgroundColor: "#f8fafc",
+  padding: "20px",
+  borderRadius: "8px",
+  marginBottom: "20px",
+};
+
+const sectionHeading = {
+  fontFamily: fonts.basic,
+  color: colors.secondary,
+  fontSize: "18px",
+  fontWeight: "700" as const,
+  margin: "0 0 16px 0",
+  padding: "0",
+};
+
+const notificationCard = {
+  backgroundColor: colors.mainForeground,
+  padding: "16px",
+  borderRadius: "6px",
+  borderLeft: `3px solid ${colors.secondary}`,
+  marginBottom: "12px",
+};
+
+const notificationTitle = {
+  fontFamily: fonts.basic,
+  color: "#0f172a",
+  fontSize: "15px",
+  fontWeight: "600" as const,
+  margin: "0 0 8px 0",
+  padding: "0",
+};
+
+const notificationDescription = {
+  fontFamily: fonts.basic,
+  color: "#64748b",
+  fontSize: "14px",
+  lineHeight: "1.5",
+  margin: "0 0 8px 0",
+  padding: "0",
+};
+
+const notificationLink = {
+  fontFamily: fonts.basic,
+  color: colors.secondary,
+  fontSize: "14px",
+  fontWeight: "500" as const,
+  textDecoration: "none" as const,
+  display: "block" as const,
+  marginBottom: "8px",
+};
+
+const notificationDate = {
+  fontFamily: fonts.basic,
+  color: "#94a3b8",
+  fontSize: "12px",
+  margin: "0",
+  padding: "0",
+};
+
+const buttonTable = {
+  width: "100%",
+  margin: "32px 0",
+};
+
+const buttonCell = {
+  textAlign: "center" as const,
+};
+
+const dividerTable = {
+  width: "100%",
+  margin: "32px 0 24px 0",
+};
+
+const divider = {
+  borderTop: "1px solid #e2e8f0",
+  fontSize: "1px",
+  lineHeight: "1px",
+  height: "1px",
+};
+
+const descriptionText = {
+  fontFamily: fonts.basic,
+  color: "#64748b",
+  fontSize: "15px",
+  lineHeight: "1.6",
+  margin: "0 0 24px 0",
+  padding: "0",
+};
+
 export {
   main,
   container,
@@ -85,4 +195,19 @@ export {
   footer,
   code,
   textLight,
+  headerTable,
+  logo,
+  brandText,
+  sectionCard,
+  sectionHeading,
+  notificationCard,
+  notificationTitle,
+  notificationDescription,
+  notificationLink,
+  notificationDate,
+  buttonTable,
+  buttonCell,
+  dividerTable,
+  divider,
+  descriptionText,
 };

@@ -52,7 +52,7 @@ const AlertNotificationEmail = ({
       <Body style={main}>
         <Preview>Blížící se termín</Preview>
         <Container style={container}>
-          <Heading style={h1}>{header}</Heading>
+          <Heading style={h1}>OSVČ365: {header}</Heading>
           <Heading style={{ ...h1, fontSize: "18px", marginBottom: "12px" }}>
             {heading}
           </Heading>
