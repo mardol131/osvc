@@ -1,4 +1,5 @@
 import { adminOrApiKeyAuth } from '@/functions/ACL'
+import { renderMonthlyNotificationEmail, sendEmail } from '@osvc/react-email'
 import { set } from 'date-fns'
 import type { CollectionConfig, Field } from 'payload'
 
@@ -142,6 +143,83 @@ export const MonthlyNotifications: CollectionConfig = {
         })
 
         return doc
+      },
+      async ({ doc }) => {
+        if (doc._status === 'draft') {
+          type Notification = {
+            text: string
+            mobileText: string
+            link?: string | null
+            description: string
+            date?: string | null
+          }
+
+          type CustomMessage = {
+            heading: string
+            notifications: Notification[]
+            order?: number | null
+          }
+          const customMessages: CustomMessage[] = []
+
+          // Group notifications by activity groups
+          if (doc.notifications && Array.isArray(doc.notifications)) {
+            const groupedByActivityGroup = new Map<string, Notification[]>()
+            const activityGroupNames = new Map<string, string>()
+
+            // Group notifications by each activity group
+            doc.notifications.forEach((notification: any) => {
+              if (notification.activityGroups && Array.isArray(notification.activityGroups)) {
+                notification.activityGroups.forEach((activityGroup: any) => {
+                  const groupId =
+                    typeof activityGroup === 'string' ? activityGroup : activityGroup.id
+                  const groupName =
+                    typeof activityGroup === 'string'
+                      ? activityGroup
+                      : activityGroup.name || activityGroup.title || activityGroup.id
+
+                  if (!groupedByActivityGroup.has(groupId)) {
+                    groupedByActivityGroup.set(groupId, [])
+                  }
+                  activityGroupNames.set(groupId, groupName)
+                  groupedByActivityGroup.get(groupId)!.push(notification)
+                })
+              }
+            })
+
+            // Convert grouped notifications to custom messages
+            groupedByActivityGroup.forEach((notifications, groupId) => {
+              customMessages.push({
+                heading: activityGroupNames.get(groupId) || groupId,
+                notifications: notifications,
+              })
+            })
+          }
+
+          customMessages.sort((a, b) => {
+            const orderA = a.order || 0
+            const orderB = b.order || 0
+
+            // Položky s order: 1 jsou vždy první
+            if (orderA === 1 && orderB !== 1) return -1
+            if (orderB === 1 && orderA !== 1) return 1
+            return (b.notifications.length || 0) - (a.notifications.length || 0)
+          })
+
+          const emailBody = await renderMonthlyNotificationEmail({
+            messages: customMessages,
+            dateLabel: `${doc.month} ${doc.year}`,
+            accessLink: `${process.env.WEBSITE_URL}/testovací-access-link`,
+          })
+
+          const res = await sendEmail(
+            'OSVČ365 <info@osvc365.cz>',
+            ['dolezalmartin131@gmail.com'],
+            'testovací email - monthly draft',
+            emailBody,
+          )
+
+          console.log('Testovací email odeslán, response:', res)
+        }
       },
     ],
   },
