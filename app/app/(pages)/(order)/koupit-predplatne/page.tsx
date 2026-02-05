@@ -4,7 +4,7 @@ import { getCollection } from "@/app/_functions/backend";
 import { stringify } from "qs-esm";
 
 export const metadata = {
-  title: "OSVČ365: Koupit předplatné",
+  title: "Koupit předplatné",
   description:
     "Informace o předplatném služby OSVČ365. Přehled možností, výhod a postupu, jak si aktivovat službu pro automatické hlídání podnikatelských povinností a termínů.",
 };

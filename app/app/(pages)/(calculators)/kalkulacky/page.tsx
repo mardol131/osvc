@@ -7,7 +7,7 @@ import { calculators } from "@/app/_data/calculators";
 import { BiQuestionMark } from "react-icons/bi";
 
 export const metadata = {
-  title: "OSVČ365: Kalkulačky pro OSVČ",
+  title: "Kalkulačky pro OSVČ",
   description:
     "Vyzkoušejte online kalkulačky pro OSVČ. Spočítejte si jednoduše daně, sociální a zdravotní pojištění nebo porovnejte různé daňové režimy. Získejte přehled o svých povinnostech a optimalizujte své podnikání.",
 };
@@ -17,7 +17,7 @@ export default function page() {
     <>
       <HeroMidAlign
         options={{
-          heading: "Nástroje pro OSVČ",
+          heading: "Kalkulačky pro živnostníky",
           text: "Sada bezplatných kalkulaček, které vám pomůžou s nejčastějšími otázkami. Spočítejte si výši plateb na sociální a zdravotní pojištění, daně z příjmu, nebo třeba porovnejte, jestli se víc vyplatí využívat paušální výdaje nebo vstoupit do režimu paušální daně.",
           buttonsColumns: 1,
         }}

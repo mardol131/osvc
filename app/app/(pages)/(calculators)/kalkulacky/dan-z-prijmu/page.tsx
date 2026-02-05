@@ -6,7 +6,7 @@ import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
 import { DollarSign, TrendingUp } from "lucide-react";
 
 export const metadata = {
-  title: "OSVČ365: Daň z příjmu",
+  title: "Kalkulačka daně z příjmu pro živnostníky",
   description:
     "Zjistěte, jaká bude vaše daňová povinnost jako OSVČ na konci roku. Kalkulačka daně z příjmu vám pomůže jednoduše spočítat, kolik zaplatíte na dani, a získat přehled o všech povinnostech i možnostech úspor",
 };
@@ -17,7 +17,7 @@ export default function page() {
     <>
       <HeroMidAlign
         options={{
-          heading: "Daň z příjmu OSVČ",
+          heading: "Kalkulačka daně z příjmu OSVČ",
           secondHeading: "",
           text: "Zjistěte, jaká bude na konci roku vaše daňová povinnost.",
           buttonsColumns: 1,

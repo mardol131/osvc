@@ -6,7 +6,7 @@ import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
 import { DollarSign, TrendingUp } from "lucide-react";
 
 export const metadata = {
-  title: "OSVČ365: Paušální daň vs. Paušální výdaje",
+  title: "Kalkulačka paušální daň vs. paušální výdaje",
   description:
     "Porovnejte paušální daň a paušální výdaje pro OSVČ. Zjistěte, která varianta je pro vás výhodnější, kolik můžete ušetřit a jaké jsou hlavní rozdíly. Kalkulačka vám pomůže najít optimální daňový režim podle vaší situace.",
 };
@@ -16,7 +16,7 @@ export default function page() {
     <>
       <HeroMidAlign
         options={{
-          heading: "Paušální daň vs. Paušální výdaje",
+          heading: "Kalkulačka paušální daň vs. paušální výdaje",
           secondHeading: "Která varianta se vám vyplatí?",
           text: "Porovnávejte paušální daň s tradičním režimem paušálních výdajů. Zjistěte, jaký režim je pro vás výhodnější a kolik můžete měsíčně ušetřit.",
           buttonsColumns: 1,

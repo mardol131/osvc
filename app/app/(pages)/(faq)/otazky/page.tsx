@@ -3,7 +3,7 @@ import HeroMidAlign from "../../../_components/sections/hero/HeroMidAlign";
 import Faq from "@/app/_components/sections/faq/Faq";
 
 export const metadata = {
-  title: "OSVČ365: Často kladené otázky",
+  title: "Často kladené otázky",
   description:
     "Hledáte odpovědi na nejčastější otázky k OSVČ365? Zjistěte vše o službách, předplatném, funkcích a výhodách předplatného. Přehledné FAQ pro podnikatele a zájemce o naše služby.",
 };

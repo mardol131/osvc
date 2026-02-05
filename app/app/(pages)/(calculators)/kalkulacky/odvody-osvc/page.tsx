@@ -6,7 +6,7 @@ import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
 import { DollarSign, TrendingUp } from "lucide-react";
 
 export const metadata = {
-  title: "OSVČ365: Odvody OSVČ",
+  title: "Kalkulačka odvodů pro živnostníky",
   description:
     "Zjistěte, jaká bude vaše daňová povinnost a kolik zaplatíte na sociálním a zdravotním pojištění jako OSVČ. Kalkulačka odvodů vám pomůže jednoduše spočítat všechny povinné platby a získat přehled o vašich závazcích vůči státu.",
 };
@@ -17,7 +17,7 @@ export default function page() {
     <>
       <HeroMidAlign
         options={{
-          heading: "Odvody OSVČ",
+          heading: "Kalkulačka odvodů pro živnostníky",
           secondHeading: "",
           text: "Zjistěte, jaká bude na konci roku vaše daňová povinnost a celková platba za sociální a zdravotní pojištění.",
           buttonsColumns: 1,

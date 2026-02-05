@@ -6,7 +6,7 @@ import "./_css/globals.css";
 import BuyButton from "./_components/atoms/BuyButton";
 
 export const metadata: Metadata = {
-  title: "OSVČ365: Vy podnikáte, my hlídáme byrokracii.",
+  title: "Vy podnikáte, my hlídáme byrokracii",
   description:
     "Jste OSVČ? Stát vás na nové povinnosti neupozorní, jen pokutuje. My hlídáme zákony a termíny, posíláme upozornění a šetříme nervy.",
   keywords: [
@@ -21,8 +21,6 @@ export const metadata: Metadata = {
     "daňové povinnosti",
     "podnikatelské služby",
   ],
-  creator: "OSVČ365 tým",
-  applicationName: "OSVČ365",
   category: "business",
   icons: {
     icon: [
@@ -39,7 +37,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: "OSVČ365",
+    title: "Vy podnikáte, my hlídáme byrokracii",
     statusBarStyle: "default",
   },
 };

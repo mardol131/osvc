@@ -6,7 +6,7 @@ import HeroMidAlign from "@/app/_components/sections/hero/HeroMidAlign";
 import { DollarSign, TrendingUp } from "lucide-react";
 
 export const metadata = {
-  title: "OSVČ365: Sociální a zdravotní pojištění OSVČ",
+  title: "Kalkulačka sociálního a zdravotního pojištění",
   description:
     "Zjistěte, kolik musíte jako OSVČ odvádět na sociálním a zdravotním pojištění. Kalkulačka vám pomůže rychle spočítat měsíční i roční povinné platby a získat přehled o vašich závazcích vůči státu.",
 };
@@ -17,7 +17,7 @@ export default function page() {
     <>
       <HeroMidAlign
         options={{
-          heading: "Sociální a zdravotní pojištění pro OSVČ",
+          heading: "Kalkulačka sociálního a zdravotního pojištění pro OSVČ",
           secondHeading: "",
           text: "Zjistěte, jaká bude na konci roku vaše celková platba za sociální a zdravotní pojištění. Naše kalkulačka vám pomůže rychle a přesně spočítat vaše povinnosti na základě vašich příjmů.",
           buttonsColumns: 1,

@@ -7,7 +7,7 @@ import HeroMidAlign from "../../../_components/sections/hero/HeroMidAlign";
 import PricingTextAndBubble from "../../../_components/sections/pricing/PricingTextAndBubble";
 
 export const metadata = {
-  title: "OSVČ365: Cena",
+  title: "Ceník služby",
   description:
     "Aktuální ceník služby OSVČ365. Přehled roční ceny a srovnání s běžnými náklady na správu podnikatelských povinností. Informace o tom, co je v ceně zahrnuto a jaké výhody služba nabízí.",
 };
