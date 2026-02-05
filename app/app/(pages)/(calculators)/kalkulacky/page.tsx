@@ -27,7 +27,7 @@ export default function page() {
         <div className="w-full">
           <div className="mb-16">
             <h2 className="text-4xl md:text-5xl font-bebas mb-4">
-              Dostupné kalkulačky
+              Naše kalkulačky
             </h2>
             <p className="text-lg text-textP">
               Vyberte si kalkulačku, která vás zajímá a spočítejte si své daně
