@@ -3,7 +3,7 @@ import ScrollToTopButton from "./_components/atoms/ScrollToTopbutton";
 import Footer from "./_components/blocks/footer/Footer";
 import Header from "./_components/blocks/header/Header";
 import "./_css/globals.css";
-import BuyButton from "./_components/atoms/BuyButton";
+import image from "../public/OSVČ.png";
 
 export const metadata: Metadata = {
   title: "Vy podnikáte, my hlídáme byrokracii",
@@ -39,6 +39,20 @@ export const metadata: Metadata = {
     capable: true,
     title: "Vy podnikáte, my hlídáme byrokracii",
     statusBarStyle: "default",
+  },
+  openGraph: {
+    title: "OSVČ365: Vy podnikáte, my hlídáme byrokracii",
+    description: `Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět, když se něco změní. Už žádné pokuty ani stres z neznámých povinností. A za rok to stojí jako tři kafe.`,
+    url: "https://www.osvc365.cz",
+    siteName: "OSVČ365",
+    images: [
+      {
+        url: image.src,
+        width: 1200,
+        height: 627,
+      },
+    ],
+    type: "website",
   },
 };
 
