@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@jridgewell/remapping": "^2.3.5",
     "turbo": "^2.6.3"
   },
   "packageManager": "pnpm@10.0.0",
@@ -13,5 +14,14 @@
   "scripts": {
     "backend:build": "turbo run build --filter backend",
     "backend:start": "cd backend && pnpm run start"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "@tailwindcss/node@*": {
+        "dependencies": {
+          "@jridgewell/remapping": "^2.3.5"
+        }
+      }
+    }
   }
 }
