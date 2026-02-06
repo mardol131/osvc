@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { ActivityGroup } from "@/app/_data/businessActivities";
-import AddActivityModal from "../../../(subscription-management)/sprava-predplatneho/_components/add-activity-modal";
-import ActiveActivityCard from "../../../(subscription-management)/sprava-predplatneho/_components/active-activity-card";
-import InactiveActivityCard from "../../../(subscription-management)/sprava-predplatneho/_components/inactive-activity-card";
+import AddActivityModal from "../../../(administration)/administrace/sprava-predplatneho/_components/add-activity-modal";
+import ActiveActivityCard from "../../../(administration)/administrace/sprava-predplatneho/_components/active-activity-card";
+import InactiveActivityCard from "../../../(administration)/administrace/sprava-predplatneho/_components/inactive-activity-card";
 
 interface SubscriptionManagementProps {
   activeGroups: ActivityGroup[];

@@ -33,6 +33,7 @@ export const Accounts: CollectionConfig = {
       return adminOrApiKeyAuth(req)
     },
   },
+
   fields: [
     {
       name: 'email',
@@ -142,7 +143,7 @@ export const Accounts: CollectionConfig = {
         const link = `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/verify-token?${params.toString()}`
 
         await sendEmail(
-          'info@osvc365.cz',
+          'OSVČ365 <info@osvc365.cz>',
           [email],
           'OSVČ365: Odkaz pro přihlášení',
           await renderMagicLinkLoginEmail({ link }),

@@ -10,6 +10,7 @@ type Props = {
   message: string;
   buttonText?: string;
   buttonLink?: string;
+  buttonOnClick?: () => void;
 };
 
 export default function LoadErrorState({
@@ -17,6 +18,7 @@ export default function LoadErrorState({
   message,
   buttonText,
   buttonLink,
+  buttonOnClick,
 }: Props) {
   const handleReload = () => {
     window.location.reload();
@@ -35,9 +37,15 @@ export default function LoadErrorState({
           {/* Tlačítko */}
           <div className="flex justify-center">
             <Button
-              href={buttonLink}
+              href={buttonLink ? buttonLink : undefined}
               text={buttonText || "Načíst znovu"}
-              onClick={buttonLink ? undefined : handleReload}
+              onClick={
+                buttonOnClick
+                  ? buttonOnClick
+                  : buttonLink
+                    ? undefined
+                    : handleReload
+              }
               variant="gold"
             />
           </div>

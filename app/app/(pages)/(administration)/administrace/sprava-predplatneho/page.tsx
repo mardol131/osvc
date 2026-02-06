@@ -1,12 +1,15 @@
-import SubscriptionManagement from "@/app/(pages)/(subscription-management)/sprava-predplatneho/_components/subscription-management";
+import SubscriptionManagement from "@/app/(pages)/(administration)/administrace/sprava-predplatneho/_components/subscription-management";
+import LoadErrorState from "@/app/(pages)/(povinnosti)/[accessId]/_components/LoadErrorState";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
+import EmailLoginModal from "@/app/_components/molecules/email-login-modal";
 import { getCollection } from "@/app/_functions/backend";
 import { Lightbulb } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { stringify } from "qs-esm";
+import UserLoginScreen from "./_components/user-login-screen";
 
 export const metadata = {
   title: "Správa předplatného",
@@ -28,7 +31,7 @@ export default async function SubscriptionManagementPage() {
     if (error.status === 401 || error.status === 403) {
       return (
         <>
-          <p>Musíte se nejprve přihlásit</p>
+          <UserLoginScreen />
         </>
       );
     }

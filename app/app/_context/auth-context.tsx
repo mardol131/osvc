@@ -8,6 +8,8 @@ import {
   ReactNode,
   useCallback,
 } from "react";
+import { logout } from "../_functions/backend";
+import { useRouter } from "next/dist/client/components/navigation";
 
 interface User {
   id: string;
@@ -23,7 +25,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  logout: () => Promise<void>;
+  logout: (redirectUrl?: string) => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
@@ -32,6 +34,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   const refreshUser = useCallback(async () => {
     setIsLoading(true);
@@ -67,25 +70,26 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     refreshUser();
   }, [refreshUser]);
 
-  const logout = useCallback(async () => {
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_CMS_URL}/api/accounts/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-      setUser(null);
-    } catch (error) {
-      console.error("Failed to logout:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const logoutHandler = useCallback(
+    async (redirectUrl?: string) => {
+      try {
+        await logout();
+        setUser(null);
+        return router.push(redirectUrl || "/");
+      } catch (error) {
+        console.error("Failed to logout:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [router],
+  );
 
   const value: AuthContextType = {
     user,
     isLoading,
     isAuthenticated: user !== null && user.email !== undefined,
-    logout,
+    logout: logoutHandler,
     refreshUser,
   };
 

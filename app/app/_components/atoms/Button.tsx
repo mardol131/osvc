@@ -7,6 +7,8 @@ const variantClasses = {
   black: "bg-gradient-to-r from-primary to-zinc-800 text-white",
   outlined:
     "bg-transparent border-2 border-secondary text-secondary hover:bg-white",
+  red: "bg-gradient-to-r from-red-500 to-red-700 text-white",
+  plain: "text-primary bg-white",
 };
 
 type Props = {
@@ -20,6 +22,7 @@ type Props = {
   className?: string;
   disabled?: boolean;
   loading?: boolean;
+  uppercase?: boolean;
 };
 
 export default function Button({
@@ -33,6 +36,7 @@ export default function Button({
   className = "",
   disabled = false,
   loading = false,
+  uppercase = true,
 }: Props) {
   const sizeClasses = {
     xs: "text-sm py-2 px-4",
@@ -42,29 +46,34 @@ export default function Button({
     xl: "md:text-3xl text-2xl py-5 md:px-10 px-8",
   };
 
-  const baseClasses =
-    "shadow-lg uppercase cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-default font-semibold hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center";
+  const baseClasses = `shadow-lg ${uppercase ? "uppercase" : ""} cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-default font-semibold hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center`;
 
   const combinedClassName = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
-
-  const content = (
-    <button
-      disabled={disabled}
-      onClick={onClick}
-      className={!href ? combinedClassName : "cursor-pointer"}
-      type={htmlType}
-    >
-      {loading ? <AiOutlineLoading className="animate-spin text-2xl" /> : text}
-    </button>
-  );
 
   if (href) {
     return (
       <Link className={combinedClassName} target={target} href={href}>
-        {content}
+        {loading ? (
+          <AiOutlineLoading className="animate-spin text-2xl" />
+        ) : (
+          text
+        )}
       </Link>
     );
+  } else {
+    return (
+      <button
+        disabled={disabled}
+        onClick={onClick}
+        className={combinedClassName}
+        type={htmlType}
+      >
+        {loading ? (
+          <AiOutlineLoading className="animate-spin text-2xl" />
+        ) : (
+          text
+        )}
+      </button>
+    );
   }
-
-  return content;
 }

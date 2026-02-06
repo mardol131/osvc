@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export async function createSubscribe({
   email,
   phone,
@@ -151,29 +153,6 @@ export async function updateRecord({
   return data.doc;
 }
 
-export async function login(email: string, password: string) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/users/login`,
-    {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-      credentials: "include",
-    },
-  );
-  if (!response.ok) {
-    throw new Error(`Login failed: ${response.statusText}`);
-  }
-  const data = await response.json();
-  return data;
-}
-
 export async function getCollection({
   collectionSlug,
   authToken,
@@ -267,4 +246,36 @@ export async function getSingleRecord({
   }
   const data = await response.json();
   return data;
+}
+
+export async function login(email: string, redirectUrl: string | undefined) {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/login-with-magic-link`,
+    {
+      params: {
+        email: email,
+        redirectUrl: redirectUrl,
+      },
+    },
+  );
+
+  if (response.status !== 200 && response.status !== 201) {
+    throw new Error(`Login failed: ${response.statusText}`);
+  }
+  return { success: true };
+}
+
+export async function logout() {
+  const response = await axios.post(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/accounts/logout`,
+    {},
+    {
+      withCredentials: true,
+    },
+  );
+
+  if (response.status !== 200 && response.status !== 201) {
+    throw new Error(`Logout failed: ${response.statusText}`);
+  }
+  return { success: true };
 }
