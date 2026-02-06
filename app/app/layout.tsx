@@ -4,6 +4,7 @@ import Footer from "./_components/blocks/footer/Footer";
 import Header from "./_components/blocks/header/Header";
 import "./_css/globals.css";
 import image from "../public/OSVČ.png";
+import { AuthContextProvider } from "./_context/auth-context";
 
 export const metadata: Metadata = {
   title: "Vy podnikáte, my hlídáme byrokracii",
@@ -64,10 +65,12 @@ export default function RootLayout({
   return (
     <html lang="cs">
       <body className={` text-primary`}>
-        <Header />
-        <ScrollToTopButton />
-        {children}
-        <Footer />
+        <AuthContextProvider>
+          <Header />
+          <ScrollToTopButton />
+          {children}
+          <Footer />
+        </AuthContextProvider>
       </body>
     </html>
   );

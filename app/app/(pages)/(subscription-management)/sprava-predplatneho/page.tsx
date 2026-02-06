@@ -1,8 +1,9 @@
-import SubscriptionManagement from "@/app/(pages)/(subscription-management)/sprava-predplatneho/[subscribeId]/_components/subscription-management";
+import SubscriptionManagement from "@/app/(pages)/(subscription-management)/sprava-predplatneho/_components/subscription-management";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
 import { getCollection } from "@/app/_functions/backend";
 import { Lightbulb } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { stringify } from "qs-esm";
@@ -13,39 +14,29 @@ export const metadata = {
     "Spravujte své předměty podnikání a přizpůsobte své předplatné podle vašich potřeb.",
 };
 
-export default async function SubscriptionManagementPage({
-  params,
-}: {
-  params: Promise<{ subscribeId: string }>;
-}) {
-  const { subscribeId } = await params;
-
+export default async function SubscriptionManagementPage() {
   // Získej subscribe data
   let subscribes: any[] = [];
+  const cookiesStore = await cookies();
 
-  const query = stringify(
-    {
-      where: {
-        subscribeId: {
-          equals: subscribeId,
-        },
-        active: { equals: "true" },
-      },
-    },
-    { encodeValuesOnly: true },
-  );
   try {
     subscribes = await getCollection({
       collectionSlug: "subscribes",
-      apiKey: process.env.CMS_API_KEY,
-      depth: 1,
-      query,
+      authToken: cookiesStore.get("payload-token")?.value,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.status === 401 || error.status === 403) {
+      return (
+        <>
+          <p>Musíte se nejprve přihlásit</p>
+        </>
+      );
+    }
     return notFound();
   }
 
   if (subscribes.length === 0) {
+    console.log("No subscribes found");
     return notFound();
   }
 
@@ -71,25 +62,9 @@ export default async function SubscriptionManagementPage({
   }
 
   // Rozdělení ActivityGroups na aktivní a neaktivní
-  const userActivityGroupIds = subscribes[0].activityGroups?.map(
-    (group: any) => (typeof group === "string" ? group : group.id),
-  );
-
-  const generalGroup = allActivityGroups.find(
-    (group: any) => group.slug === "general",
-  );
-
-  const activeGroups = allActivityGroups.filter(
-    (group: any) =>
-      userActivityGroupIds?.includes(group.id) && group.slug !== "general",
-  );
-
-  const inactiveGroups = allActivityGroups.filter(
-    (group: any) => !userActivityGroupIds?.includes(group.id),
-  );
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-zinc-50">
       <SectionWrapper levelTwo={{ className: "items-center" }}>
         {/* Hlavička */}
         <HeadingCenter
@@ -98,7 +73,7 @@ export default async function SubscriptionManagementPage({
           text="Přehled aktivních předmětů podnikání a možnost dokoupení dalších podle vašich potřeb."
         />
         {/* Info box o přidávání/odebírání předmětů */}
-        <div className="mb-10 w-full md:mb-12 p-6 md:p-8 bg-white border-2 border-secondary/20 rounded-xl">
+        <div className="mb-10 w-full md:mb-12 p-6 md:p-8 bg-white border-2 border-zinc-100 rounded-xl">
           <div className="flex gap-4">
             <div className="shrink-0">
               <Lightbulb className="w-6 h-6 text-secondary" strokeWidth={1.5} />
@@ -123,12 +98,16 @@ export default async function SubscriptionManagementPage({
           </div>
         </div>
         {/* Správa předplatného */}
-        <SubscriptionManagement
-          generalGroup={generalGroup}
-          activeGroups={activeGroups}
-          inactiveGroups={inactiveGroups}
-          subscribeId={subscribes[0].id}
-        />
+        <div className="w-full flex flex-col gap-10">
+          {subscribes.map((subscribe, index) => (
+            <SubscriptionManagement
+              index={index}
+              key={subscribe.id}
+              allActivityGroups={allActivityGroups}
+              subscribe={subscribe}
+            />
+          ))}
+        </div>
       </SectionWrapper>
     </div>
   );

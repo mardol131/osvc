@@ -1,10 +1,12 @@
 import { getSingleRecord, updateRecord } from "@/app/_functions/backend";
+import { cookies } from "next/headers";
 
 import Stripe from "stripe";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_KEY!);
   const body = await request.json();
+  const cookiesStore = await cookies();
 
   if (
     !("activityGroupPriceId" in body) ||
@@ -39,7 +41,7 @@ export async function POST(request: Request) {
     const subscribe = await getSingleRecord({
       collectionSlug: "subscribes",
       recordId: body.subscribeId,
-      apiKey: process.env.CMS_API_KEY,
+      authToken: cookiesStore.get("payload-token")?.value,
       depth: 1,
     });
 

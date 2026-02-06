@@ -1,5 +1,7 @@
 export async function GET(request: Request) {
-  const email = new URL(request.url).searchParams.get("email");
+  const searchParams = new URL(request.url).searchParams;
+  const email = searchParams.get("email");
+  const redirectUrl = searchParams.get("redirectUrl");
 
   if (!email) {
     return new Response(JSON.stringify({ error: "Email is required" }), {
@@ -9,8 +11,14 @@ export async function GET(request: Request) {
   }
 
   try {
+    const fetchUrlParams = new URLSearchParams({
+      email,
+      ...(redirectUrl ? { redirectUrl: redirectUrl } : {}),
+    });
+
+    console.log("fetchUrlParams in API route:", fetchUrlParams.toString());
     const response = await fetch(
-      `${process.env.CMS_URL}/api/accounts/send-magic-link-email?email=${email}`,
+      `${process.env.CMS_URL}/api/accounts/send-magic-link-email?${fetchUrlParams.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${process.env.CMS_API_KEY}`,

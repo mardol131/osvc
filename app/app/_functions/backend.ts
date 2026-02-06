@@ -176,6 +176,7 @@ export async function login(email: string, password: string) {
 
 export async function getCollection({
   collectionSlug,
+  authToken,
   apiKey,
   query,
   cache,
@@ -188,6 +189,7 @@ export async function getCollection({
     | "accesses"
     | "accounts";
   apiKey?: string;
+  authToken?: string;
   query?: string;
   cache?: RequestCache;
   depth?: number;
@@ -200,13 +202,22 @@ export async function getCollection({
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
+        Authorization: apiKey
+          ? `Bearer ${apiKey}`
+          : authToken
+            ? `Bearer ${authToken}`
+            : "",
       },
       cache: cache,
+      credentials: "include",
     },
   );
 
-  console.log(response);
+  if (response.status === 401 || response.status === 403) {
+    const error: any = new Error("Unauthorized");
+    error.status = response.status;
+    throw error;
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -219,6 +230,7 @@ export async function getCollection({
 
 export async function getSingleRecord({
   collectionSlug,
+  authToken,
   recordId,
   apiKey,
   query,
@@ -227,6 +239,7 @@ export async function getSingleRecord({
   collectionSlug: "subscribes" | "monthly-notifications" | "accesses";
   recordId: string;
   apiKey?: string;
+  authToken?: string;
   query?: string;
   depth?: number;
 }) {
@@ -238,8 +251,13 @@ export async function getSingleRecord({
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
+        Authorization: apiKey
+          ? `Bearer ${apiKey}`
+          : authToken
+            ? `Bearer ${authToken}`
+            : "",
       },
+      credentials: "include",
     },
   );
   if (!response.ok) {

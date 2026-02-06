@@ -2,6 +2,7 @@ import { ActivityGroup } from "@/app/_data/businessActivities";
 import { productKind } from "@/app/_data/productKind";
 import { getCollection, getSingleRecord } from "@/app/_functions/backend";
 import { access } from "fs/promises";
+import { cookies } from "next/headers";
 
 import Stripe from "stripe";
 
@@ -21,11 +22,13 @@ export async function POST(request: Request) {
 
   console.log("BODY", body);
 
+  const cookiesStore = await cookies();
+
   try {
     const subscribe = await getSingleRecord({
       collectionSlug: "subscribes",
       recordId: body.subscribeId,
-      apiKey: process.env.CMS_API_KEY,
+      authToken: cookiesStore.get("payload-token")?.value,
     });
 
     if (!subscribe.stripeSubscribeId) {

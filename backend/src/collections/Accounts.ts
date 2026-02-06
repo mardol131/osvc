@@ -2,6 +2,8 @@ import { adminOrApiKeyAuth, apiKeyAuth } from '@/functions/ACL'
 import { jwtSign, type CollectionConfig } from 'payload'
 import crypto from 'crypto'
 import { sendEmail } from '@osvc/react-email'
+import { decryptPassword } from '@/functions/encrypting'
+import { renderMagicLinkLoginEmail } from '@osvc/react-email'
 
 export const Accounts: CollectionConfig = {
   slug: 'accounts',
@@ -14,6 +16,14 @@ export const Accounts: CollectionConfig = {
       return adminOrApiKeyAuth(req)
     },
     read: async ({ req }) => {
+      const user = req.user
+      if (user && user.collection === 'accounts') {
+        return {
+          id: {
+            equals: user.id,
+          },
+        }
+      }
       return adminOrApiKeyAuth(req)
     },
     update: async ({ req }) => {
@@ -87,7 +97,9 @@ export const Accounts: CollectionConfig = {
         if (!isAuthorized) {
           return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 })
         }
-        const { email } = req.query
+        const { email, redirectUrl } = req.query
+        console.log('redirectUrl in endpoint:', redirectUrl)
+
         if (!email || typeof email !== 'string') {
           return new Response(
             JSON.stringify({ message: 'Bad Request: Missing or invalid email parameter' }),
@@ -121,13 +133,19 @@ export const Accounts: CollectionConfig = {
           },
         })
 
-        const link = `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/magic-login?token=${token}&email=${email}`
+        const params = new URLSearchParams({
+          token,
+          email,
+          ...(redirectUrl && typeof redirectUrl === 'string' ? { redirectUrl: redirectUrl } : {}),
+        })
+
+        const link = `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/verify-token?${params.toString()}`
 
         await sendEmail(
           'info@osvc365.cz',
           [email],
-          'Váš odkaz pro přihlášení',
-          `<p>Klikněte na následující odkaz pro přihlášení (platný 15 minut):</p><p><a href="${link}">${link}</a></p>`,
+          'OSVČ365: Odkaz pro přihlášení',
+          await renderMagicLinkLoginEmail({ link }),
         )
 
         return new Response(JSON.stringify({ message: 'Magic link sent' }), { status: 200 })
@@ -185,14 +203,22 @@ export const Accounts: CollectionConfig = {
           )
         }
 
-        const authToken = await jwtSign({
-          fieldsToSign: {
-            id: account.id,
+        const password = await payload.findByID({
+          collection: 'passwords',
+          id:
+            typeof account.passwordRelation === 'string'
+              ? account.passwordRelation
+              : account.passwordRelation.id,
+        })
+
+        const unencryptedPassword = decryptPassword(password.password)
+
+        const authToken = await payload.login({
+          collection: 'accounts',
+          data: {
             email: account.email,
-            collection: 'accounts',
+            password: unencryptedPassword,
           },
-          secret: process.env.PAYLOAD_SECRET,
-          tokenExpiration: 1000 * 60 * 60 * 24 * 7, // 7 dní
         })
 
         // // Vyčistit magic token

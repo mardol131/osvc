@@ -12,16 +12,13 @@ export default function Hero() {
 
       <div className="relative z-10 w-full flex flex-col items-center gap-6 text-center max-w-200">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-5 py-2 bg-linear-to-r from-secondary/10 to-tertiary/10 border border-secondary/30 rounded-full">
-          <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
-          <p className="text-sm font-semibold text-primary uppercase  ">
-            Od živnostníků pro živnostníky
-          </p>
-        </div>
+        <p className="text-sm text-secondary font-semibold text-primary uppercase  ">
+          Od živnostníků pro živnostníky
+        </p>
 
         {/* Hlavní nadpis */}
         <div className="flex flex-col items-center gap-3">
-          <h1 className="bg-linear-to-br from-primary via-primary to-zinc-700 bg-clip-text text-transparent">
+          <h1 className="bg-linear-to-br from-primary via-primary pt-2 to-zinc-700 bg-clip-text text-transparent">
             Vy podnikáte. <br />
             My hlídáme byrokracii.
           </h1>

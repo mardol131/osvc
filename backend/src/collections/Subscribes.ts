@@ -12,6 +12,14 @@ export const Subscribes: CollectionConfig = {
       return adminOrApiKeyAuth(req)
     },
     read: async ({ req }) => {
+      const user = req.user
+      if (user && user.collection === 'accounts') {
+        return {
+          account: {
+            equals: user.id,
+          },
+        }
+      }
       return adminOrApiKeyAuth(req)
     },
     update: async ({ req }) => {
@@ -118,12 +126,7 @@ export const Subscribes: CollectionConfig = {
           previousDoc.active === false &&
           doc.active === true
         ) {
-          console.log({
-            previousDoc,
-            doc,
-          })
-          if (previousDoc.promocodeAlreadySent === false && doc.promocodeAlreadySent === true) {
-            console.log('Email with promotion code')
+          if (previousDoc.promocodeAlreadySent === false && doc.promocodeAlreadySent) {
             await payload.jobs.queue({
               workflow: 'subscriptionActivatedWorkflow',
               input: {
@@ -131,8 +134,7 @@ export const Subscribes: CollectionConfig = {
                 email: doc.email,
               },
             })
-          } else if (doc.promocodeAlreadySent === true) {
-            console.log('Email without promotion code')
+          } else {
             await payload.jobs.queue({
               workflow: 'subscriptionActivatedWorkflow',
               input: {

@@ -2,8 +2,11 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  const email = new URL(request.url).searchParams.get("email");
-  const token = new URL(request.url).searchParams.get("token");
+  const searchParams = new URL(request.url).searchParams;
+  const email = searchParams.get("email");
+  const token = searchParams.get("token");
+  const redirectUrl = searchParams.get("redirectUrl");
+  console.log("redirectUrl:", redirectUrl);
 
   if (!email) {
     return new Response(JSON.stringify({ error: "Email is required" }), {
@@ -56,7 +59,7 @@ export async function GET(request: Request) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL(redirectUrl || "/", request.url));
   } catch {
     return new Response(
       JSON.stringify({ error: "Failed to send magic link email" }),

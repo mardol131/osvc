@@ -79,7 +79,7 @@ export default function AddActivityModal({
         <div className="bg-emerald-50 border-l-4 border-emerald-500 rounded-lg p-4 mb-6">
           <p className="text-sm text-zinc-600 leading-relaxed">
             Cena je dopočítána podle zbývajícího období vašeho předplatného. Po
-            jeho vypršení bude tento předmět podnikání účtován za{" "}
+            jeho vypršení bude tato skupina předmětů podnikání účtována za{" "}
             <span className="font-semibold">{group.price} Kč/rok</span>. Skupina
             předmětů podnikání bude ihned dostupná pro další měsíc.
           </p>

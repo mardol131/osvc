@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "cd src && email dev -p 3002",
+    "start": "cd src && email dev -p 3002",
     "export": "cd src && email export",
     "build": "tsc --project tsconfig.build.json",
     "type-check": "tsc --noEmit"

@@ -9,6 +9,9 @@ import MonthlyNotificationEmail, {
 import ConfirmationEmail, {
   ConfirmationEmailProps,
 } from "../emails/confirmation-email";
+import MagicLinkLoginEmail, {
+  MagicLinkLoginEmailProps,
+} from "../emails/magic-link-login-email";
 
 export async function renderEmailTemplate(
   component: ReactNode,
@@ -44,5 +47,12 @@ export async function renderConfirmationEmail(
   props: ConfirmationEmailProps,
 ): Promise<string> {
   const component = ConfirmationEmail(props);
+  return renderEmailTemplate(component);
+}
+
+export async function renderMagicLinkLoginEmail(
+  props: MagicLinkLoginEmailProps,
+): Promise<string> {
+  const component = MagicLinkLoginEmail(props);
   return renderEmailTemplate(component);
 }

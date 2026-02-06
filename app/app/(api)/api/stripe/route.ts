@@ -80,7 +80,7 @@ export async function POST(request: Request) {
             body: {
               active: true,
               stripeSubscribeId: stripeSubscriptionId,
-              alreadyActivatedInPast: true,
+              promocodeAlreadySent: true,
             },
           });
         }
