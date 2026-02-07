@@ -66,7 +66,7 @@ export default function ModalLayout({
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header - sticky */}
-          <div className="sticky top-0 bg-white z-10 px-6 py-4 rounded-t-2xl border-b border-zinc-100 flex justify-between items-center">
+          <div className="sticky top-0 bg-white z-10 px-6 py-4 lg:px-8 lg:py-8 rounded-t-2xl border-b border-zinc-100 flex justify-between items-center">
             <h3 className="text-zinc-800">{title}</h3>
             <button
               type="button"

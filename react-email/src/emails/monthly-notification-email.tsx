@@ -22,6 +22,7 @@ import {
 import { Obligation } from "../components/obligation";
 import { Footer } from "../components/footer";
 import { AccessButton } from "../components/accessButton";
+import { colors } from "../components/colors";
 
 export type Notification = {
   text: string;
@@ -41,12 +42,14 @@ export type MonthlyNotificationEmailProps = {
   messages: CustomMessage[];
   dateLabel: string;
   accessLink: string;
+  accountEmail: string;
 };
 
 export default function MonthlyNotificationEmail({
   messages,
   dateLabel,
   accessLink,
+  accountEmail,
 }: MonthlyNotificationEmailProps) {
   if (messages.length === 0) {
     return (
@@ -97,7 +100,7 @@ export default function MonthlyNotificationEmail({
           </Text>
 
           {orderedMessages.map((message, index) => (
-            <div key={index}>
+            <Container style={{ margin: "20px 0px" }} key={index}>
               <Heading
                 style={{ ...h1, fontSize: "18px", marginBottom: "12px" }}
               >
@@ -108,9 +111,43 @@ export default function MonthlyNotificationEmail({
                   <Obligation key={idx} notification={notification} />
                 ))}
               </ul>
-            </div>
+            </Container>
           ))}
           <AccessButton href={accessLink} />
+          <Container style={{ margin: "30px 0px" }}>
+            <Heading style={{ ...h1, fontSize: "18px", marginBottom: "12px" }}>
+              Předplatné
+            </Heading>
+            <Text style={{ ...text, marginBottom: "14px" }}>
+              Toto předplatné vedeme pod zákaznickým účtem s emailovou adresou:
+            </Text>
+            <Link
+              style={{ ...text, fontWeight: 600, color: colors.secondary }}
+              href={`mailto:${accountEmail}`}
+            >
+              {accountEmail}
+            </Link>
+
+            <Text style={{ ...text, marginBottom: "14px" }}>
+              Pokud si přejete toto předplatné změnit nebo přenastavit, můžete
+              to provést na stránce{" "}
+              <Link
+                href={`${process.env.WEBSITE_URL}/administrace/sprava-predplatneho?email=${accountEmail}`}
+                style={{ ...text, fontWeight: 600, color: colors.secondary }}
+              >
+                nastavení předplatného
+              </Link>
+              . Pokud už k této adrese nemáte přístup, kontaktujte nás prosím na
+              email{" "}
+              <Link
+                href="mailto:info@osvc365.cz"
+                style={{ ...text, fontWeight: 600, color: colors.primary }}
+              >
+                info@osvc365.cz
+              </Link>
+              .
+            </Text>
+          </Container>
 
           <Footer />
         </Container>
@@ -120,6 +157,7 @@ export default function MonthlyNotificationEmail({
 }
 
 MonthlyNotificationEmail.PreviewProps = {
+  accountEmail: "test-email@gamil.com",
   messages: [
     {
       heading: "Přehled změn v legislativě",

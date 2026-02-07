@@ -13,11 +13,19 @@ export const subscriptionActivatedWorkflow: WorkflowConfig<any> = {
       name: 'email',
       required: true,
     },
+    {
+      type: 'text',
+      name: 'accountEmail',
+      required: true,
+    },
   ],
   queue: 'subscriptionActivatedQueue',
   retries: 3,
   handler: async ({ job, tasks }) => {
-    const emailBody = await renderConfirmationEmail({ code: job.input.promotionCode })
+    const emailBody = await renderConfirmationEmail({
+      code: job.input.promotionCode,
+      accountEmail: job.input.accountEmail,
+    })
 
     await tasks.sendEmail('send-activation-email', {
       input: {
@@ -26,8 +34,5 @@ export const subscriptionActivatedWorkflow: WorkflowConfig<any> = {
         body: emailBody,
       },
     })
-
-    console.log('Activation email sent to', job.input.email)
-    console.log('With promotion code:', job.input.promotionCode)
   },
 }

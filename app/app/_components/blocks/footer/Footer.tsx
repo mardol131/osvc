@@ -109,22 +109,39 @@ export default function Footer() {
                 );
               })}
             </div>{" "}
-            {/* Členství */}
-            <div className="flex flex-col items-start gap-4">
-              <h4 className="text-textLight mb-2">Váš účet</h4>
-              <Button
-                text="Spravovat členství"
-                href={process.env.NEXT_PUBLIC_SUB_ACCOUNT_LINK}
-                target="_blank"
-                size="sm"
-              />
+          </div>
+          {/* Členství */}
+          <div className="flex flex-col w-full gap-4 mb-5">
+            <h4 className="text-textLight mb-2">Váš účet</h4>
+            <div className="flex gap-5 w-full">
+              {" "}
+              <div className="flex flex-col gap-4">
+                <Button
+                  text="Spravovat předplatné"
+                  href="/administrace/sprava-predplatneho"
+                  target="_blank"
+                  size="sm"
+                />
 
-              <p className="text-zinc-400 text-sm">
-                Zde můžete spravovat své předplatné.
-              </p>
+                <p className="text-zinc-400 text-sm">
+                  Zde můžete spravovat své předplatné.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <Button
+                  text="Zrušit předplatné"
+                  href={process.env.NEXT_PUBLIC_SUB_ACCOUNT_LINK}
+                  target="_blank"
+                  size="sm"
+                  variant="plain"
+                />
+
+                <p className="text-zinc-400 text-sm">
+                  Pokud chcete předplatné zrušit
+                </p>
+              </div>
             </div>
           </div>
-
           {/* Divider */}
           <div className="h-px bg-linear-to-r from-transparent via-zinc-700 to-transparent mb-8"></div>
 

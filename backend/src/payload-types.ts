@@ -279,7 +279,7 @@ export interface Subscribe {
   promotionCode?: string | null;
   stripeSubscribeId?: string | null;
   subscribeId: string;
-  account?: (string | null) | Account;
+  account: string | Account;
   updatedAt: string;
   createdAt: string;
 }
@@ -939,6 +939,7 @@ export interface WorkflowSubscriptionActivatedWorkflow {
   input: {
     promotionCode?: string | null;
     email: string;
+    accountEmail: string;
   };
 }
 /**

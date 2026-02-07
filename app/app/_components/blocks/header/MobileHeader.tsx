@@ -185,17 +185,6 @@ export default function MobileHeader() {
                   <button
                     onClick={() => {
                       setUserMenuOpen(false);
-                      window.location.href =
-                        "/administrace/sprava-predplatneho";
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 transition-colors duration-200 text-left text-primary"
-                  >
-                    <Settings size={18} />
-                    <span className="text-sm">Správa předplatného</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setUserMenuOpen(false);
                       auth.logout();
                     }}
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 transition-colors duration-200 text-left text-primary border-t border-zinc-100"

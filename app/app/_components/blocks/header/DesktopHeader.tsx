@@ -138,12 +138,6 @@ export default function DesktopHeader() {
               <Button
                 variant="plain"
                 size="xs"
-                text="Správa předplatného"
-                href={"/administrace/sprava-predplatneho"}
-              />
-              <Button
-                variant="plain"
-                size="xs"
                 text="Odhlásit se"
                 htmlType="button"
                 onClick={() => auth.logout()}

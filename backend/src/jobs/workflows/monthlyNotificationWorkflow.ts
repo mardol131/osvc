@@ -40,6 +40,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
             active: { equals: true },
           },
           showHiddenFields: true,
+          depth: 1,
         })
         return { output: subscribes.docs }
       },
@@ -201,7 +202,20 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
           return (b.notifications.length || 0) - (a.notifications.length || 0)
         })
 
+        let accountEmail = ''
+
+        if (typeof subscribe.account === 'string') {
+          const account = await payload.findByID({
+            collection: 'accounts',
+            id: subscribe.account,
+          })
+          accountEmail = account.email
+        } else {
+          accountEmail = subscribe.account.email
+        }
+
         const emailBody = await renderMonthlyNotificationEmail({
+          accountEmail: accountEmail,
           messages: customMessages,
           dateLabel: `${monthlyNotification.month} ${monthlyNotification.year}`,
           accessLink: `${process.env.WEBSITE_URL}/${accessResponse.accessId}`,

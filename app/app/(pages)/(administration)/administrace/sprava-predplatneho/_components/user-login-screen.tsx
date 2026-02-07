@@ -4,13 +4,16 @@ import LoadErrorState from "@/app/(pages)/(povinnosti)/[accessId]/_components/Lo
 import EmailLoginModal from "@/app/_components/molecules/email-login-modal";
 import React from "react";
 
-type Props = {};
+type Props = {
+  queryEmail?: string;
+};
 
-export default function UserLoginScreen({}: Props) {
+export default function UserLoginScreen({ queryEmail }: Props) {
   const [loginModalIsOpen, setLoginModalIsOpen] = React.useState(true);
   return (
     <>
       <EmailLoginModal
+        queryEmail={queryEmail}
         isOpen={loginModalIsOpen}
         onClose={() => setLoginModalIsOpen(false)}
         redirectUrl="/administrace/sprava-predplatneho"

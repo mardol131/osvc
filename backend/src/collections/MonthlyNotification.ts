@@ -233,6 +233,7 @@ export const MonthlyNotifications: CollectionConfig = {
           if (data.emailForTest) {
             try {
               const emailBody = await renderMonthlyNotificationEmail({
+                accountEmail: data.emailForTest,
                 messages: customMessages,
                 dateLabel: `${data.month} ${data.year}`,
                 accessLink: `${process.env.WEBSITE_URL}/testovací-access-link`,

@@ -122,6 +122,7 @@ export async function updateRecord({
   collectionSlug,
   recordId,
   apiKey,
+  authToken,
   body,
 }: {
   collectionSlug:
@@ -131,6 +132,7 @@ export async function updateRecord({
     | "accounts";
   recordId: string;
   apiKey?: string;
+  authToken?: string;
   body: Record<string, any>;
 }) {
   const response = await fetch(
@@ -139,9 +141,14 @@ export async function updateRecord({
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
+        Authorization: apiKey
+          ? `users API-Key ${apiKey}`
+          : authToken
+            ? `Bearer ${authToken}`
+            : "",
       },
       body: JSON.stringify(body),
+      credentials: "include",
     },
   );
   if (!response.ok) {

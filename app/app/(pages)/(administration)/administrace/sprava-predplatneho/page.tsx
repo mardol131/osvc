@@ -17,10 +17,15 @@ export const metadata = {
     "Spravujte své předměty podnikání a přizpůsobte své předplatné podle vašich potřeb.",
 };
 
-export default async function SubscriptionManagementPage() {
+export default async function SubscriptionManagementPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string }>;
+}) {
   // Získej subscribe data
   let subscribes: any[] = [];
   const cookiesStore = await cookies();
+  const { email: queryEmail } = await searchParams;
 
   try {
     subscribes = await getCollection({
@@ -31,7 +36,7 @@ export default async function SubscriptionManagementPage() {
     if (error.status === 401 || error.status === 403) {
       return (
         <>
-          <UserLoginScreen />
+          <UserLoginScreen queryEmail={queryEmail} />
         </>
       );
     }

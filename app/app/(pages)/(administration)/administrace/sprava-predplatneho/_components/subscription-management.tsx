@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ActivityGroup } from "@/app/_data/businessActivities";
 import AddActivityModal from "./add-activity-modal";
 import ActiveActivityCard from "./active-activity-card";
@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { Lightbulb } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
+import { updateRecord } from "@/app/_functions/backend";
+import Button from "@/app/_components/atoms/Button";
 
 export type Subscribe = {
   id: string;
@@ -44,6 +46,28 @@ export default function SubscriptionManagement({
   const [finalPriceThatWillBePaid, setFinalPriceThatWillBePaid] = useState<
     number | null
   >(null);
+  const [isEditingContact, setIsEditingContact] = useState(false);
+  const [email, setEmail] = useState(subscribe.email);
+  const [phone, setPhone] = useState(subscribe.phone);
+  const [phonePrefix, setPhonePrefix] = useState(subscribe.phonePrefix);
+  const [isSavingContact, setIsSavingContact] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Zavřít dropdown při kliknutí mimo
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const userActivityGroupIds = subscribe.activityGroups?.map((group: any) =>
     typeof group === "string" ? group : group.id,
@@ -105,6 +129,52 @@ export default function SubscriptionManagement({
     router.refresh();
   };
 
+  const handlePhoneInput = (e: React.FormEvent<HTMLInputElement>) => {
+    const input = e.currentTarget;
+    const value = input.value.replace(/\D/g, "").slice(0, 9);
+    setPhone(value);
+  };
+
+  const handleSaveContact = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSavingContact(true);
+
+    if (!phone || phone.length !== 9) {
+      alert("Zadejte platné telefonní číslo.");
+      setIsSavingContact(false);
+      return;
+    }
+
+    if (!phonePrefix) {
+      alert("Zadejte platný telefonní prefix.");
+      setIsSavingContact(false);
+      return;
+    }
+
+    try {
+      const response = await updateRecord({
+        collectionSlug: "subscribes",
+        recordId: subscribe.id,
+        body: {
+          email: email,
+          phone: phone,
+          phonePrefix: phonePrefix,
+        },
+      });
+
+      if (!response.id) {
+        throw new Error("Nepodařilo se aktualizovat kontaktní údaje");
+      }
+
+      setIsEditingContact(false);
+      router.refresh();
+    } catch (error) {
+      console.error("Chyba při ukládání kontaktních údajů:", error);
+    } finally {
+      setIsSavingContact(false);
+    }
+  };
+
   const handleConfirmPurchase = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -148,13 +218,166 @@ export default function SubscriptionManagement({
 
   return (
     <div className="rounded-xl border w-full p-10 bg-white border-zinc-100 shadow-md">
-      <div id="subscription-management" className="w-full mx-auto">
+      <div className="w-full mx-auto">
         <div className="mb-10 flex items-center max-md:flex-col max-md:items-start max-md:gap-0 gap-10 border-b-2 pb-3 border-zinc-100">
           <h4>Předplatné č. {index + 1}</h4>
           <p>Vytvořeno {format(new Date(subscribe.createdAt), "d. M. yyyy")}</p>
         </div>
 
-        {/* Základní předplatné */}
+        {/* Kontaktní údaje */}
+        <div className="mb-10 md:mb-15">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h5 className="text-primary mb-1">Kontaktní údaje</h5>
+              <p className="text-sm text-zinc-600">
+                Email a telefonní číslo pro komunikaci
+              </p>
+            </div>
+            <button
+              onClick={() => setIsEditingContact(!isEditingContact)}
+              className="text-secondary hover:text-secondary/80 font-semibold text-sm transition-colors"
+            >
+              {isEditingContact ? "Zrušit" : "Upravit"}
+            </button>
+          </div>
+
+          {isEditingContact ? (
+            <form
+              onSubmit={handleSaveContact}
+              className="bg-zinc-50 rounded-lg p-6 border border-zinc-100"
+            >
+              <div className="flex flex-col gap-5">
+                {/* Email - editovatelné */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-zinc-700 mb-2"
+                  >
+                    E-mail
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="flex-1 min-w-0 w-full rounded-lg border bg-white border-zinc-300 px-4 py-2.5 text-sm text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
+                    required
+                  />
+                </div>
+
+                {/* Telefonní číslo */}
+                <div>
+                  <label className="block text-sm font-medium text-zinc-700 mb-2">
+                    Telefon
+                  </label>
+                  <div className="flex gap-2">
+                    {/* Custom Dropdown */}
+                    <div className="relative" ref={dropdownRef}>
+                      <button
+                        type="button"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="w-20 shrink-0 rounded-lg border border-zinc-300 px-3 py-2.5 text-sm text-zinc-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300 cursor-pointer bg-white flex items-center justify-between"
+                      >
+                        <p>+{phonePrefix}</p>
+                        <svg
+                          className={`w-4 h-4 transition-transform duration-200 ${
+                            isDropdownOpen ? "rotate-180" : ""
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </button>
+
+                      {isDropdownOpen && (
+                        <div className="absolute top-full left-0 mt-1 w-20 bg-white border-2 border-zinc-300 rounded-lg shadow-lg z-10 overflow-hidden">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPhonePrefix("420");
+                              setIsDropdownOpen(false);
+                            }}
+                            className={`w-full px-3 py-2 text-sm text-left hover:bg-zinc-100 transition-colors ${
+                              phonePrefix === "420"
+                                ? "bg-secondary/10 text-secondary"
+                                : "text-zinc-800"
+                            }`}
+                          >
+                            +420
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPhonePrefix("421");
+                              setIsDropdownOpen(false);
+                            }}
+                            className={`w-full px-3 py-2 text-sm text-left hover:bg-zinc-100 transition-colors ${
+                              phonePrefix === "421"
+                                ? "bg-secondary/10 text-secondary"
+                                : "text-zinc-800"
+                            }`}
+                          >
+                            +421
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <input
+                      type="tel"
+                      id="phone"
+                      value={phone}
+                      onInput={handlePhoneInput}
+                      className="flex-1 min-w-0 rounded-lg border bg-white border-zinc-300 px-4 py-2.5 text-sm text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
+                      placeholder="123456789"
+                      maxLength={9}
+                      minLength={9}
+                      pattern="[0-9]{9}"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Tlačítka */}
+                <div className="flex gap-3 pt-2">
+                  <Button
+                    text={isSavingContact ? "Ukládám..." : "Uložit"}
+                    htmlType="submit"
+                  />
+                  <Button
+                    text="Zrušit"
+                    onClick={() => setIsEditingContact(false)}
+                    variant="plain"
+                    htmlType="button"
+                  />
+                </div>
+              </div>
+            </form>
+          ) : (
+            <div className="bg-zinc-50 rounded-lg p-6 border border-zinc-100">
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-zinc-600 mb-1">E-mail</p>
+                  <p>{subscribe.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-zinc-600 mb-1">Telefonní číslo</p>
+                  <p>
+                    + {subscribe.phonePrefix}
+                    {subscribe.phone}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
         {generalGroup && (
           <div className="mb-10 md:mb-15">
             <div className="mb-8">

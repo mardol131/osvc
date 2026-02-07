@@ -12,6 +12,7 @@ interface EmailLoginModalProps {
   onSubmit?: (email: string) => void | Promise<void>;
   title?: string;
   description?: string;
+  queryEmail?: string;
 }
 
 export default function EmailLoginModal({
@@ -19,10 +20,11 @@ export default function EmailLoginModal({
   redirectUrl,
   onClose,
   onSubmit,
+  queryEmail,
   title = "Přihlášení pomocí emailu",
-  description = "Abyste mohli pokračovat, musíme se nejprve ověřit. Na zadanou emailovou adresu Vám zašleme přihlašovací odkaz, který Vám umožní přihlásit se.",
+  description = "Abyste mohli pokračovat, musíme se nejprve ověřit. Na zadanou emailovou adresu Vám zašleme přihlašovací odkaz, který Vám umožní pokračovat dál.",
 }: EmailLoginModalProps) {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(queryEmail || "");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);

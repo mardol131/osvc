@@ -23,20 +23,53 @@ import { Footer } from "../components/footer";
 import { colors } from "../components/colors";
 
 export type ConfirmationEmailProps = {
+  accountEmail: string;
   code?: string;
 };
 
-export const ConfirmationEmail = ({ code }: ConfirmationEmailProps) => (
+export const ConfirmationEmail = ({
+  accountEmail,
+  code,
+}: ConfirmationEmailProps) => (
   <Html>
     <Head />
     <Body style={main}>
       <Preview>Potvrzujeme přihlášení k odběru služeb</Preview>
       <Container style={container}>
         <Heading style={h1}>OSVČ365: Předplatné je aktivováno</Heading>
-
         <Text style={{ ...text, marginBottom: "14px" }}>
           Od této chvíle Vám budeme pravidelně zasílat užitečné informace,
           povinnosti a novinky týkající se živností v České republice.
+        </Text>
+        <Text style={{ ...text, marginBottom: "14px" }}>
+          Předplatné je nyní aktivní pod uživatelským účtem spojeným s emailovou
+          adresou:
+        </Text>
+        <Link
+          href={`mailto:${accountEmail}`}
+          style={{ ...text, fontWeight: 600, color: colors.secondary }}
+        >
+          {accountEmail}
+        </Link>{" "}
+        <Text style={{ ...text, marginBottom: "14px" }}>
+          Pokud si přejete toto předplatné změnit nebo přenastavit, můžete to
+          provést na stránce
+          <br />{" "}
+          <Link
+            href={`${process.env.WEBSITE_URL}/administrace/sprava-predplatneho?email=${accountEmail}`}
+            style={{ ...text, fontWeight: 600, color: colors.secondary }}
+          >
+            nastavení předplatného
+          </Link>
+          . Pokud už k této adrese nemáte přístup, kontaktujte nás prosím na
+          email{" "}
+          <Link
+            href="mailto:info@osvc365.cz"
+            style={{ ...text, fontWeight: 600, color: colors.secondary }}
+          >
+            info@osvc365.cz
+          </Link>
+          .
         </Text>
         {code && (
           <>
@@ -82,7 +115,6 @@ export const ConfirmationEmail = ({ code }: ConfirmationEmailProps) => (
             </Container>
           </>
         )}
-
         <Footer />
       </Container>
     </Body>
@@ -91,6 +123,7 @@ export const ConfirmationEmail = ({ code }: ConfirmationEmailProps) => (
 
 ConfirmationEmail.PreviewProps = {
   code: "sparo-ndigo-amurt-secan",
+  accountEmail: "email@email.com",
 } as ConfirmationEmailProps;
 
 export default ConfirmationEmail;
