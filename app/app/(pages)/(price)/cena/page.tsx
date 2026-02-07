@@ -19,7 +19,7 @@ export default async function page() {
         options={{
           heading: "Cena za tři kafe.",
           secondHeading: "na celý rok.",
-          text: " Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět, když se něco změní. Už žádné pokuty ani stres z neznámých povinností.",
+          text: "Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět, když se něco změní. Už žádné pokuty ani stres z neznámých povinností.",
           buttonsColumns: 1,
           buttons: (
             <>
