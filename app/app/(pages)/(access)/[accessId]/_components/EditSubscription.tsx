@@ -1,20 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import Button from "@/app/_components/atoms/Button";
-import EmailLoginModal from "@/app/_components/molecules/email-login-modal";
 import { ActivityGroup } from "@/app/_data/businessActivities";
 import { FiCheckCircle } from "react-icons/fi";
-import { login } from "@/app/_functions/backend";
 
 type Props = {
   activeGroups: ActivityGroup[];
-  subscribeId: string;
 };
 
-export default function EditSubscription({ activeGroups, subscribeId }: Props) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+export default function EditSubscription({ activeGroups }: Props) {
   return (
     <>
       <div className="w-full mx-auto mb-8 md:mb-10">
@@ -38,10 +32,10 @@ export default function EditSubscription({ activeGroups, subscribeId }: Props) {
             </div>
             <div className="shrink-0">
               <Button
-                onClick={() => setIsModalOpen(true)}
                 text="Spravovat předplatné"
                 variant="black"
                 size="sm"
+                href="/administrace/sprava-predplatneho"
               />
             </div>
           </div>
@@ -49,11 +43,6 @@ export default function EditSubscription({ activeGroups, subscribeId }: Props) {
       </div>
 
       {/* Email Login Modal */}
-      <EmailLoginModal
-        redirectUrl="/administrace/sprava-predplatneho"
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </>
   );
 }

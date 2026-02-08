@@ -218,8 +218,8 @@ export default function SubscriptionManagement({
 
   return (
     <div className="rounded-xl border w-full p-10 bg-white border-zinc-100 shadow-md">
-      <div className="w-full mx-auto">
-        <div className="mb-10 flex items-center max-md:flex-col max-md:items-start max-md:gap-0 gap-10 border-b-2 pb-3 border-zinc-100">
+      <div className="w-full flex flex-col gap-10 mx-auto">
+        <div className=" flex items-center max-md:flex-col max-md:items-start max-md:gap-0 gap-10 border-b-2 pb-3 border-zinc-100">
           <h4>Předplatné č. {index + 1}</h4>
           <p>Vytvořeno {format(new Date(subscribe.createdAt), "d. M. yyyy")}</p>
         </div>

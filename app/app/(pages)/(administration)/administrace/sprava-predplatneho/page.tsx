@@ -1,5 +1,5 @@
 import SubscriptionManagement from "@/app/(pages)/(administration)/administrace/sprava-predplatneho/_components/subscription-management";
-import LoadErrorState from "@/app/(pages)/(povinnosti)/[accessId]/_components/LoadErrorState";
+import LoadErrorState from "@/app/(pages)/(access)/[accessId]/_components/LoadErrorState";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
 import EmailLoginModal from "@/app/_components/molecules/email-login-modal";

@@ -141,19 +141,19 @@ export default async function page({
           subheading="Měsíční přehled"
           heading={
             <>
-              Povinnosti a novinky pro další měsíc
-              <br />
-              {monthLabel} {yearLabel}
+              <div>
+                <h2> Povinnosti a novinky pro další měsíc</h2>
+                <h2 className="mt-2 pt-4 border-t-2 border-secondary/30">
+                  Na {monthLabel} {yearLabel}
+                </h2>
+              </div>
             </>
           }
           text="Přehled informací, termínů a změn pro živnostníky a vaše předměty podnikání."
         />
 
         {/* Shrnutí */}
-        <EditSubscription
-          activeGroups={customActivityGroups || []}
-          subscribeId={subscribeId}
-        />
+        <EditSubscription activeGroups={customActivityGroups || []} />
         {totalNotifications > 0 ? (
           <>
             <div className="w-full mx-auto mb-8 md:mb-10">

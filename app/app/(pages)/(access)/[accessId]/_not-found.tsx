@@ -1,4 +1,4 @@
-import LoadErrorState from "@/app/(pages)/(povinnosti)/[accessId]/_components/LoadErrorState";
+import LoadErrorState from "@/app/(pages)/(access)/[accessId]/_components/LoadErrorState";
 import React from "react";
 
 type Props = {};
