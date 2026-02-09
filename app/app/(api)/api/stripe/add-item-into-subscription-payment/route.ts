@@ -157,8 +157,6 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log("PAID INVOICE", paidInvoice);
-
     return new Response(
       JSON.stringify({
         result: "success",

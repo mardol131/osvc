@@ -191,7 +191,7 @@ export default function SubscriptionManagement({
     }
 
     try {
-      const response = await fetch(
+      await fetch(
         `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/stripe/add-item-into-subscription-payment`,
         {
           method: "POST",
@@ -208,10 +208,8 @@ export default function SubscriptionManagement({
         },
       );
     } catch (error) {
-      console.error("Chyba při odesílání požadavku:");
+      console.error("Chyba při odesílání požadavku:", error);
     }
-
-    console.log("POTVRZENO");
 
     handleCloseModal();
   };

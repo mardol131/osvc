@@ -21,8 +21,6 @@ export async function POST(request: Request) {
         updateEnabled: true,
       }),
     });
-
-    console.log("Brevo response status:", response);
   } catch {
     return new Response(JSON.stringify({ error: "Failed to add contact" }), {
       status: 500,

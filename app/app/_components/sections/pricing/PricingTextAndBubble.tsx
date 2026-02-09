@@ -6,7 +6,7 @@ import HeadingLeft from "../../blocks/headings/HeadingLeft";
 import SectionWrapper from "../../blocks/SectionWrapper";
 
 type PricingTextAndBubble = {
-  text: string;
+  text: ReactNode;
   heading: ReactNode;
   subheading: string;
   direction: "vertical" | "horizontal";

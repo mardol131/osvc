@@ -20,8 +20,6 @@ export async function POST(request: Request) {
     );
   }
 
-  console.log("BODY", body);
-
   const cookiesStore = await cookies();
 
   try {

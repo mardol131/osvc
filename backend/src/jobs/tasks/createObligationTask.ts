@@ -87,9 +87,6 @@ export const createObligationTask: TaskConfig<any> = {
 
       // Pokud nejsou žádné budoucí milestones, vytvořit okamžitou notifikaci
       if (futureMilestones.length === 0) {
-        console.log(
-          `All milestones for obligation ID ${resp.id} are in the past, scheduling immediate notification.`,
-        )
         await payload.jobs.queue({
           workflow: 'alertNotificationWorkflow',
           waitUntil: now,
@@ -97,7 +94,6 @@ export const createObligationTask: TaskConfig<any> = {
             obligationId: resp.id,
           },
         })
-        console.log(`Scheduled immediate alert notification workflow for obligation ID ${resp.id}`)
       } else {
         // Vytvořit notifikace jen pro budoucí milestones
         for (const milestone of futureMilestones) {
@@ -108,14 +104,9 @@ export const createObligationTask: TaskConfig<any> = {
               obligationId: resp.id,
             },
           })
-
-          console.log(
-            `Scheduled alert notification workflow for obligation ID ${resp.id} at ${milestone.date.toISOString()} (${milestone.substractDays} days before due date)`,
-          )
         }
       }
     } catch (error) {
-      console.error('Error creating obligation or scheduling workflows:', error)
       throw error
     }
     return {

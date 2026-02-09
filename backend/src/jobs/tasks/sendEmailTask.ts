@@ -1,4 +1,4 @@
-import { sendEmail } from "@osvc/react-email"
+import { sendEmail } from '@osvc/react-email'
 
 import { Field, TaskConfig } from 'payload'
 
@@ -32,8 +32,6 @@ export const sendEmailTask: TaskConfig<any> = {
         input.subject,
         input.body,
       )
-
-      console.log(res)
     } catch (error) {
       console.error(`Error sending monthly notification to ${input.email}:`, error)
       throw error

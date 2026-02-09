@@ -60,8 +60,6 @@ export async function POST(request: Request) {
           let accountId = subscription.metadata.accountId;
           let subscriptionId = subscription.metadata.cmsSubscribeId;
 
-          console.log("accountId", accountId);
-
           await updateRecord({
             collectionSlug: "accounts",
             recordId: accountId,

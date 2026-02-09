@@ -26,8 +26,6 @@ export const sendSmsTask: TaskConfig<any> = {
   handler: async ({ input }) => {
     try {
       const smsRes = await sendSms(input.smsBody, `${input.phonePrefix}${input.phone}`)
-
-      console.log(smsRes)
     } catch (error) {
       console.error(`Error sending monthly notification to ${input.email}:`, error)
       throw error

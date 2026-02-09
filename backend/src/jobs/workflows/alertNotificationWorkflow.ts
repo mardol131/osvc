@@ -32,8 +32,6 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
       return
     }
 
-    console.log(`Processing alert notifications for obligation ID ${obligation.id}`)
-
     const subscribes = await inlineTask('get-subscribes', {
       task: async ({ req: { payload } }) => {
         const subscribes = await payload.find({
@@ -54,7 +52,6 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
     })
 
     if (subscribes.totalDocs === 0) {
-      console.log(`No subscribes found for obligation ID ${obligation.id}`)
       return
     }
 
@@ -122,8 +119,6 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
           smsBody: removeDiacritics(smsBody),
         },
       })
-
-      console.log(`Alert notification sent to subscribe ID ${subscribe.id}`)
     }
   },
 }

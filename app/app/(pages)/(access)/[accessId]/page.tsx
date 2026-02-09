@@ -128,11 +128,6 @@ export default async function page({
     return b.notifications.length - a.notifications.length;
   });
 
-  // Získej subscribe ID pro EditSubscription
-  const subscribeId = access.subscribeId;
-
-  console.log(access);
-
   return (
     <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white">
       <SectionWrapper levelTwo={{ className: "items-center" }}>

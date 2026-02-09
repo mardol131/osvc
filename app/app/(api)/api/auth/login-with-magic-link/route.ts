@@ -16,7 +16,6 @@ export async function GET(request: Request) {
       ...(redirectUrl ? { redirectUrl: redirectUrl } : {}),
     });
 
-    console.log("fetchUrlParams in API route:", fetchUrlParams.toString());
     const response = await fetch(
       `${process.env.CMS_URL}/api/accounts/send-magic-link-email?${fetchUrlParams.toString()}`,
       {

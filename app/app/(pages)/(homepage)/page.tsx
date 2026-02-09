@@ -26,9 +26,20 @@ export default function Home() {
       <SMS />
 
       <PricingTextAndBubble
-        text="Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět,
-              když se něco změní. Už žádné pokuty ani stres z neznámých
-              povinností."
+        text={
+          <>
+            <p>
+              V předplatném jsou zahrnuta upozornění přes SMS i email a měsíční
+              přehledy novinek a povinností. Na push notifikacích pracujeme.{" "}
+              <span className="text-secondary">
+                Žádné skryté cena ani doplatky za velké množství notifikací
+                nevedeme
+              </span>
+              . Chceme, abyste byli informování celý rok, a to nezávisle na tom,
+              kolik změn se stane.
+            </p>
+          </>
+        }
         heading={
           <>
             Jedna koruna denně.

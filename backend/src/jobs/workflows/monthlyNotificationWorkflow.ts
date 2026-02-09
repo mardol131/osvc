@@ -47,10 +47,8 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
     })
 
     if (subscribes.length === 0) {
-      console.log('No active subscribes found, skipping.')
       return
     }
-    console.log(`Found ${subscribes.length} active subscribes.`)
 
     const monthlyNotification = await inlineTask('get-monthly-notification', {
       task: async ({ req: { payload } }) => {
@@ -59,11 +57,6 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
           id: job.input.monthlyNotificationId,
         })
 
-        if (monthlyNotification) {
-          console.log(
-            `Monthly notification for ${monthlyNotification.month} ${monthlyNotification.year} retrieved.`,
-          )
-        }
         return { output: monthlyNotification }
       },
     })
@@ -75,9 +68,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
         })
 
         const activityGroupsMap = new Map(activityGroups.docs.map((g) => [g.id, g]))
-        if (activityGroups.docs.length > 0) {
-          console.log(`Fetched ${activityGroups.docs.length} activity groups.`)
-        }
+
         return { output: activityGroupsMap }
       },
     })
@@ -85,7 +76,6 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
     const data = monthlyNotification.notifications
 
     if (!data) {
-      console.log('No notifications data found, skipping.')
       return
     }
 
@@ -107,10 +97,6 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
                 monthlyNotificationId: monthlyNotification.id,
               },
             })
-
-            console.log(
-              `Obligation created for notification ${notification.id} with date ${notification.date}`,
-            )
           } catch (error) {
             console.error(
               `Error creating obligation for notification with date ${notification.date}:`,
@@ -163,7 +149,6 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
                 },
               })
 
-              console.log(`Access created with ID ${accessId} for subscribe ID ${subscribe.id}`)
               return { output: accessResponse }
             },
           },
@@ -249,7 +234,5 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
         console.error(`Error sending notification to ${subscribe.email}:`, error)
       }
     }
-
-    console.log('Monthly notification successfully send')
   },
 }

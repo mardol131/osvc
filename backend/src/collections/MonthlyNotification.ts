@@ -245,8 +245,6 @@ export const MonthlyNotifications: CollectionConfig = {
                 'testovací email - monthly draft',
                 emailBody,
               )
-
-              console.log('Testovací email odeslán, response:', res)
             } catch {
               console.error('Chyba při odesílání testovacího emailu na adresu:', data.emailForTest)
             }
@@ -261,8 +259,6 @@ export const MonthlyNotifications: CollectionConfig = {
 
             try {
               const smsRes = await sendSms(smsBody, `${data.phoneForTest}`)
-
-              console.log(smsRes)
             } catch (error) {
               console.error(`Error sending monthly notification to ${data.phoneForTest}:`, error)
               throw error

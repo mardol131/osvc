@@ -99,7 +99,6 @@ export const Accounts: CollectionConfig = {
           return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 })
         }
         const { email, redirectUrl } = req.query
-        console.log('redirectUrl in endpoint:', redirectUrl)
 
         if (!email || typeof email !== 'string') {
           return new Response(

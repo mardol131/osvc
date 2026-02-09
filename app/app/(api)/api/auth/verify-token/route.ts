@@ -6,7 +6,6 @@ export async function GET(request: Request) {
   const email = searchParams.get("email");
   const token = searchParams.get("token");
   const redirectUrl = searchParams.get("redirectUrl");
-  console.log("redirectUrl:", redirectUrl);
 
   if (!email) {
     return new Response(JSON.stringify({ error: "Email is required" }), {
@@ -44,8 +43,6 @@ export async function GET(request: Request) {
     }
 
     const data = await res.json();
-
-    console.log("Token verification response:", data);
 
     const cookiesStore = await cookies();
 

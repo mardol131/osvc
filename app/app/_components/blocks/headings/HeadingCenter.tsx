@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 type Props = {
   heading: ReactNode;
   subheading: string;
-  text: string;
+  text: ReactNode;
   mb?: number;
 };
 
@@ -21,7 +21,7 @@ export default function HeadingCenter({
     >
       <p className="font-semibold uppercase text-secondary">{subheading}</p>
       <h2 className="">{heading}</h2>
-      <p className="text-xl text-textP">{text}</p>
+      <div className="text-xl text-textP">{text}</div>
     </div>
   );
 }

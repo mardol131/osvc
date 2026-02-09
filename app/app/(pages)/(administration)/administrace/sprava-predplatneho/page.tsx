@@ -44,7 +44,6 @@ export default async function SubscriptionManagementPage({
   }
 
   if (subscribes.length === 0) {
-    console.log("No subscribes found");
     return notFound();
   }
 

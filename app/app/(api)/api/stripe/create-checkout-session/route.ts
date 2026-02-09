@@ -90,8 +90,6 @@ export async function POST(request: Request) {
         throw new Error(`Failed to create password: ${err}`);
       }
 
-      console.log("passwordDoc", passwordDoc);
-
       if (!passwordDoc?.id) {
         throw new Error("Failed to create password for new account");
       }
@@ -103,8 +101,6 @@ export async function POST(request: Request) {
         terms: body.terms,
         marketing: body.marketing || false,
       });
-
-      console.log("newAccount", newAccount);
 
       accountId = newAccount.id;
     }
@@ -130,8 +126,6 @@ export async function POST(request: Request) {
     if (!subscriptionResponse?.id) {
       throw new Error("Failed to create subscribe");
     }
-
-    console.log("subscriptionResponse", subscriptionResponse);
 
     const session = await stripe.checkout.sessions.create({
       success_url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/dekujeme`,

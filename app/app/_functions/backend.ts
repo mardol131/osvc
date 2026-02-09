@@ -45,8 +45,6 @@ export async function createSubscribe({
   const data = await response.json();
 
   if (!response.ok) {
-    console.log("createSubscribe response", data);
-
     throw new Error(`Failed to create customer: ${response.statusText}`);
   }
   return data.doc;
@@ -66,10 +64,8 @@ export async function createPassword({ password }: { password: string }) {
   const data = await response.json();
 
   if (!response.ok) {
-    console.log("createPassword response", data);
     throw new Error(`Failed to create password: ${response.statusText}`);
   }
-  console.log("createPassword data", data);
   return data.doc;
 }
 
@@ -109,10 +105,8 @@ export async function createAccount({
   const data = await response.json();
 
   if (!response.ok) {
-    console.log("createAccount response", data);
     throw new Error(`Failed to create account: ${response.statusText}`);
   }
-  console.log("createAccount data", data);
   return data.doc;
 }
 

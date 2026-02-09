@@ -54,8 +54,6 @@ export default function OrderPageClient(props: Props) {
       return;
     }
 
-    console.log(formData);
-
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/stripe/create-checkout-session`,

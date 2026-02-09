@@ -8,7 +8,6 @@ export default function CTA() {
   const [responseOk, setResponseOk] = useState(false);
 
   async function handleSubmit() {
-    console.log(email);
     const response = await fetch(
       "https://hook.eu2.make.com/5dmi6nvwyg988o4h03kp7xhathne1d67",
       {
@@ -16,9 +15,8 @@ export default function CTA() {
         mode: "cors",
 
         body: JSON.stringify(email),
-      }
+      },
     );
-    console.log(response);
 
     if (response.ok) {
       setResponseOk(true);

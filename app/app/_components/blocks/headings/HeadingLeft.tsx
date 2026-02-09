@@ -4,7 +4,7 @@ type Props = {
   heading: ReactNode;
   headingTwo?: string;
   subheading: string;
-  text: string;
+  text: ReactNode;
   mb?: number;
 };
 
@@ -27,7 +27,7 @@ export default function HeadingLeft({
         <br />
         {headingTwo}
       </h2>
-      <p className="text-xl text-textP">{text}</p>
+      <div className="text-xl text-textP">{text}</div>
     </div>
   );
 }
