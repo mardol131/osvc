@@ -1,16 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { ActivityGroup } from "@/app/_data/businessActivities";
-import AddActivityModal from "./add-activity-modal";
-import ActiveActivityCard from "./active-activity-card";
-import InactiveActivityCard from "./activity-card";
-import NotificationPreferences from "./notification-preferences";
-import ContactInformation from "./contact-information";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import AddActivityModal from "./add-activity-modal";
+import ContactInformation from "./contact-information";
+import NotificationPreferences from "./notification-preferences";
 
 import { format } from "date-fns";
-import Button from "@/app/_components/atoms/Button";
 import ActivityCard from "./activity-card";
 
 export interface NotificationSettings {
