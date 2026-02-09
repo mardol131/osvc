@@ -18,8 +18,8 @@ export default function DesktopHeader() {
 
   useClickOutside(dropdownRef, () => setToolsOpen(false));
   return (
-    <header className="hidden lg:block backdrop-blur-xl  sticky top-0  w-full z-50 border-white shadow-sm">
-      <div className="w-full px-10 flex bg-white/80  justify-center">
+    <header className="hidden lg:block backdrop-blur-xl  fixed top-0  w-full z-50  shadow-sm">
+      <div className="w-full px-10 flex bg-white/90  justify-center">
         <div className="max-w-wrapper w-full flex justify-between items-center items-center p-2">
           <Link href="/" className="group">
             <Image
@@ -129,7 +129,7 @@ export default function DesktopHeader() {
         </div>
       </div>
       {auth.user && (
-        <div className="w-full px-10 border-t border-zinc-100 bg-zinc-50/80 flex justify-center">
+        <div className="w-full px-10 border-t border-zinc-200/30 bg-zinc-50/85 flex justify-center">
           <div className="max-w-wrapper w-full flex justify-between gap-5 items-center p-2">
             <div>
               <p>Uživatel: {auth.user.email}</p>

@@ -54,7 +54,6 @@ export default function EmailLoginModal({
       setEmail("");
     } catch (err) {
       setError("Chyba při odesílání emailu. Zkuste to prosím znovu.");
-      console.error(err);
     } finally {
       setIsLoading(false);
     }

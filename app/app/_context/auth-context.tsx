@@ -59,7 +59,6 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
       const data = await res.json();
       setUser(data.user);
     } catch (error) {
-      console.error("Failed to refresh user:", error);
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -77,7 +76,6 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
         setUser(null);
         return router.push(redirectUrl || "/");
       } catch (error) {
-        console.error("Failed to logout:", error);
       } finally {
         setIsLoading(false);
       }

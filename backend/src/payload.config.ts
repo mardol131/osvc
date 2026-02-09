@@ -11,6 +11,7 @@ import { Media } from './collections/Media'
 import { MonthlyNotifications } from './collections/MonthlyNotification'
 import { Obligations } from './collections/Obligations'
 import { Subscribes } from './collections/Subscribes'
+import { PushSubscriptions } from './collections/PushSubscriptions'
 import { Users } from './collections/Users'
 import { createObligationTask } from './jobs/tasks/createObligationTask'
 import { getRecordTask } from './jobs/tasks/getRecordTask'
@@ -31,7 +32,9 @@ export const getQueueName = (
     | 'monthlyNotificationsQueue'
     | 'alertNotificationsQueue'
     | 'subscriptionActivatedQueue'
-    | 'addMarketingContactQueue',
+    | 'addMarketingContactQueue'
+    | 'send-email-queue'
+    | 'send-sms-queue',
 ) => {
   return name
 }
@@ -56,6 +59,16 @@ export default buildConfig({
         cron: process.env.CRON_ADD_MARKETING_CONTACT_QUEUE || '0 15 * * *',
         queue: getQueueName('addMarketingContactQueue'),
       },
+      {
+        cron: process.env.CRON_SEND_EMAIL_QUEUE || '*/5 * * * *',
+        queue: getQueueName('send-email-queue'),
+        limit: 5,
+      },
+      {
+        cron: process.env.CRON_SEND_SMS_QUEUE || '*/5 * * * *',
+        queue: getQueueName('send-sms-queue'),
+        limit: 5,
+      },
     ],
     tasks: [sendEmailTask, sendSmsTask, createObligationTask, getRecordTask],
     workflows: [
@@ -76,6 +89,7 @@ export default buildConfig({
     Media,
     ActivityGroups,
     Subscribes,
+    PushSubscriptions,
     MonthlyNotifications,
     Accesses,
     Obligations,

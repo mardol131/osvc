@@ -7,11 +7,19 @@ const variantClasses = {
   black: "bg-gradient-to-r from-primary to-zinc-800 text-white",
   outlined:
     "bg-transparent border-2 border-secondary text-secondary hover:bg-white",
-  red: "bg-gradient-to-r from-red-500 to-red-700 text-white",
+  red: "bg-red-500 text-white",
   plain: "text-primary bg-white",
 };
 
-type Props = {
+const sizeClasses = {
+  xs: "text-sm py-2 px-4",
+  sm: "text-base py-2 px-5",
+  md: "md:text-lg text-base py-3 md:px-6 px-4",
+  lg: "md:text-2xl text-xl py-4 md:px-8 px-6",
+  xl: "md:text-3xl text-2xl py-5 md:px-10 px-8",
+};
+
+export type ButtonProps = {
   text: string;
   href?: string;
   target?: "_blank";
@@ -37,15 +45,7 @@ export default function Button({
   disabled = false,
   loading = false,
   uppercase = true,
-}: Props) {
-  const sizeClasses = {
-    xs: "text-sm py-2 px-4",
-    sm: "text-base py-2 px-5",
-    md: "md:text-lg text-base py-3 md:px-6 px-4",
-    lg: "md:text-2xl text-xl py-4 md:px-8 px-6",
-    xl: "md:text-3xl text-2xl py-5 md:px-10 px-8",
-  };
-
+}: ButtonProps) {
   const baseClasses = `shadow-lg ${uppercase ? "uppercase" : ""} cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-default font-semibold hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center`;
 
   const combinedClassName = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;

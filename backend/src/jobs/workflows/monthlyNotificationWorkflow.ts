@@ -213,7 +213,9 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
         })
 
         if (monthlyNotification.useEmail) {
-          await tasks.sendEmail(`send-monthly-notification-email-for-subId-${subscribe.id}`, {
+          await payload.jobs.queue({
+            task: 'sendEmail',
+            queue: 'send-email-queue',
             input: {
               email: subscribe.email,
               body: emailBody,
@@ -222,7 +224,9 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
           })
         }
         if (monthlyNotification.useSms) {
-          await tasks.sendSms(`send-monthly-notification-sms-for-subId-${subscribe.id}`, {
+          await payload.jobs.queue({
+            task: 'sendSms',
+            queue: 'send-sms-queue',
             input: {
               phone: subscribe.phone,
               phonePrefix: subscribe.phonePrefix,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { servicePrice } from "@/app/_data/pricing";
 import { OrderFormData, SelectedActivities } from "./OrderSummary";
 import Button from "@/app/_components/atoms/Button";
@@ -23,7 +23,10 @@ export default function OrderSummaryMobile({
 }: Props) {
   const [termsChecked, setTermsChecked] = React.useState(false);
   const [marketingChecked, setMarketingChecked] = React.useState(false);
-
+  const [
+    useOrderEmailAsSubscriptionEmail,
+    setUseOrderEmailAsSubscriptionEmail,
+  ] = useState(true);
   const activitiesTotal = selectedActivities.reduce(
     (sum, activity) => sum + activity.price,
     0,
@@ -35,7 +38,10 @@ export default function OrderSummaryMobile({
     const formData = new FormData(e.currentTarget);
 
     onSubmit({
-      email: formData.get("email") as string,
+      orderEmail: formData.get("orderEmail") as string,
+      subscriptionEmail: useOrderEmailAsSubscriptionEmail
+        ? (formData.get("orderEmail") as string)
+        : (formData.get("subscriptionEmail") as string),
       phone: formData.get("phone") as string,
       phonePrefix: formData.get("phonePrefix") as string,
       terms: formData.get("terms") === "true",
@@ -157,20 +163,53 @@ export default function OrderSummaryMobile({
 
             <div>
               <label
-                htmlFor="email-mobile"
+                htmlFor="subscriptionEmail-mobile"
                 className="block text-base font-medium text-zinc-700 mb-2"
               >
-                Email <span className="text-secondary">*</span>
-              </label>
+                Objednávkový email
+              </label>{" "}
+              <p className="mb-3 text-sm">
+                Tento email bude sloužit pro správu předplatných, případně k
+                napojení na již existující účet, pokud jste u nás v minulosti
+                nakupovali.
+              </p>
               <input
                 type="email"
-                id="email-mobile"
-                name="email"
+                id="orderEmail-mobile"
+                name="orderEmail"
                 className="w-full rounded-lg border-2 border-zinc-200 px-4 py-2.5 text-base text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
                 placeholder="vas@email.cz"
                 required
               />
             </div>
+
+            <div className="mb-6 flex flex-col gap-3">
+              <CustomCheckbox
+                name="orderEmailSameAsSubscriptionEmail"
+                checked={useOrderEmailAsSubscriptionEmail}
+                onChange={setUseOrderEmailAsSubscriptionEmail}
+                label="Použít email výše i pro zasílání novinek"
+              />
+            </div>
+            {!useOrderEmailAsSubscriptionEmail && (
+              <div>
+                <label
+                  htmlFor="orderEmail-mobile"
+                  className="block text-base font-medium text-zinc-700 mb-2"
+                >
+                  Email pro zasílání novinek{" "}
+                  <span className="text-secondary">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="subscriptionEmail-mobile"
+                  name="subscriptionEmail"
+                  className="w-full rounded-lg border-2 border-zinc-200 px-4 py-2.5 text-base text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
+                  placeholder="vas@email.cz"
+                  required
+                />
+              </div>
+            )}
 
             <div>
               <label

@@ -81,9 +81,7 @@ export default async function page({
       collectionSlug: "activity-groups",
       apiKey: process.env.CMS_API_KEY,
     });
-  } catch (error) {
-    console.error("Failed to load activity groups:", error);
-  }
+  } catch (error) {}
 
   // Přizpůsobení notifikací podle aktivit uživatele
 

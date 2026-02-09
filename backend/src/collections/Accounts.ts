@@ -85,6 +85,16 @@ export const Accounts: CollectionConfig = {
       required: true,
     },
   ],
+  hooks: {
+    // beforeChange: [
+    //   async ({ data }) => {
+    //     if (data && data.email) {
+    //       data.email = data.email.toLowerCase()
+    //     }
+    //     return data
+    //   },
+    // ],
+  },
   endpoints: [
     {
       method: 'get',
@@ -163,14 +173,14 @@ export const Accounts: CollectionConfig = {
           )
         }
 
-        // const apiKey = req.headers.get('authorization')
-        // if (!apiKey) {
-        //   return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 })
-        // }
-        // const isAuthorized = apiKeyAuth(apiKey)
-        // if (!isAuthorized) {
-        //   return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 })
-        // }
+        const apiKey = req.headers.get('authorization')
+        if (!apiKey) {
+          return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 })
+        }
+        const isAuthorized = apiKeyAuth(apiKey)
+        if (!isAuthorized) {
+          return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 })
+        }
 
         const payload = req.payload
         const accounts = await payload.find({
@@ -187,9 +197,9 @@ export const Accounts: CollectionConfig = {
         const account = accounts.docs[0]
 
         if (
-          account.magicToken !== token
-          //   !account.magicTokenExpiration ||
-          //   new Date(account.magicTokenExpiration) < new Date()
+          account.magicToken !== token ||
+          !account.magicTokenExpiration ||
+          new Date(account.magicTokenExpiration) < new Date()
         ) {
           return new Response(JSON.stringify({ message: 'Invalid or expired token' }), {
             status: 401,
@@ -221,15 +231,15 @@ export const Accounts: CollectionConfig = {
           },
         })
 
-        // // Vyčistit magic token
-        // await payload.update({
-        //   collection: 'accounts',
-        //   id: account.id,
-        //   data: {
-        //     magicToken: null,
-        //     magicTokenExpiration: null,
-        //   },
-        // })
+        // Vyčistit magic token
+        await payload.update({
+          collection: 'accounts',
+          id: account.id,
+          data: {
+            magicToken: null,
+            magicTokenExpiration: null,
+          },
+        })
 
         const response = new Response(
           JSON.stringify({
@@ -242,7 +252,6 @@ export const Accounts: CollectionConfig = {
           { status: 200 },
         )
 
-        // Nastavit Set-Cookie header aby Payload token validoval
         response.headers.set(
           'Set-Cookie',
           `payload-token=${authToken.token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`,

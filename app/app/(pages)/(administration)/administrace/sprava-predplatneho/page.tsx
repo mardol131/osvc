@@ -1,6 +1,7 @@
 import SubscriptionManagement from "@/app/(pages)/(administration)/administrace/sprava-predplatneho/_components/subscription-management";
+import GeneralSettings from "@/app/(pages)/(administration)/administrace/sprava-predplatneho/_components/general-settings";
 import LoadErrorState from "@/app/(pages)/(access)/[accessId]/_components/LoadErrorState";
-import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
+import UserSectionWrapper from "@/app/_components/blocks/user-section-wrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
 import EmailLoginModal from "@/app/_components/molecules/email-login-modal";
 import { getCollection } from "@/app/_functions/backend";
@@ -64,58 +65,68 @@ export default async function SubscriptionManagementPage({
         { encodeValuesOnly: true },
       ),
     });
-  } catch (error) {
-    console.error("Failed to load activity groups:", error);
-  }
+  } catch (error) {}
 
   // Rozdělení ActivityGroups na aktivní a neaktivní
 
   return (
     <div className="min-h-screen bg-linear-to-b from-zinc-50">
-      <SectionWrapper levelTwo={{ className: "items-center" }}>
+      <UserSectionWrapper levelTwo={{ className: "items-center pt-20" }}>
         {/* Hlavička */}
         <HeadingCenter
           subheading="Správa předplatného"
           heading="Spravujte své předměty podnikání"
           text="Přehled aktivních předmětů podnikání a možnost dokoupení dalších podle vašich potřeb."
         />
-        {/* Info box o přidávání/odebírání předmětů */}
-        <div className="mb-10 w-full md:mb-12 p-6 md:p-8 bg-white border-2 border-zinc-100 rounded-xl">
-          <div className="flex gap-4">
-            <div className="shrink-0">
-              <Lightbulb className="w-6 h-6 text-secondary" strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 className="text-lg font-bebas text-primary mb-3">
-                Nová funkce se chystá
-              </h4>
-              <p className="text-textP leading-relaxed">
-                Brzy budete moci snadno odebírat jednotlivé předměty podnikání
-                bez nutnosti rušit své předplatné. Pokud chcete nějakou skupinu
-                v tuto chvíli vypnout, kontaktujte nás na{" "}
-                <Link
-                  href="mailto:info@osvc365.cz"
-                  className="text-secondary hover:text-secondary/80 transition-colors"
-                >
-                  info@osvc365.cz
-                </Link>
-                .
-              </p>
+      </UserSectionWrapper>
+      <div className="flex flex-col w-full gap-10">
+        <UserSectionWrapper>
+          {/* Info box o přidávání/odebírání předmětů */}
+          <div className="rounded-xl border w-full p-10 max-md:p-4 bg-white border-zinc-100 shadow-md">
+            <div className="flex gap-4">
+              {" "}
+              <div className="w-15 h-15 shrink-0 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center">
+                <Lightbulb strokeWidth={1.5} size={30} />
+              </div>
+              <div className="shrink-0"></div>
+              <div>
+                <h4 className="text-lg font-bebas text-primary mb-3">
+                  Nová funkce se chystá
+                </h4>
+                <p className="text-textP leading-relaxed">
+                  Brzy budete moci snadno odebírat jednotlivé předměty podnikání
+                  bez nutnosti rušit své předplatné. Pokud chcete nějakou
+                  skupinu v tuto chvíli vypnout, kontaktujte nás na{" "}
+                  <Link
+                    href="mailto:info@osvc365.cz"
+                    className="text-secondary hover:text-secondary/80 transition-colors"
+                  >
+                    info@osvc365.cz
+                  </Link>
+                  .
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </UserSectionWrapper>
+        {/* Obecná nastavení */}
+        <UserSectionWrapper>
+          <GeneralSettings />
+        </UserSectionWrapper>
         {/* Správa předplatného */}
-        <div className="w-full flex flex-col gap-10">
-          {subscribes.map((subscribe, index) => (
-            <SubscriptionManagement
-              index={index}
-              key={subscribe.id}
-              allActivityGroups={allActivityGroups}
-              subscribe={subscribe}
-            />
-          ))}
-        </div>
-      </SectionWrapper>
+        <UserSectionWrapper>
+          <div className="w-full flex flex-col gap-10">
+            {subscribes.map((subscribe, index) => (
+              <SubscriptionManagement
+                index={index}
+                key={subscribe.id}
+                allActivityGroups={allActivityGroups}
+                subscribe={subscribe}
+              />
+            ))}
+          </div>
+        </UserSectionWrapper>
+      </div>
     </div>
   );
 }

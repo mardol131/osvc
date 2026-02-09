@@ -47,9 +47,7 @@ export default function OneStringInputCta({ options }: Props) {
       if (response.ok) {
         setResponseOk(true);
       }
-    } catch (error) {
-      console.error("Something went wrong", error);
-    }
+    } catch (error) {}
   }
 
   return (

@@ -10,7 +10,8 @@
     "date-fns": "^4.1.0",
     "dotenv": "16.4.7",
     "jsonwebtoken": "^9.0.3",
-    "qs-esm": "^7.0.3"
+    "qs-esm": "^7.0.3",
+    "web-push": "^3.6.7"
   },
   "scripts": {
     "backend:build": "turbo run build --filter backend",

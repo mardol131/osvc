@@ -18,7 +18,8 @@ export async function POST(request: Request) {
   if (
     !("activityGroups" in body) ||
     body.activityGroups.length === 0 ||
-    !("email" in body) ||
+    !("subscriptionEmail" in body) ||
+    !("orderEmail" in body) ||
     !("phone" in body) ||
     !("phonePrefix" in body) ||
     !("terms" in body)
@@ -32,22 +33,30 @@ export async function POST(request: Request) {
     );
   }
 
+  body.subscriptionEmail = body.subscriptionEmail.toLowerCase();
+  body.orderEmail = body.orderEmail.toLowerCase();
+
   if (body.terms !== true) {
     throw new Error("Failed to create password for new account");
   }
 
-  const items = body.activityGroups.map((group: ActivityGroup) => {
-    const priceId = group.priceId;
-    return {
-      quantity: 1,
-      price: priceId,
-    };
-  });
+  const items = body.activityGroups.map(
+    (group: { id: string; priceId: string }) => {
+      const priceId = group.priceId;
+      return {
+        quantity: 1,
+        price: priceId,
+      };
+    },
+  );
 
   let productKindType = productKind.general_subscription;
 
   if (
-    body.activityGroups.some((group: ActivityGroup) => group.slug !== "general")
+    body.activityGroups.some(
+      (group: { id: string; priceId: string; slug: string }) =>
+        group.slug !== "general",
+    )
   ) {
     productKindType = productKind.activity_group_addon;
   }
@@ -65,7 +74,7 @@ export async function POST(request: Request) {
       {
         where: {
           email: {
-            equals: body.email,
+            equals: body.orderEmail.toLowerCase(),
           },
         },
       },
@@ -95,7 +104,7 @@ export async function POST(request: Request) {
       }
 
       const newAccount = await createAccount({
-        email: body.email,
+        email: body.orderEmail.toLowerCase(),
         password: password,
         passwordRelation: passwordDoc.id,
         terms: body.terms,
@@ -110,7 +119,7 @@ export async function POST(request: Request) {
     }
 
     const subscriptionResponse = await createSubscribe({
-      email: body.email,
+      email: body.subscriptionEmail,
       phone: body.phone,
       phonePrefix: body.phonePrefix,
       activityGroups: body.activityGroups.map(
@@ -134,14 +143,15 @@ export async function POST(request: Request) {
       mode: "subscription",
       customer_email: userAccounts[0]?.stripe.customerId
         ? undefined
-        : body.email,
+        : body.orderEmail.toLowerCase(),
       allow_promotion_codes: true,
       metadata: {
         productKind: productKindType,
       },
       subscription_data: {
         metadata: {
-          email: body.email,
+          email: body.subscriptionEmail.toLowerCase(),
+          orderEmail: body.orderEmail.toLowerCase(),
           phone: body.phone,
           phonePrefix: body.phonePrefix,
           activityGroups: JSON.stringify(

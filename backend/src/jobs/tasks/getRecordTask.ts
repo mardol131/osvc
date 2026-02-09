@@ -36,7 +36,6 @@ export const getRecordTask: TaskConfig<any> = {
         output: record,
       }
     } catch (error) {
-      console.error(`Error fetching record ${input.id} from collection ${input.collection}:`, error)
       throw error
     }
   },

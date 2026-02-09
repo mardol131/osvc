@@ -25,7 +25,7 @@ export default function MobileHeader() {
   const auth = useAuth();
 
   return (
-    <header className="lg:hidden bg-white/80 backdrop-blur-xl flex flex-col items-center justify-center  sticky top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
+    <header className="lg:hidden bg-white/90 backdrop-blur-xl flex flex-col items-center justify-center fixed top-0 w-full z-50 border-b border-zinc-200 shadow-sm">
       <div className="w-full px-4 py-4">
         <div className="max-w-wrapper w-full flex flex-col">
           <div className="w-full flex justify-between items-center">
@@ -161,7 +161,7 @@ export default function MobileHeader() {
       {auth.user && (
         <div
           ref={userMenuRef}
-          className="w-full px-4 border-t-2 border-zinc-200 bg-zinc-50/80 flex justify-center"
+          className="w-full px-4 border-t-2 border-zinc-200 bg-zinc-50/85 flex justify-center"
         >
           <div className="max-w-wrapper w-full flex justify-between gap-5 items-center p-2">
             <div>

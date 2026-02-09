@@ -5,7 +5,8 @@ import OrderSummaryDesktop from "./OrderSummaryDesktop";
 import OrderSummaryMobile from "./OrderSummaryMobile";
 
 export type OrderFormData = {
-  email: string;
+  subscriptionEmail: string;
+  orderEmail: string;
   phone: string;
   phonePrefix: string;
   terms: boolean;

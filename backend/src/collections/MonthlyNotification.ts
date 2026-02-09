@@ -143,7 +143,6 @@ export const MonthlyNotifications: CollectionConfig = {
     afterChange: [
       async ({ doc, req: { payload } }) => {
         if (doc._status === 'draft') {
-          console.log('Draft detected, skipping notifications sending.')
           return doc
         }
 
@@ -245,9 +244,7 @@ export const MonthlyNotifications: CollectionConfig = {
                 'testovací email - monthly draft',
                 emailBody,
               )
-            } catch {
-              console.error('Chyba při odesílání testovacího emailu na adresu:', data.emailForTest)
-            }
+            } catch {}
           }
 
           if (data.phoneForTest) {
@@ -258,9 +255,8 @@ export const MonthlyNotifications: CollectionConfig = {
             })
 
             try {
-              const smsRes = await sendSms(smsBody, `${data.phoneForTest}`)
+              await sendSms(smsBody, `${data.phoneForTest}`)
             } catch (error) {
-              console.error(`Error sending monthly notification to ${data.phoneForTest}:`, error)
               throw error
             }
           }

@@ -110,6 +110,48 @@ export async function createAccount({
   return data.doc;
 }
 
+export async function createStripeCheckoutSession({
+  subscriptionEmail,
+  orderEmail,
+  phone,
+  phonePrefix,
+  activityGroups,
+  terms,
+  marketing,
+}: {
+  subscriptionEmail: string;
+  orderEmail: string;
+  phone: string;
+  phonePrefix: string;
+  activityGroups: { id: string; priceId: string; slug: string }[];
+  terms: boolean;
+  marketing?: boolean;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/stripe/create-checkout-session`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        subscriptionEmail: subscriptionEmail,
+        orderEmail: orderEmail,
+        phone: phone,
+        phonePrefix: phonePrefix,
+        activityGroups: activityGroups,
+        terms: terms,
+        marketing: marketing,
+      }),
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Chyba při vytváření platební relace");
+  }
+  const data = await response.json();
+  return data.checkoutUrl;
+}
+
 // general endpoints
 
 export async function updateRecord({

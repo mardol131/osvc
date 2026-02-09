@@ -8,21 +8,19 @@ import OrderSummary, { OrderFormData } from "./OrderSummary";
 import SectionWrapper from "@/app/_components/blocks/SectionWrapper";
 import { ActivityGroup } from "@/app/_data/businessActivities";
 import Button from "@/app/_components/atoms/Button";
+import { createStripeCheckoutSession } from "@/app/_functions/backend";
 
 type Props = {
   activitiesGroups?: ActivityGroup[];
 };
 
 export default function OrderPageClient(props: Props) {
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [businessActivities] = useState<ActivityGroup[]>(
     props.activitiesGroups || [],
   );
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Filtrování předmětů podnikání podle vyhledávání
 
   // Toggle výběru předmětu podnikání
   const toggleActivity = (activityId: string) => {
@@ -48,41 +46,32 @@ export default function OrderPageClient(props: Props) {
     );
 
     if (!generalGroup) {
-      console.error(
-        "Chyba: Obecná skupina předmětů podnikání nebyla nalezena.",
-      );
       return;
     }
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/stripe/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      const response = await createStripeCheckoutSession({
+        subscriptionEmail: formData.subscriptionEmail.toLowerCase(),
+        orderEmail: formData.orderEmail.toLowerCase(),
+        phone: formData.phone,
+        phonePrefix: formData.phonePrefix,
+        activityGroups: [
+          {
+            id: generalGroup.id,
+            priceId: generalGroup.priceId,
+            slug: generalGroup.slug,
           },
-          body: JSON.stringify({
-            email: formData.email,
-            phone: formData.phone,
-            phonePrefix: formData.phonePrefix,
-            activityGroups: [
-              generalGroup,
-              ...selectedActivityData.map((activity) => activity),
-            ],
-            terms: formData.terms,
-            marketing: formData.marketing,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Chyba při vytváření platební relace");
-      }
-
-      const data = await response.json();
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+          ...selectedActivityData.map((activity) => ({
+            id: activity.id,
+            priceId: activity.priceId,
+            slug: activity.slug,
+          })),
+        ],
+        terms: formData.terms,
+        marketing: formData.marketing || false,
+      });
+      if (response) {
+        window.location.href = new URL(response).toString();
       } else {
         throw new Error("Chyba: Neplatná URL platební brány");
       }

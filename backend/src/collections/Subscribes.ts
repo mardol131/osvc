@@ -86,6 +86,36 @@ export const Subscribes: CollectionConfig = {
       },
     },
     {
+      name: 'notificationSettings',
+      type: 'group',
+      fields: [
+        {
+          name: 'emailNotifications',
+          type: 'checkbox',
+          label: 'Emailové notifikace',
+          defaultValue: true,
+        },
+        {
+          name: 'smsNotifications',
+          type: 'checkbox',
+          label: 'SMS notifikace',
+          defaultValue: true,
+        },
+        {
+          name: 'mobileNotifications',
+          type: 'checkbox',
+          label: 'Mobilní notifikace',
+          defaultValue: true,
+        },
+        {
+          name: 'browserNotifications',
+          type: 'checkbox',
+          label: 'Browser notifikace',
+          defaultValue: true,
+        },
+      ],
+    },
+    {
       name: 'terms',
       type: 'checkbox',
       label: 'Souhlasím s obchodními podmínkami a zpracováním osobních údajů',
@@ -196,7 +226,7 @@ export const Subscribes: CollectionConfig = {
   hooks: {
     afterChange: [
       async ({ doc, previousDoc, req: { payload }, operation }) => {
-        if (operation === 'create') {
+        if (operation === 'create' && (doc.marketing || doc.marketing === 'true')) {
           await payload.jobs.queue({
             workflow: 'addMarketingContactWorkflow',
             input: {
@@ -243,6 +273,14 @@ export const Subscribes: CollectionConfig = {
         }
 
         return doc
+      },
+    ],
+    beforeChange: [
+      async ({ data }) => {
+        if (data && data.email) {
+          data.email = data.email.toLowerCase()
+        }
+        return data
       },
     ],
   },

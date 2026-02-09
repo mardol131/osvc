@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     'activity-groups': ActivityGroup;
     subscribes: Subscribe;
+    'push-subscriptions': PushSubscription;
     'monthly-notifications': MonthlyNotification;
     accesses: Access;
     obligations: Obligation;
@@ -89,6 +90,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'activity-groups': ActivityGroupsSelect<false> | ActivityGroupsSelect<true>;
     subscribes: SubscribesSelect<false> | SubscribesSelect<true>;
+    'push-subscriptions': PushSubscriptionsSelect<false> | PushSubscriptionsSelect<true>;
     'monthly-notifications': MonthlyNotificationsSelect<false> | MonthlyNotificationsSelect<true>;
     accesses: AccessesSelect<false> | AccessesSelect<true>;
     obligations: ObligationsSelect<false> | ObligationsSelect<true>;
@@ -272,6 +274,12 @@ export interface Subscribe {
   phone: string;
   phonePrefix: string;
   activityGroups: (string | ActivityGroup)[];
+  notificationSettings?: {
+    emailNotifications?: boolean | null;
+    smsNotifications?: boolean | null;
+    mobileNotifications?: boolean | null;
+    browserNotifications?: boolean | null;
+  };
   terms: boolean;
   marketing?: boolean | null;
   active?: boolean | null;
@@ -322,6 +330,19 @@ export interface Account {
 export interface Password {
   id: string;
   password: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "push-subscriptions".
+ */
+export interface PushSubscription {
+  id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  account?: (string | null) | Account;
   updatedAt: string;
   createdAt: string;
 }
@@ -535,6 +556,10 @@ export interface PayloadLockedDocument {
         value: string | Subscribe;
       } | null)
     | ({
+        relationTo: 'push-subscriptions';
+        value: string | PushSubscription;
+      } | null)
+    | ({
         relationTo: 'monthly-notifications';
         value: string | MonthlyNotification;
       } | null)
@@ -682,6 +707,14 @@ export interface SubscribesSelect<T extends boolean = true> {
   phone?: T;
   phonePrefix?: T;
   activityGroups?: T;
+  notificationSettings?:
+    | T
+    | {
+        emailNotifications?: T;
+        smsNotifications?: T;
+        mobileNotifications?: T;
+        browserNotifications?: T;
+      };
   terms?: T;
   marketing?: T;
   active?: T;
@@ -689,6 +722,18 @@ export interface SubscribesSelect<T extends boolean = true> {
   promotionCode?: T;
   stripeSubscribeId?: T;
   subscribeId?: T;
+  account?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "push-subscriptions_select".
+ */
+export interface PushSubscriptionsSelect<T extends boolean = true> {
+  endpoint?: T;
+  p256dh?: T;
+  auth?: T;
   account?: T;
   updatedAt?: T;
   createdAt?: T;

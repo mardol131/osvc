@@ -15,7 +15,7 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
   ],
   queue: 'alertNotificationsQueue',
   retries: 5,
-  handler: async ({ job, tasks, inlineTask }) => {
+  handler: async ({ job, tasks, inlineTask, req: { payload } }) => {
     const obligation = (await tasks.getRecord('get-obligation', {
       input: {
         id: job.input.obligationId,
@@ -97,7 +97,9 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
         accessId: access && access.accessId,
       })
 
-      await tasks.sendEmail('send-alert-notification-email', {
+      await payload.jobs.queue({
+        task: 'sendEmail',
+        queue: 'send-email-queue',
         input: {
           email: subscribe.email,
           body: await renderAlertNotificationEmail({
@@ -112,7 +114,9 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
         },
       })
 
-      await tasks.sendSms('send-alert-notification-sms', {
+      await payload.jobs.queue({
+        task: 'sendSms',
+        queue: 'send-sms-queue',
         input: {
           phone: subscribe.phone,
           phonePrefix: subscribe.phonePrefix,

@@ -21,6 +21,10 @@ export default function OrderSummaryDesktop({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
   const [marketingChecked, setMarketingChecked] = useState(false);
+  const [
+    useOrderEmailAsSubscriptionEmail,
+    setUseOrderEmailAsSubscriptionEmail,
+  ] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const activitiesTotal = selectedActivities.reduce(
@@ -34,7 +38,10 @@ export default function OrderSummaryDesktop({
     const formData = new FormData(e.currentTarget);
 
     onSubmit({
-      email: formData.get("email") as string,
+      orderEmail: formData.get("orderEmail") as string,
+      subscriptionEmail: useOrderEmailAsSubscriptionEmail
+        ? (formData.get("orderEmail") as string)
+        : (formData.get("subscriptionEmail") as string),
       phone: formData.get("phone") as string,
       phonePrefix: phonePrefix,
       terms: formData.get("terms") === "true",
@@ -95,26 +102,55 @@ export default function OrderSummaryDesktop({
         )}
       </div>
       {selectedActivities.length > 0 && (
-        <div className="h-px bg-gradient-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
+        <div className="h-px bg-linear-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
       )}
       {/* Kontaktní údaje */}
       <div className="space-y-4 mb-6">
         <div>
           <label
-            htmlFor="email"
+            htmlFor="subscriptionEmail"
             className="block text-sm font-medium text-zinc-700 mb-2"
           >
-            Email
+            Objednávkový email
           </label>
+          <p className="text-sm mb-2">
+            Tento email bude sloužit pro správu předplatných, případně k
+            napojení na již existující účet, pokud jste u nás v minulosti
+            nakupovali.
+          </p>
           <input
             type="email"
-            id="email"
-            name="email"
+            id="orderEmail"
+            name="orderEmail"
             className="w-full rounded-lg border-2 border-zinc-200 px-4 py-2.5 text-sm text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
             placeholder="vas@email.cz"
             required
           />
         </div>
+        <CustomCheckbox
+          name="orderEmailSameAsAccount"
+          checked={useOrderEmailAsSubscriptionEmail}
+          onChange={setUseOrderEmailAsSubscriptionEmail}
+          label="Použít email výše i pro zasílání novinek"
+        />
+        {!useOrderEmailAsSubscriptionEmail && (
+          <div>
+            <label
+              htmlFor="orderEmail"
+              className="block text-sm font-medium text-zinc-700 mb-2"
+            >
+              Email pro zasílání novinek
+            </label>
+            <input
+              type="email"
+              id="subscriptionEmail"
+              name="subscriptionEmail"
+              className="w-full rounded-lg border-2 border-zinc-200 px-4 py-2.5 text-sm text-zinc-800 placeholder:text-zinc-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary hover:border-zinc-300"
+              placeholder="vas@email.cz"
+              required={!useOrderEmailAsSubscriptionEmail}
+            />
+          </div>
+        )}
 
         <div>
           <label
@@ -198,7 +234,7 @@ export default function OrderSummaryDesktop({
           </div>
         </div>
       </div>
-      <div className="h-px bg-gradient-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
+      <div className="h-px bg-linear-to-r from-transparent via-zinc-300 to-transparent my-6"></div>
       <div className="flex justify-between items-end mb-6">
         <p className="text-lg font-bold text-zinc-800">Celkem za rok</p>
         <p className="text-3xl font-bold text-secondary">{total} Kč</p>

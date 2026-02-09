@@ -67,9 +67,11 @@ export default function RootLayout({
       <body className={` text-primary`}>
         <AuthContextProvider>
           <Header />
-          <ScrollToTopButton />
-          {children}
-          <Footer />
+          <div className="pt-30">
+            <ScrollToTopButton />
+            {children}
+            <Footer />
+          </div>
         </AuthContextProvider>
       </body>
     </html>
