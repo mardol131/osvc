@@ -144,11 +144,17 @@ export default function MobileHeader() {
 
               <li className="mt-4 flex flex-col gap-3">
                 <Button
+                  onClick={() => {
+                    setToggle(false);
+                  }}
                   text="Koupit roční předplatné"
                   href="/koupit-predplatne"
                 />
 
                 <Button
+                  onClick={() => {
+                    setToggle(false);
+                  }}
                   text="Správa předplatného"
                   href="/administrace/sprava-predplatneho"
                   variant="plain"

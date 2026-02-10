@@ -52,7 +52,12 @@ export default function Button({
 
   if (href) {
     return (
-      <Link className={combinedClassName} target={target} href={href}>
+      <Link
+        onClick={onClick}
+        className={combinedClassName}
+        target={target}
+        href={href}
+      >
         {loading ? (
           <AiOutlineLoading className="animate-spin text-2xl" />
         ) : (

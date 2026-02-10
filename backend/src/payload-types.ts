@@ -305,6 +305,7 @@ export interface Account {
   magicToken?: string | null;
   magicTokenExpiration?: string | null;
   passwordRelation: string | Password;
+  hasOwnPassword?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -807,6 +808,7 @@ export interface AccountsSelect<T extends boolean = true> {
   magicToken?: T;
   magicTokenExpiration?: T;
   passwordRelation?: T;
+  hasOwnPassword?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

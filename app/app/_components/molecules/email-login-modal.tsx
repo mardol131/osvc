@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import ModalLayout from "./modal-layout";
 import Button from "@/app/_components/atoms/Button";
 import { login } from "@/app/_functions/backend";
+import { useAuth } from "@/app/_context/auth-context";
 
 interface EmailLoginModalProps {
   isOpen: boolean;
@@ -28,6 +29,8 @@ export default function EmailLoginModal({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const auth = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

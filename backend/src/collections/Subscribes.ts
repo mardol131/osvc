@@ -42,6 +42,9 @@ export const Subscribes: CollectionConfig = {
     {
       name: 'email',
       type: 'email',
+      admin: {
+        readOnly: true,
+      },
       required: true,
       access: {
         update: async ({ req }) => {
@@ -54,6 +57,9 @@ export const Subscribes: CollectionConfig = {
       name: 'phone',
       type: 'text',
       required: true,
+      admin: {
+        readOnly: true,
+      },
       access: {
         update: async ({ req }) => {
           // Běžný uživatel může měnit phone
@@ -65,6 +71,9 @@ export const Subscribes: CollectionConfig = {
       name: 'phonePrefix',
       type: 'text',
       required: true,
+      admin: {
+        readOnly: true,
+      },
       access: {
         update: async ({ req }) => {
           // Běžný uživatel může měnit phonePrefix
@@ -76,6 +85,9 @@ export const Subscribes: CollectionConfig = {
       name: 'activityGroups',
       type: 'relationship',
       relationTo: 'activity-groups',
+      admin: {
+        readOnly: true,
+      },
       hasMany: true,
       required: true,
       access: {
@@ -88,6 +100,9 @@ export const Subscribes: CollectionConfig = {
     {
       name: 'notificationSettings',
       type: 'group',
+      admin: {
+        readOnly: true,
+      },
       fields: [
         {
           name: 'emailNotifications',
@@ -105,13 +120,13 @@ export const Subscribes: CollectionConfig = {
           name: 'mobileNotifications',
           type: 'checkbox',
           label: 'Mobilní notifikace',
-          defaultValue: true,
+          defaultValue: false,
         },
         {
           name: 'browserNotifications',
           type: 'checkbox',
           label: 'Browser notifikace',
-          defaultValue: true,
+          defaultValue: false,
         },
       ],
     },
@@ -162,6 +177,9 @@ export const Subscribes: CollectionConfig = {
       type: 'checkbox',
       label: 'Promokód již byl odeslán',
       defaultValue: false,
+      admin: {
+        readOnly: true,
+      },
       access: {
         update: async ({ req }) => {
           // Běžný uživatel nemůže měnit promocodeAlreadySent
@@ -198,6 +216,9 @@ export const Subscribes: CollectionConfig = {
     {
       name: 'subscribeId',
       type: 'text',
+      admin: {
+        readOnly: true,
+      },
       defaultValue: () => generateAlphanumericId(),
       required: true,
       access: {

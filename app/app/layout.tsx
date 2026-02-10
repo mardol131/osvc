@@ -38,8 +38,8 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: "Vy podnikáte, my hlídáme byrokracii",
-    statusBarStyle: "default",
+    title: "OSVČ365",
+    statusBarStyle: "black-translucent",
   },
   openGraph: {
     title: "OSVČ365: Vy podnikáte, my hlídáme byrokracii",
@@ -64,6 +64,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="cs">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className={` text-primary`}>
         <AuthContextProvider>
           <Header />

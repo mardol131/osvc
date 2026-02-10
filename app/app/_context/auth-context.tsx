@@ -19,6 +19,7 @@ interface User {
   };
   terms: boolean;
   marketing: boolean;
+  hasOwnPassword: boolean;
 }
 
 interface AuthContextType {
@@ -27,6 +28,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   logout: (redirectUrl?: string) => Promise<void>;
   refreshUser: () => Promise<void>;
+  hasOwnPassword?: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -89,6 +91,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     isAuthenticated: user !== null && user.email !== undefined,
     logout: logoutHandler,
     refreshUser,
+    hasOwnPassword: user?.hasOwnPassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

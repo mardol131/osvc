@@ -101,7 +101,6 @@ export const ConfirmationEmail = ({
                   borderRadius: "5px",
                   border: "1px solid #eee",
                   padding: "16px 4.5%",
-                  width: "90.5%",
                   margin: "0px",
                   fontFamily:
                     "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",

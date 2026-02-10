@@ -8,6 +8,14 @@ export const PushSubscriptions: CollectionConfig = {
   },
   access: {
     create: async ({ req }) => {
+      const user = req.user
+      if (user && user.collection === 'accounts') {
+        return {
+          account: {
+            equals: user.id,
+          },
+        }
+      }
       // Lze vytvořit přes API klíč nebo frontend
       return adminOrApiKeyAuth(req)
     },
@@ -36,7 +44,6 @@ export const PushSubscriptions: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        hidden: true,
         readOnly: true,
       },
     },
@@ -45,7 +52,6 @@ export const PushSubscriptions: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        hidden: true,
         readOnly: true,
       },
     },
@@ -56,4 +62,33 @@ export const PushSubscriptions: CollectionConfig = {
       required: false,
     },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ data, req }) => {
+        // Při vytváření nové subscripce zkontrolujeme, jestli už neexistuje pro stejné endpoint
+        if (data.endpoint) {
+          const existing = await req.payload.find({
+            collection: 'push-subscriptions',
+            where: {
+              endpoint: {
+                equals: data.endpoint,
+              },
+            },
+          })
+          if (existing.totalDocs > 0) {
+            throw new Error('Subscription with this endpoint already exists')
+          }
+        }
+      },
+
+      async ({ data, req }) => {
+        // Při vytváření nové subscripce přiřadíme ji k aktuálnímu uživateli, pokud je přihlášen
+        const user = req.user
+        if (user && user.collection === 'accounts') {
+          data.account = user.id
+        }
+        return data
+      },
+    ],
+  },
 }

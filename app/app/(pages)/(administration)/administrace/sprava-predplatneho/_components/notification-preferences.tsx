@@ -111,7 +111,7 @@ export default function NotificationPreferences({
         disabled={isSaving}
       />
 
-      {/* Browser Notifications */}
+      {/* Browser Notifications
       <NotificationSwitch
         icon={Bell}
         label="Browser notifikace"
@@ -122,14 +122,14 @@ export default function NotificationPreferences({
       />
 
       {/* Mobile Notifications */}
-      <NotificationSwitch
+      {/* <NotificationSwitch
         icon={Bell}
         label="Mobilní notifikace"
         description="Dostávejte pop-up upozornění na telefonu"
         checked={preferences.mobileNotifications}
         onChange={(value) => handleToggle("mobileNotifications", value)}
         disabled={isSaving}
-      />
+      /> */}
 
       {/* Action Buttons */}
       {isModified && (

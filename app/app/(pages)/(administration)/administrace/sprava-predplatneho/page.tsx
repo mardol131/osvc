@@ -91,31 +91,25 @@ export default async function SubscriptionManagementPage({
               <div className="shrink-0"></div>
               <div>
                 <h4 className="text-lg font-bebas text-primary mb-3">
-                  Nová funkce se chystá
+                  Notifikace na telefonu a počítači
                 </h4>
                 <p className="text-textP leading-relaxed">
-                  Brzy budete moci snadno odebírat jednotlivé předměty podnikání
-                  bez nutnosti rušit své předplatné. Pokud chcete nějakou
-                  skupinu v tuto chvíli vypnout, kontaktujte nás na{" "}
-                  <Link
-                    href="mailto:info@osvc365.cz"
-                    className="text-secondary hover:text-secondary/80 transition-colors"
-                  >
-                    info@osvc365.cz
-                  </Link>
-                  .
+                  V tuto chvíli desíláme notifikace pouze přes email a SMS.
+                  Pracujeme ale na možnosti zapnutí notifikací i přímo v
+                  prohlížeči a na mobilu. Jakmile bude tato funkce dostupná,
+                  dáme Vám vědět.
                 </p>
               </div>
             </div>
           </div>
         </UserSectionWrapper>
         {/* Obecná nastavení */}
-        <UserSectionWrapper>
+        {/* <UserSectionWrapper>
           <GeneralSettings />
-        </UserSectionWrapper>
+        </UserSectionWrapper> */}
         {/* Správa předplatného */}
         <UserSectionWrapper>
-          <div className="w-full flex flex-col gap-10">
+          <div className="w-full flex flex-col gap-10 pb-20">
             {subscribes.map((subscribe, index) => (
               <SubscriptionManagement
                 index={index}

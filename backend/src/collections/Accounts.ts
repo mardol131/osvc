@@ -84,17 +84,17 @@ export const Accounts: CollectionConfig = {
       },
       required: true,
     },
+    {
+      name: 'hasOwnPassword',
+      type: 'checkbox',
+      label: 'Má nastavené heslo (nepoužívá pouze magic link)',
+      admin: {
+        readOnly: true,
+      },
+      defaultValue: false,
+    },
   ],
-  hooks: {
-    // beforeChange: [
-    //   async ({ data }) => {
-    //     if (data && data.email) {
-    //       data.email = data.email.toLowerCase()
-    //     }
-    //     return data
-    //   },
-    // ],
-  },
+
   endpoints: [
     {
       method: 'get',
