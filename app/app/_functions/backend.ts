@@ -152,6 +152,52 @@ export async function createStripeCheckoutSession({
   return data.checkoutUrl;
 }
 
+export async function requestPasswordReset({
+  email,
+  redirectUrl,
+}: {
+  email: string;
+  redirectUrl?: string;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/accounts/forgot-password?redirectUrl=${redirectUrl || ""}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Chyba při odesílání žádosti o reset hesla");
+  }
+  return true;
+}
+
+export async function resetPassword({
+  token,
+  password,
+}: {
+  token: string;
+  password: string;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/accounts/reset-password`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token, password }),
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Chyba při resetování hesla");
+  }
+  return true;
+}
+
 // general endpoints
 
 export async function updateRecord({
@@ -291,21 +337,22 @@ export async function getSingleRecord({
   return data;
 }
 
-export async function login(email: string, redirectUrl: string | undefined) {
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/login-with-magic-link`,
+export async function login(email: string, password: string) {
+  const response = await axios.post(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/accounts/login`,
     {
-      params: {
-        email: email,
-        redirectUrl: redirectUrl,
-      },
+      email,
+      password,
+    },
+    {
+      withCredentials: true,
     },
   );
 
   if (response.status !== 200 && response.status !== 201) {
     throw new Error(`Login failed: ${response.statusText}`);
   }
-  return { success: true };
+  return response.data;
 }
 
 export async function logout() {
@@ -320,5 +367,5 @@ export async function logout() {
   if (response.status !== 200 && response.status !== 201) {
     throw new Error(`Logout failed: ${response.statusText}`);
   }
-  return { success: true };
+  return response.data;
 }

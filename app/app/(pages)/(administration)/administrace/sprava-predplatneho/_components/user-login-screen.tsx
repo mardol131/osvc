@@ -1,7 +1,8 @@
 "use client";
 
 import LoadErrorState from "@/app/(pages)/(access)/[accessId]/_components/LoadErrorState";
-import EmailLoginModal from "@/app/_components/molecules/email-login-modal";
+import LoginModal from "@/app/_components/molecules/login-modal/login-modal";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 
 type Props = {
@@ -9,14 +10,16 @@ type Props = {
 };
 
 export default function UserLoginScreen({ queryEmail }: Props) {
-  const [loginModalIsOpen, setLoginModalIsOpen] = React.useState(true);
+  const searchParams = useSearchParams();
+  const openModal = searchParams.get("openLoginModal") === "true";
+  const [loginModalIsOpen, setLoginModalIsOpen] = React.useState(openModal);
   return (
     <>
-      <EmailLoginModal
+      <LoginModal
         queryEmail={queryEmail}
         isOpen={loginModalIsOpen}
         onClose={() => setLoginModalIsOpen(false)}
-        redirectUrl="/administrace/sprava-predplatneho"
+        redirectUrl={`${process.env.NEXT_PUBLIC_WEBSITE_URL}/administrace/sprava-predplatneho`}
       />
       <LoadErrorState
         title="Nejste přihlášený/a"

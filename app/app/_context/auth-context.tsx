@@ -8,7 +8,7 @@ import {
   ReactNode,
   useCallback,
 } from "react";
-import { logout } from "../_functions/backend";
+import { login, logout } from "../_functions/backend";
 import { useRouter } from "next/dist/client/components/navigation";
 
 interface User {
@@ -29,6 +29,7 @@ interface AuthContextType {
   logout: (redirectUrl?: string) => Promise<void>;
   refreshUser: () => Promise<void>;
   hasOwnPassword?: boolean;
+  login: (email: string, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -85,11 +86,34 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     [router],
   );
 
+  const loginHandler = useCallback(async (email: string, password: string) => {
+    setIsLoading(true);
+    if (!email || !email.includes("@")) {
+      setIsLoading(false);
+      return;
+    }
+    if (!password) {
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const res = await login(email, password);
+      if (res.user) {
+        setUser(res.user);
+      }
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const value: AuthContextType = {
     user,
     isLoading,
     isAuthenticated: user !== null && user.email !== undefined,
     logout: logoutHandler,
+    login: loginHandler,
     refreshUser,
     hasOwnPassword: user?.hasOwnPassword,
   };

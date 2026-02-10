@@ -12,6 +12,9 @@ import ConfirmationEmail, {
 import MagicLinkLoginEmail, {
   MagicLinkLoginEmailProps,
 } from "../emails/magic-link-login-email";
+import CreatePasswordEmail, {
+  CreatePasswordEmailProps,
+} from "../emails/create-password-email";
 
 export async function renderEmailTemplate(
   component: ReactNode,
@@ -54,5 +57,12 @@ export async function renderMagicLinkLoginEmail(
   props: MagicLinkLoginEmailProps,
 ): Promise<string> {
   const component = MagicLinkLoginEmail(props);
+  return renderEmailTemplate(component);
+}
+
+export async function renderCreatePasswordEmail(
+  props: CreatePasswordEmailProps,
+): Promise<string> {
+  const component = CreatePasswordEmail(props);
   return renderEmailTemplate(component);
 }

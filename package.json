@@ -17,7 +17,7 @@
   "scripts": {
     "backend:build": "turbo run build --filter backend",
     "backend:start": "cd backend && pnpm run start",
-    "ed": "cd react-email && pnpm run start"
+    "edev": "cd react-email && pnpm run start"
   },
   "pnpm": {
     "packageExtensions": {

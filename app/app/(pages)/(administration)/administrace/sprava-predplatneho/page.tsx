@@ -1,13 +1,9 @@
 import SubscriptionManagement from "@/app/(pages)/(administration)/administrace/sprava-predplatneho/_components/subscription-management";
-import GeneralSettings from "@/app/(pages)/(administration)/administrace/sprava-predplatneho/_components/general-settings";
-import LoadErrorState from "@/app/(pages)/(access)/[accessId]/_components/LoadErrorState";
-import UserSectionWrapper from "@/app/_components/blocks/user-section-wrapper";
 import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
-import EmailLoginModal from "@/app/_components/molecules/email-login-modal";
+import UserSectionWrapper from "@/app/_components/blocks/user-section-wrapper";
 import { getCollection } from "@/app/_functions/backend";
 import { Lightbulb } from "lucide-react";
 import { cookies } from "next/headers";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { stringify } from "qs-esm";
 import UserLoginScreen from "./_components/user-login-screen";
@@ -75,7 +71,7 @@ export default async function SubscriptionManagementPage({
         {/* Hlavička */}
         <HeadingCenter
           subheading="Správa předplatného"
-          heading="Spravujte své předměty podnikání"
+          heading="Spravujte své předplatné a notifikace"
           text="Přehled aktivních předmětů podnikání a možnost dokoupení dalších podle vašich potřeb."
         />
       </UserSectionWrapper>

@@ -4,13 +4,35 @@ import crypto from 'crypto'
 import { sendEmail } from '@osvc/react-email'
 import { decryptPassword } from '@/functions/encrypting'
 import { renderMagicLinkLoginEmail } from '@osvc/react-email'
+import { renderCreatePasswordEmail } from 'node_modules/@osvc/react-email/dist/functions/render-email'
 
 export const Accounts: CollectionConfig = {
   slug: 'accounts',
-  auth: true,
+  auth: {
+    forgotPassword: {
+      generateEmailHTML: async (data) => {
+        const query = data?.req?.query
+
+        const link = `${typeof query?.redirectUrl === 'string' ? query.redirectUrl : ''}?token=${data?.token}&loginModalScreen=set-password&openLoginModal=true`
+        const newPasswordEmail = await renderCreatePasswordEmail({
+          link: link,
+        })
+
+        await sendEmail(
+          'OSVČ365 <info@osvc365.cz>',
+          data?.user?.email,
+          'Nastavení nového hesla',
+          newPasswordEmail,
+        )
+
+        return newPasswordEmail
+      },
+    },
+  },
   admin: {
     useAsTitle: 'email',
   },
+
   access: {
     create: async ({ req }) => {
       return adminOrApiKeyAuth(req)

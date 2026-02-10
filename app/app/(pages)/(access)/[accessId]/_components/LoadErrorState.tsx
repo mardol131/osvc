@@ -25,7 +25,7 @@ export default function LoadErrorState({
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white flex items-start justify-center">
+    <div className="min-h-screen  flex items-start justify-center">
       <SectionWrapper levelTwo={{ className: "items-center" }}>
         <div className="max-w-md mx-auto text-center">
           {/* Text */}

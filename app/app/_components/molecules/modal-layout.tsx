@@ -6,6 +6,7 @@ interface ModalLayoutProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  description?: string;
   children: React.ReactNode;
   maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl";
 }
@@ -14,6 +15,7 @@ export default function ModalLayout({
   isOpen,
   onClose,
   title,
+  description,
   children,
   maxWidth = "2xl",
 }: ModalLayoutProps) {
@@ -66,8 +68,11 @@ export default function ModalLayout({
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header - sticky */}
-          <div className="sticky top-0 bg-white z-10 px-6 py-4 lg:px-8 lg:py-8 rounded-t-2xl border-b border-zinc-100 flex justify-between items-center">
-            <h3 className="text-zinc-800">{title}</h3>
+          <div className="sticky top-0 bg-white z-10 p-5 lg:p-8  rounded-t-2xl border-b border-zinc-100 flex justify-between items-center">
+            <div className="flex flex-col gap-4">
+              <h3>{title}</h3>
+              {description && <p>{description}</p>}
+            </div>
             <button
               type="button"
               onClick={onClose}
@@ -91,7 +96,7 @@ export default function ModalLayout({
           </div>
 
           {/* Scrollovatelný obsah */}
-          <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
+          <div className="flex-1 overflow-y-auto p-5 lg:p-8">{children}</div>
         </div>
       </div>
     </>

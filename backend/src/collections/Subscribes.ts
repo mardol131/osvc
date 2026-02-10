@@ -18,6 +18,9 @@ export const Subscribes: CollectionConfig = {
           account: {
             equals: user.id,
           },
+          active: {
+            equals: true,
+          },
         }
       }
       return adminOrApiKeyAuth(req)
