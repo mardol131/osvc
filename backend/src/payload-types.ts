@@ -302,10 +302,6 @@ export interface Account {
   };
   terms: boolean;
   marketing?: boolean | null;
-  magicToken?: string | null;
-  magicTokenExpiration?: string | null;
-  passwordRelation: string | Password;
-  hasOwnPassword?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -323,16 +319,6 @@ export interface Account {
       }[]
     | null;
   password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "passwords".
- */
-export interface Password {
-  id: string;
-  password: string;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -413,6 +399,16 @@ export interface Obligation {
   activityGroups: (string | ActivityGroup)[];
   date: string;
   monthlyNotificationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "passwords".
+ */
+export interface Password {
+  id: string;
+  password: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -805,10 +801,6 @@ export interface AccountsSelect<T extends boolean = true> {
       };
   terms?: T;
   marketing?: T;
-  magicToken?: T;
-  magicTokenExpiration?: T;
-  passwordRelation?: T;
-  hasOwnPassword?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

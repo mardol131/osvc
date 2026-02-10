@@ -19,7 +19,6 @@ interface User {
   };
   terms: boolean;
   marketing: boolean;
-  hasOwnPassword: boolean;
 }
 
 interface AuthContextType {
@@ -28,7 +27,6 @@ interface AuthContextType {
   isAuthenticated: boolean;
   logout: (redirectUrl?: string) => Promise<void>;
   refreshUser: () => Promise<void>;
-  hasOwnPassword?: boolean;
   login: (email: string, password: string) => Promise<void>;
 }
 
@@ -98,8 +96,15 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     }
     try {
       const res = await login(email, password);
+      console.log("Login response:", res);
       if (res.user) {
-        setUser(res.user);
+        setUser({
+          id: res.user.id,
+          email: res.user.email,
+          stripe: res.user.stripe,
+          terms: res.user.terms,
+          marketing: res.user.marketing,
+        });
       }
     } catch (error) {
       setUser(null);
@@ -115,7 +120,6 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     logout: logoutHandler,
     login: loginHandler,
     refreshUser,
-    hasOwnPassword: user?.hasOwnPassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
