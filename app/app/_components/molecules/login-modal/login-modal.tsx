@@ -26,19 +26,20 @@ export default function LoginModal({
   onClose,
   queryEmail,
 }: LoginModalProps) {
-  // Screen state: 'email' | 'email-password' | 'set-password' | 'create-password-request'
+  // Screen state: 'email' | 'login-screen' | 'set-password' | 'create-password-request'
   const searchParams = useSearchParams();
   const queryScreen = searchParams.get("loginModalScreen");
   const [screen, setScreen] = useState<
-    "email-password" | "set-password" | "create-password-request"
+    "login-screen" | "set-password" | "create-password-request"
   >(
-    queryScreen === "email-password" ||
+    queryScreen === "login-screen" ||
       queryScreen === "set-password" ||
       queryScreen === "create-password-request"
       ? (queryScreen as any)
-      : "email-password",
+      : "login-screen",
   );
 
+  const [token] = useState(searchParams.get("token") || "");
   const router = useRouter();
   const [createPasswordEmail, setCreatePasswordEmail] = useState("");
   const [isCreatePasswordLoading, setIsCreatePasswordLoading] = useState(false);
@@ -55,10 +56,6 @@ export default function LoginModal({
 
   const auth = useAuth();
 
-  useEffect(() => {
-    router.replace(redirectUrl);
-  }, []);
-
   // Handler pro odeslání žádosti o vytvoření hesla
   const handleCreatePasswordRequestSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -71,49 +68,48 @@ export default function LoginModal({
     }
     setIsCreatePasswordLoading(true);
 
-    try {
-      const response = await requestPasswordReset({
-        email: createPasswordEmail,
-        redirectUrl,
-      });
-      if (response) {
-        setIsCreatePasswordSuccess(true);
-      }
-    } catch (err) {
-      setCreatePasswordError(
-        "Chyba při odesílání žádosti. Zkuste to prosím znovu.",
-      );
-    } finally {
+    const response = await auth.requestPasswordResetEmail(
+      createPasswordEmail,
+      redirectUrl,
+    );
+    if (response.message === "success") {
       setIsCreatePasswordLoading(false);
+      setIsCreatePasswordSuccess(true);
+    } else {
+      setIsCreatePasswordLoading(false);
+      setCreatePasswordError(
+        "Chyba při odesílání emailu. Zkuste to prosím znovu.",
+      );
     }
   };
 
-  const handleEmailPasswordSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
-  ) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    if (!email || !email.includes("@")) {
-      setError("Zadejte prosím platný email");
-      return;
-    }
-    if (!password) {
-      setError("Zadejte prosím heslo");
-      return;
-    }
     setIsLoading(true);
-    try {
-      await auth.login(email, password);
-      router.refresh();
-      handleClose();
-    } catch (err) {
-      setError("Chyba při přihlášení. Zkuste to prosím znovu.");
-    } finally {
+    const response = await auth.login(email, password);
+    if (response.message === "email-missing") {
+      setError("Zadejte email");
       setIsLoading(false);
+    } else if (response.message === "password-missing") {
+      setError("Zadejte heslo");
+      setIsLoading(false);
+    } else if (response.message === "no-match") {
+      setError("Neplatný email nebo heslo");
+      setIsLoading(false);
+      return;
+    } else if (response.message === "error") {
+      setError("Chyba při přihlášení. Zkuste to prosím znovu.");
+      setIsLoading(false);
+      return;
+    } else if (response.message === "success") {
+      setIsLoading(false);
+      onClose();
+      router.refresh();
     }
   };
 
-  const handleSetPasswordSubmit = async (
+  const handlePasswordResetSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
@@ -127,21 +123,18 @@ export default function LoginModal({
       return;
     }
 
-    if (!searchParams.get("token")) {
+    if (!token) {
       setError("Neplatný odkaz. Zkuste to prosím znovu.");
       return;
     }
     setIsLoading(true);
-    try {
-      const res = await resetPassword({
-        token: searchParams.get("token") || "",
-        password: newPassword,
-      });
-    } catch (err) {
-      setError("Chyba při nastavování hesla. Zkuste to prosím znovu.");
-    } finally {
+    const res = await auth.resetPassword(token, newPassword);
+    if (res.message === "success") {
       setIsLoading(false);
       setIsSuccess(true);
+    } else {
+      setIsLoading(false);
+      setError("Chyba při nastavování hesla. Zkuste to prosím znovu.");
     }
   };
 
@@ -156,7 +149,7 @@ export default function LoginModal({
     setIsCreatePasswordLoading(false);
     setIsCreatePasswordSuccess(false);
     setCreatePasswordError("");
-    setScreen("email-password");
+    setScreen("login-screen");
     onClose();
   };
 
@@ -165,18 +158,29 @@ export default function LoginModal({
       isOpen={isOpen}
       onClose={handleClose}
       title={
-        screen === "email-password"
+        screen === "login-screen"
           ? "Přihlášení"
           : screen === "set-password"
             ? "Nastavení nového hesla"
             : "Vytvoření hesla"
       }
       description={
-        screen === "email-password"
-          ? "Přihlaste se pomocí emailu a hesla. Pokud ještě heslo nemáte, klikněte na tlačítko níže pro jeho vytvoření."
+        screen === "login-screen"
+          ? "Přihlaste se pomocí emailu a hesla."
           : screen === "set-password"
             ? "Nastavte si nové heslo pro svůj účet."
             : "Pro vytvoření hesla zadejte svůj e-mail. Pošleme vám ověřovací odkaz pro nastavení nového hesla."
+      }
+      component={
+        screen === "login-screen" && (
+          <div>
+            <p>
+              <span className="font-semibold">První přihlášení</span> - Pro
+              první přihlášení je potřeba vytvořit nové heslo. Klikněte na
+              tlačítko "První přihlášení" v levém dolním rohu.
+            </p>
+          </div>
+        )
       }
       maxWidth="md"
     >
@@ -191,7 +195,7 @@ export default function LoginModal({
           footer={{
             leftButton: {
               text: "Zpět na přihlášení",
-              onClick: () => setScreen("email-password"),
+              onClick: () => setScreen("login-screen"),
             },
             rightButton: {
               text: "Zavřít",
@@ -201,7 +205,7 @@ export default function LoginModal({
           onClose={handleClose}
         />
       )}
-      {screen === "email-password" && (
+      {screen === "login-screen" && (
         <EmailPasswordLoginScreen
           email={email}
           setEmail={setEmail}
@@ -209,7 +213,7 @@ export default function LoginModal({
           setPassword={setPassword}
           isLoading={isLoading}
           error={error}
-          onSubmit={handleEmailPasswordSubmit}
+          onSubmit={handleLogin}
           footer={{
             leftButton: {
               text: "První přihlášení? Vytvořit heslo",
@@ -231,12 +235,12 @@ export default function LoginModal({
           isLoading={isLoading}
           isSuccess={isSuccess}
           error={error}
-          onSubmit={handleSetPasswordSubmit}
+          onSubmit={handlePasswordResetSubmit}
           onClose={handleClose}
           footer={{
             leftButton: {
               text: "Zpět na přihlášení",
-              onClick: () => setScreen("email-password"),
+              onClick: () => setScreen("login-screen"),
             },
             rightButton: {
               text: "Zavřít",

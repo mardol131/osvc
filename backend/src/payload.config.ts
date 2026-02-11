@@ -23,6 +23,7 @@ import { subscriptionActivatedWorkflow } from './jobs/workflows/subscriptionActi
 import { addMarketingContactWorkflow } from './jobs/workflows/addMarketingContactWorkflow'
 import { Accounts } from './collections/Accounts'
 import { Passwords } from './collections/Passwords'
+import { sendPushNotificationTask } from './jobs/tasks/sendPushNotification'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -34,7 +35,8 @@ export const getQueueName = (
     | 'subscriptionActivatedQueue'
     | 'addMarketingContactQueue'
     | 'send-email-queue'
-    | 'send-sms-queue',
+    | 'send-sms-queue'
+    | 'send-push-notification-queue',
 ) => {
   return name
 }
@@ -60,17 +62,28 @@ export default buildConfig({
         queue: getQueueName('addMarketingContactQueue'),
       },
       {
-        cron: process.env.CRON_SEND_EMAIL_QUEUE || '*/5 * * * *',
+        cron: process.env.CRON_SEND_EMAIL_QUEUE || '* * * * *',
         queue: getQueueName('send-email-queue'),
         limit: 5,
       },
       {
-        cron: process.env.CRON_SEND_SMS_QUEUE || '*/5 * * * *',
+        cron: process.env.CRON_SEND_SMS_QUEUE || '* * * * *',
         queue: getQueueName('send-sms-queue'),
         limit: 5,
       },
+      {
+        cron: process.env.CRON_SEND_PUSH_NOTIFICATION_QUEUE || '* * * * *',
+        queue: getQueueName('send-push-notification-queue'),
+        limit: 20,
+      },
     ],
-    tasks: [sendEmailTask, sendSmsTask, createObligationTask, getRecordTask],
+    tasks: [
+      sendEmailTask,
+      sendSmsTask,
+      createObligationTask,
+      getRecordTask,
+      sendPushNotificationTask,
+    ],
     workflows: [
       monthlyNotificationsWorkflow,
       alertNotificationWorkflow,
@@ -94,7 +107,6 @@ export default buildConfig({
     Accesses,
     Obligations,
     Accounts,
-    Passwords,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

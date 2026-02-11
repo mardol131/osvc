@@ -188,6 +188,7 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
         })
 
         let accountEmail = ''
+        let accountId = ''
 
         if (typeof subscribe.account === 'string') {
           const account = await payload.findByID({
@@ -195,8 +196,23 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
             id: subscribe.account,
           })
           accountEmail = account.email
+          accountId = account.id
         } else {
           accountEmail = subscribe.account.email
+          accountId = subscribe.account.id
+        }
+
+        if (accountId) {
+          await payload.jobs.queue({
+            task: 'sendPushNotification',
+            queue: 'send-push-notification-queue',
+            input: {
+              title: 'Měsíční přehled změn a povinností',
+              message: `Na email ${subscribe.email} jsme Vám poslali nový přehled povinností`,
+              accountId:
+                typeof subscribe.account === 'string' ? subscribe.account : subscribe.account.id,
+            },
+          })
         }
 
         const emailBody = await renderMonthlyNotificationEmail({

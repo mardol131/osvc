@@ -4,15 +4,14 @@ import { useState, useEffect } from "react";
 import { Mail, MessageSquare, Bell } from "lucide-react";
 import Button from "@/app/_components/atoms/Button";
 import { updateRecord } from "@/app/_functions/backend";
-import { NotificationSettings } from "./subscription-management";
+import { NotificationSettings } from "./subscription-management-card";
 
 interface NotificationPreferencesProps {
   subscribeId: string;
   onPreferencesChange?: (preferences: NotificationSettings) => void;
   emailPreference: boolean;
   smsPreference: boolean;
-  mobileNotifications: boolean;
-  browserNotifications: boolean;
+  pushNotifications: boolean;
 }
 
 export default function NotificationPreferences({
@@ -20,21 +19,18 @@ export default function NotificationPreferences({
   onPreferencesChange,
   emailPreference,
   smsPreference,
-  mobileNotifications,
-  browserNotifications,
+  pushNotifications,
 }: NotificationPreferencesProps) {
   const [originalPreferences, setOriginalPreferences] =
     useState<NotificationSettings>({
       emailNotifications: emailPreference,
       smsNotifications: smsPreference,
-      mobileNotifications: mobileNotifications,
-      browserNotifications: browserNotifications,
+      pushNotifications: pushNotifications,
     });
   const [preferences, setPreferences] = useState<NotificationSettings>({
     emailNotifications: emailPreference,
     smsNotifications: smsPreference,
-    mobileNotifications: mobileNotifications,
-    browserNotifications: browserNotifications,
+    pushNotifications: pushNotifications,
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -59,8 +55,7 @@ export default function NotificationPreferences({
           notificationSettings: {
             emailNotifications: preferences.emailNotifications,
             smsNotifications: preferences.smsNotifications,
-            mobileNotifications: preferences.mobileNotifications,
-            browserNotifications: preferences.browserNotifications,
+            pushNotifications: preferences.pushNotifications,
           },
         },
       });
@@ -90,7 +85,6 @@ export default function NotificationPreferences({
           Zvolte, jaké typy notifikací chcete dostávat
         </p>
       </div>
-
       {/* Email Notifications */}
       <NotificationSwitch
         icon={Mail}
@@ -100,7 +94,6 @@ export default function NotificationPreferences({
         onChange={(value) => handleToggle("emailNotifications", value)}
         disabled={isSaving}
       />
-
       {/* SMS Notifications */}
       <NotificationSwitch
         icon={MessageSquare}
@@ -110,26 +103,15 @@ export default function NotificationPreferences({
         onChange={(value) => handleToggle("smsNotifications", value)}
         disabled={isSaving}
       />
-
-      {/* Browser Notifications
+      {/* Push Notifications */}
       <NotificationSwitch
         icon={Bell}
-        label="Browser notifikace"
-        description="Dostávejte pop-up upozornění v prohlížeči"
-        checked={preferences.browserNotifications}
-        onChange={(value) => handleToggle("browserNotifications", value)}
+        label="Push notifikace"
+        description='Dostávejte notifikace na telefonu a v prohlížeči. Musí být povoleno a aktivní v "Nastavení zařízení" výše pro každé zařízení zvlášť.'
+        checked={preferences.pushNotifications}
+        onChange={(value) => handleToggle("pushNotifications", value)}
         disabled={isSaving}
       />
-
-      {/* Mobile Notifications */}
-      {/* <NotificationSwitch
-        icon={Bell}
-        label="Mobilní notifikace"
-        description="Dostávejte pop-up upozornění na telefonu"
-        checked={preferences.mobileNotifications}
-        onChange={(value) => handleToggle("mobileNotifications", value)}
-        disabled={isSaving}
-      /> */}
 
       {/* Action Buttons */}
       {isModified && (

@@ -22,7 +22,7 @@ export default function SectionWrapper({
   return (
     <div
       id={id}
-      className={`${levelOne?.className} w-full flex items-center justify-center gap-20 px-2 py-20`}
+      className={`${levelOne?.className} w-full flex items-center justify-center gap-20 px-2 pb-20`}
     >
       <div
         className={`${levelTwo?.className} ${

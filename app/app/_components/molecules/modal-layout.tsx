@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { ReactNode, useEffect } from "react";
 
 interface ModalLayoutProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   description?: string;
+  component?: ReactNode;
   children: React.ReactNode;
   maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl";
 }
@@ -16,6 +17,7 @@ export default function ModalLayout({
   onClose,
   title,
   description,
+  component,
   children,
   maxWidth = "2xl",
 }: ModalLayoutProps) {
@@ -68,31 +70,36 @@ export default function ModalLayout({
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header - sticky */}
-          <div className="sticky top-0 bg-white z-10 p-5 lg:p-8  rounded-t-2xl border-b border-zinc-100 flex justify-between items-center">
-            <div className="flex flex-col gap-4">
-              <h3>{title}</h3>
-              {description && <p>{description}</p>}
-            </div>
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-zinc-500 hover:text-zinc-700 p-2 -mr-2 transition-colors"
-              aria-label="Zavřít"
+          <div className="sticky top-0 bg-white z-10 p-5 lg:p-8  rounded-t-2xl border-b border-zinc-100 flex flex-col justify-between items-start">
+            <div
+              className={`flex justify-between w-full items-center gap-7 ${description || component ? "mb-7" : ""}`}
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <h3 className="-mb-4">{title}</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-zinc-500 hover:text-zinc-700 transition-colors"
+                aria-label="Zavřít"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="flex flex-col gap-4">
+              {description && <p>{description}</p>}{" "}
+              {component && <div>{component}</div>}
+            </div>
           </div>
 
           {/* Scrollovatelný obsah */}

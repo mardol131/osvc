@@ -77,7 +77,6 @@ export interface Config {
     accesses: Access;
     obligations: Obligation;
     accounts: Account;
-    passwords: Password;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -95,7 +94,6 @@ export interface Config {
     accesses: AccessesSelect<false> | AccessesSelect<true>;
     obligations: ObligationsSelect<false> | ObligationsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
-    passwords: PasswordsSelect<false> | PasswordsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -122,6 +120,7 @@ export interface Config {
       sendSms: TaskSendSms;
       createObligation: TaskCreateObligation;
       getRecord: TaskGetRecord;
+      sendPushNotification: TaskSendPushNotification;
       inline: {
         input: unknown;
         output: unknown;
@@ -277,8 +276,7 @@ export interface Subscribe {
   notificationSettings?: {
     emailNotifications?: boolean | null;
     smsNotifications?: boolean | null;
-    mobileNotifications?: boolean | null;
-    browserNotifications?: boolean | null;
+    pushNotifications?: boolean | null;
   };
   terms: boolean;
   marketing?: boolean | null;
@@ -286,6 +284,7 @@ export interface Subscribe {
   promocodeAlreadySent?: boolean | null;
   promotionCode?: string | null;
   stripeSubscribeId?: string | null;
+  stripeCustomerId?: string | null;
   subscribeId: string;
   account: string | Account;
   updatedAt: string;
@@ -404,16 +403,6 @@ export interface Obligation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "passwords".
- */
-export interface Password {
-  id: string;
-  password: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -481,7 +470,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord';
+        taskSlug: 'inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord' | 'sendPushNotification';
         taskID: string;
         input?:
           | {
@@ -522,7 +511,7 @@ export interface PayloadJob {
         | 'addMarketingContactWorkflow'
       )
     | null;
-  taskSlug?: ('inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord') | null;
+  taskSlug?: ('inline' | 'sendEmail' | 'sendSms' | 'createObligation' | 'getRecord' | 'sendPushNotification') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -571,10 +560,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'accounts';
         value: string | Account;
-      } | null)
-    | ({
-        relationTo: 'passwords';
-        value: string | Password;
       } | null);
   globalSlug?: string | null;
   user:
@@ -709,8 +694,7 @@ export interface SubscribesSelect<T extends boolean = true> {
     | {
         emailNotifications?: T;
         smsNotifications?: T;
-        mobileNotifications?: T;
-        browserNotifications?: T;
+        pushNotifications?: T;
       };
   terms?: T;
   marketing?: T;
@@ -718,6 +702,7 @@ export interface SubscribesSelect<T extends boolean = true> {
   promocodeAlreadySent?: T;
   promotionCode?: T;
   stripeSubscribeId?: T;
+  stripeCustomerId?: T;
   subscribeId?: T;
   account?: T;
   updatedAt?: T;
@@ -817,15 +802,6 @@ export interface AccountsSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "passwords_select".
- */
-export interface PasswordsSelect<T extends boolean = true> {
-  password?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -949,6 +925,18 @@ export interface TaskGetRecord {
   input: {
     id: string;
     collection: string;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSendPushNotification".
+ */
+export interface TaskSendPushNotification {
+  input: {
+    title: string;
+    message: string;
+    accountId: string;
   };
   output?: unknown;
 }

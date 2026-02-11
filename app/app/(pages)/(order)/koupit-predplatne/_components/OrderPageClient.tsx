@@ -98,7 +98,7 @@ export default function OrderPageClient(props: Props) {
     <SectionWrapper>
       <div className="max-w-wrapper flex flex-col items-center">
         {/* Hlavička */}
-        <div className="text-center mb-8 md:mb-10">
+        <div className="text-center mb-8 md:mb-20 mt-20">
           <h1 className="text-zinc-800 mb-3">Dokončit objednávku</h1>
           <p className="text-zinc-600 text-base md:text-lg max-w-2xl mx-auto">
             Vyberte si základní předplatné a případně přidejte sledování

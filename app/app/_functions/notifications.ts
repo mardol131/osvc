@@ -103,9 +103,26 @@ export const enablePushNotifications =
         };
       }
 
+      // Registrujeme service worker
       const registration = await navigator.serviceWorker.register(
         "/notifications-worker.js",
       );
+
+      // Počkáme až bude service worker aktivní (důležité pro iOS PWA)
+      if (!registration.active) {
+        await new Promise<void>((resolve) => {
+          const sw = registration.installing || registration.waiting;
+          if (!sw) {
+            resolve();
+            return;
+          }
+          sw.addEventListener("statechange", () => {
+            if (sw.state === "activated") {
+              resolve();
+            }
+          });
+        });
+      }
 
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
@@ -145,6 +162,8 @@ export const enablePushNotifications =
           credentials: "include",
         },
       );
+
+      console.log("Server response for push subscription:", response);
 
       if (!response.ok) {
         console.log(response);

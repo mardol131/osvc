@@ -8,7 +8,7 @@ const variantClasses = {
   outlined:
     "bg-transparent border-2 border-secondary text-secondary hover:bg-white",
   red: "bg-red-500 text-white",
-  plain: "text-primary bg-white",
+  plain: "text-primary bg-white border border-zinc-50",
 };
 
 const sizeClasses = {
@@ -46,7 +46,7 @@ export default function Button({
   loading = false,
   uppercase = true,
 }: ButtonProps) {
-  const baseClasses = `shadow-lg ${uppercase ? "uppercase" : ""} cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-default font-semibold hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center`;
+  const baseClasses = `shadow-lg ${uppercase ? "uppercase" : ""} cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-default font-[500] hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out rounded-lg font-oswald flex items-center justify-center`;
 
   const combinedClassName = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
 

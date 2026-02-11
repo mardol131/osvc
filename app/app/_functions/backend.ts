@@ -72,14 +72,12 @@ export async function createPassword({ password }: { password: string }) {
 export async function createAccount({
   email,
   password,
-  passwordRelation,
   stripeCustomerId,
   terms,
   marketing,
 }: {
   email: string;
   password: string;
-  passwordRelation: string;
   stripeCustomerId?: string;
   terms?: boolean;
   marketing?: boolean;
@@ -93,7 +91,6 @@ export async function createAccount({
     body: JSON.stringify({
       email: email,
       password: password,
-      passwordRelation: passwordRelation,
       stripe: {
         customerId: stripeCustomerId,
       },
@@ -172,7 +169,7 @@ export async function requestPasswordReset({
   if (!response.ok) {
     throw new Error("Chyba při odesílání žádosti o reset hesla");
   }
-  return true;
+  return await response.json();
 }
 
 export async function resetPassword({
@@ -303,6 +300,7 @@ export async function getSingleRecord({
   apiKey,
   query,
   depth,
+  headers,
 }: {
   collectionSlug: "subscribes" | "monthly-notifications" | "accesses";
   recordId: string;
@@ -310,6 +308,7 @@ export async function getSingleRecord({
   authToken?: string;
   query?: string;
   depth?: number;
+  headers?: Record<string, string>;
 }) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}?${
@@ -319,6 +318,7 @@ export async function getSingleRecord({
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...headers,
         Authorization: apiKey
           ? `Bearer ${apiKey}`
           : authToken
@@ -349,10 +349,7 @@ export async function login(email: string, password: string) {
     },
   );
 
-  if (response.status !== 200 && response.status !== 201) {
-    throw new Error(`Login failed: ${response.statusText}`);
-  }
-  return response.data;
+  return response;
 }
 
 export async function logout() {

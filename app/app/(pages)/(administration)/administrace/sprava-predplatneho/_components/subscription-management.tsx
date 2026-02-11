@@ -1,285 +1,112 @@
 "use client";
 
-import { ActivityGroup } from "@/app/_data/businessActivities";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import AddActivityModal from "./add-activity-modal";
-import ContactInformation from "./contact-information";
-import NotificationPreferences from "./notification-preferences";
+import { getCollection } from "@/app/_functions/backend";
+import React, { useEffect } from "react";
+import { notFound } from "next/navigation";
+import { stringify } from "qs-esm";
+import SubscriptionManagementCard from "./subscription-management-card";
+import UserSectionWrapper from "@/app/_components/blocks/user-section-wrapper";
+import { Lightbulb } from "lucide-react";
+import HeadingCenter from "@/app/_components/blocks/headings/HeadingCenter";
+import { useAuth } from "@/app/_context/auth-context";
+import UserLoginScreen from "./user-login-screen";
+import LoadErrorState from "@/app/(pages)/(access)/[accessId]/_components/LoadErrorState";
+import Button from "@/app/_components/atoms/Button";
+import GeneralSettings from "./general-settings";
 
-import { format } from "date-fns";
-import ActivityCard from "./activity-card";
-
-export interface NotificationSettings {
-  emailNotifications: boolean;
-  smsNotifications: boolean;
-  mobileNotifications: boolean;
-  browserNotifications: boolean;
-}
-
-export type Subscribe = {
-  id: string;
-  email: string;
-  phone: string;
-  phonePrefix: string;
-  activityGroups: (string | ActivityGroup)[];
-  notificationSettings: NotificationSettings;
-  terms: boolean;
-  marketing: boolean;
-  active: boolean;
-  stripeSubscribeId?: string;
-  promocodeAlreadySent?: boolean;
-  promotionCode?: string;
-  createdAt: string;
+type Props = {
+  allActivityGroups: any[];
 };
 
-interface SubscriptionManagementProps {
-  index: number;
-  subscribe: Subscribe;
-  allActivityGroups: ActivityGroup[];
-}
+export default function SubscriptionManagement({ allActivityGroups }: Props) {
+  const [subscribes, setSubscribes] = React.useState<any[]>([]);
+  const auth = useAuth();
 
-export default function SubscriptionManagement({
-  index,
-  allActivityGroups,
-  subscribe,
-}: SubscriptionManagementProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<ActivityGroup | null>(
-    null,
-  );
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [finalPriceThatWillBePaid, setFinalPriceThatWillBePaid] = useState<
-    number | null
-  >(null);
-
-  const userActivityGroupIds = subscribe.activityGroups?.map((group: any) =>
-    typeof group === "string" ? group : group.id,
-  );
-
-  const generalGroup = allActivityGroups.find(
-    (group: any) => group.slug === "general",
-  );
-
-  const activeGroups = allActivityGroups.filter(
-    (group: any) =>
-      userActivityGroupIds?.includes(group.id) && group.slug !== "general",
-  );
-
-  const inactiveGroups = allActivityGroups.filter(
-    (group: any) => !userActivityGroupIds?.includes(group.id),
-  );
-
-  const router = useRouter();
-
-  const handleOpenModal = async (group: ActivityGroup) => {
-    setSelectedGroup(group);
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/stripe/add-item-into-subscription-preview`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            activityGroupPriceId: group.priceId,
-            subscribeId:
-              typeof subscribe.id === "string" ? subscribe.id : subscribe.id,
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!data.data.finalPriceThatWillBePaid) {
-        throw new Error("Chyba při získávání náhledu faktury");
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getCollection({
+          collectionSlug: "subscribes",
+        });
+        setSubscribes(response);
+      } catch (error: any) {
+        setSubscribes([]);
       }
+    })();
+  }, [auth.user]);
 
-      setFinalPriceThatWillBePaid(data.data.finalPriceThatWillBePaid / 100);
-    } catch (error) {
-      console.error("Chyba při odesílání požadavku:");
-    }
-
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedGroup(null);
-    setIsSubmitting(false);
-
-    router.refresh();
-  };
-
-  const handlePhoneInput = (e: React.FormEvent<HTMLInputElement>) => {
-    const input = e.currentTarget;
-    const value = input.value.replace(/\D/g, "").slice(0, 9);
-  };
-
-  const handleSaveContact = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
-
-  const handleConfirmPurchase = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const formData = new FormData(e.currentTarget);
-    const termsChecked = formData.get("terms");
-    const paymentConsentChecked = formData.get("paymentConsent");
-    const activityGroupId = selectedGroup?.id;
-
-    if (!process.env.NEXT_PUBLIC_WEBSITE_URL) {
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/stripe/add-item-into-subscription-payment`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            activityGroupPriceId: selectedGroup?.priceId,
-            terms: termsChecked,
-            paymentConsent: paymentConsentChecked,
-            subscribeId: subscribe.id,
-            activityGroupId: activityGroupId,
-          }),
-        },
-      );
-    } catch (error) {}
-
-    handleCloseModal();
-  };
+  if (!auth.user) {
+    return (
+      <div className="mt-20">
+        <UserLoginScreen />
+      </div>
+    );
+  }
 
   return (
-    <div className="rounded-xl border w-full p-10 max-md:p-4 bg-white border-zinc-100 shadow-md">
-      <div className="w-full flex flex-col gap-10 mx-auto">
-        <div className=" flex items-center max-md:flex-col max-md:items-start max-md:gap-0 gap-10 border-b-2 pb-3 border-zinc-100">
-          <h4>Předplatné č. {index + 1}</h4>
-          <p>Vytvořeno {format(new Date(subscribe.createdAt), "d. M. yyyy")}</p>
-        </div>
-
-        {/* Kontaktní údaje */}
-        <ManagementSection>
-          <ContactInformation
-            subscribeId={subscribe.id}
-            initialEmail={subscribe.email}
-            initialPhone={subscribe.phone}
-            initialPhonePrefix={subscribe.phonePrefix}
-          />
-        </ManagementSection>
-
-        {/* Nastavení notifikací */}
-        <ManagementSection>
-          <NotificationPreferences
-            subscribeId={subscribe.id}
-            emailPreference={subscribe.notificationSettings.emailNotifications}
-            smsPreference={subscribe.notificationSettings.smsNotifications}
-            mobileNotifications={
-              subscribe.notificationSettings.mobileNotifications
-            }
-            browserNotifications={
-              subscribe.notificationSettings.browserNotifications
-            }
-          />
-        </ManagementSection>
-
-        {generalGroup && (
-          <ManagementSection>
-            <div className="mb-8">
-              <h5 className="text-primary mb-1">Základní předplatné</h5>
-              <p>
-                Tyto základní služby nelze pozastavit bez zrušení celého
-                předplatného.
-              </p>
+    <div className="min-h-screen bg-linear-to-b from-zinc-50">
+      {" "}
+      <UserSectionWrapper levelTwo={{ className: "items-center pt-20" }}>
+        {/* Hlavička */}
+        <HeadingCenter
+          subheading="Správa předplatného"
+          heading="Spravujte své předplatné a notifikace"
+          text="Přehled aktivních předmětů podnikání a možnost dokoupení dalších podle vašich potřeb."
+        />
+      </UserSectionWrapper>
+      <div className="flex flex-col w-full gap-10">
+        <UserSectionWrapper>
+          {/* Info box o přidávání/odebírání předmětů */}
+          <div className="rounded-xl border w-full p-10 max-md:p-4 bg-white border-zinc-100 shadow-md">
+            <div className="flex gap-4">
+              {" "}
+              <div className="w-15 h-15 shrink-0 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center">
+                <Lightbulb strokeWidth={1.5} size={30} />
+              </div>
+              <div className="shrink-0"></div>
+              <div>
+                <h4 className="text-lg font-bebas text-primary mb-3">
+                  Odebírání skupin předmětů
+                </h4>
+                <p className="text-textP leading-relaxed">
+                  V tuto chvíli není možné odebírat jednotlivé předměty
+                  podnikání z vašeho předplatného. Na této funkci pracujeme.
+                  Pokud chcete nějaký předmět podnikání odebrat, napište nám na
+                  email info@osvc365.cz.
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col gap-3 md:gap-4">
-              <ActivityCard key={generalGroup.id} group={generalGroup} />
-            </div>
-          </ManagementSection>
-        )}
-
-        {/* Aktivní skupiny */}
-        {activeGroups.length > 0 && (
-          <ManagementSection>
-            <div className="mb-8">
-              <h5 className="text-primary mb-1">Aktivní předměty podnikání</h5>
-            </div>
-            <div className="flex flex-col gap-3 md:gap-4">
-              {activeGroups.map((group) => (
-                <ActivityCard key={group.id} group={group} />
-              ))}
-            </div>
-          </ManagementSection>
-        )}
-
-        {/* Neaktivní skupiny */}
-        {inactiveGroups.length > 0 && (
-          <ManagementSection>
-            <div className="mb-8">
-              <h5 className="text-primary mb-1">Další předměty k dokoupení</h5>
-              <p className="text-textP text-sm md:text-base">
-                Rozšiřte své předplatné o další předměty podnikání
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 md:gap-4">
-              {inactiveGroups.map((group) => (
-                <ActivityCard
-                  key={group.id}
-                  group={group}
-                  onClick={handleOpenModal}
+          </div>
+        </UserSectionWrapper>
+        {/* Obecná nastavení */}
+        <UserSectionWrapper>
+          <GeneralSettings />
+        </UserSectionWrapper>
+        {/* Správa předplatného */}
+        <UserSectionWrapper>
+          {subscribes.length > 0 ? (
+            <div className="w-full flex flex-col gap-10 pb-20">
+              {subscribes.map((subscribe, index) => (
+                <SubscriptionManagementCard
+                  index={index}
+                  key={subscribe.id}
+                  allActivityGroups={allActivityGroups}
+                  subscribe={subscribe}
                 />
               ))}
             </div>
-          </ManagementSection>
-        )}
-
-        {/* Modal pro dokoupení */}
-        <AddActivityModal
-          group={selectedGroup}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onSubmit={handleConfirmPurchase}
-          isSubmitting={isSubmitting}
-          finalPriceThatWillBePaid={finalPriceThatWillBePaid}
-        />
-
-        {/* Zrušit předplatné */}
-        <ManagementSection>
-          <div className="mb-6">
-            <h3 className="text-2xl font-bebas text-primary mb-2">
-              Zrušit předplatné
-            </h3>
-            <p className="text-textP">
-              Pokud chcete zrušit své předplatné, můžete to provést v našem
-              Stripe účtu. Změny se projeví okamžitě.
-            </p>
-          </div>
-          <a
-            href={process.env.NEXT_PUBLIC_SUB_ACCOUNT_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
-          >
-            Zrušit předplatné
-          </a>
-        </ManagementSection>
+          ) : (
+            <div className="mt-20 text-center flex flex-col gap-4 items-center">
+              <h3>Žádné aktivní předplatné nebylo nalezeno.</h3>
+              <p>
+                Pro aktivaci předplatného si prosím zakupte některé z našich
+                předplatných.
+              </p>
+              <Button text="Zakoupit předplatné" href="/koupit-predplatne" />
+            </div>
+          )}
+        </UserSectionWrapper>
       </div>
-    </div>
-  );
-}
-
-function ManagementSection({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-10 md:mb-15 p-4 border-2 border-zinc-100 rounded-xl">
-      {children}
     </div>
   );
 }

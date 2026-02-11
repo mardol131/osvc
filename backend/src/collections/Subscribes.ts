@@ -95,7 +95,6 @@ export const Subscribes: CollectionConfig = {
       required: true,
       access: {
         update: async ({ req }) => {
-          // Běžný uživatel nemůže měnit activityGroups
           return adminOrApiKeyAuth(req)
         },
       },
@@ -120,15 +119,9 @@ export const Subscribes: CollectionConfig = {
           defaultValue: true,
         },
         {
-          name: 'mobileNotifications',
+          name: 'pushNotifications',
           type: 'checkbox',
-          label: 'Mobilní notifikace',
-          defaultValue: false,
-        },
-        {
-          name: 'browserNotifications',
-          type: 'checkbox',
-          label: 'Browser notifikace',
+          label: 'Push notifikace',
           defaultValue: false,
         },
       ],
@@ -143,7 +136,6 @@ export const Subscribes: CollectionConfig = {
       },
       access: {
         update: async ({ req }) => {
-          // Běžný uživatel nemůže měnit activityGroups
           return adminOrApiKeyAuth(req)
         },
       },
@@ -158,7 +150,6 @@ export const Subscribes: CollectionConfig = {
       },
       access: {
         update: async ({ req }) => {
-          // Běžný uživatel nemůže měnit activityGroups
           return adminOrApiKeyAuth(req)
         },
       },
@@ -198,7 +189,6 @@ export const Subscribes: CollectionConfig = {
       },
       access: {
         update: async ({ req }) => {
-          // Běžný uživatel nemůže měnit activityGroups
           return adminOrApiKeyAuth(req)
         },
       },
@@ -211,7 +201,18 @@ export const Subscribes: CollectionConfig = {
       },
       access: {
         update: async ({ req }) => {
-          // Běžný uživatel nemůže měnit activityGroups
+          return adminOrApiKeyAuth(req)
+        },
+      },
+    },
+    {
+      name: 'stripeCustomerId',
+      type: 'text',
+      admin: {
+        readOnly: true,
+      },
+      access: {
+        update: async ({ req }) => {
           return adminOrApiKeyAuth(req)
         },
       },
@@ -226,7 +227,6 @@ export const Subscribes: CollectionConfig = {
       required: true,
       access: {
         update: async ({ req }) => {
-          // Běžný uživatel nemůže měnit activityGroups
           return adminOrApiKeyAuth(req)
         },
       },

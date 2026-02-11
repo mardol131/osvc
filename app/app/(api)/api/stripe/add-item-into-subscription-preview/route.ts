@@ -21,12 +21,15 @@ export async function POST(request: Request) {
   }
 
   const cookiesStore = await cookies();
+  const cookieHeader = cookiesStore.toString();
 
   try {
     const subscribe = await getSingleRecord({
       collectionSlug: "subscribes",
       recordId: body.subscribeId,
-      authToken: cookiesStore.get("payload-token")?.value,
+      headers: {
+        Cookie: cookieHeader,
+      },
     });
 
     if (!subscribe.stripeSubscribeId) {

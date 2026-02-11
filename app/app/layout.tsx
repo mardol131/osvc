@@ -36,6 +36,10 @@ export const metadata: Metadata = {
     ],
     apple: "/logo-osvc.png",
   },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
   appleWebApp: {
     capable: true,
     title: "OSVČ365",
@@ -44,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "OSVČ365: Vy podnikáte, my hlídáme byrokracii",
     description: `Sledujeme zákony, připomínáme důležité termíny a dáváme Vám vědět, když se něco změní. Už žádné pokuty ani stres z neznámých povinností. A za rok to stojí jako tři kafe.`,
-    url: "https://www.osvc365.cz",
+    url: "https://osvc365.cz",
     siteName: "OSVČ365",
     images: [
       {

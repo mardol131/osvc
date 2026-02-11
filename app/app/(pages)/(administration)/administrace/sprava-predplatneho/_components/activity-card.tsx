@@ -17,7 +17,7 @@ export default function ActivityCard({ group, onClick }: ActivityCardProps) {
     setIsExpanded(!isExpanded);
   };
   return (
-    <div className="w-full bg-white rounded-lg border border-zinc-200">
+    <div className="w-full bg-zinc-50 rounded-lg border border-zinc-200">
       <div className="flex max-md:flex-col items-center max-md:items-start justify-between gap-4 p-4">
         <div className="flex-1 flex items-center gap-4 min-w-0">
           <p className="text-base font-medium">{group.name}</p>{" "}

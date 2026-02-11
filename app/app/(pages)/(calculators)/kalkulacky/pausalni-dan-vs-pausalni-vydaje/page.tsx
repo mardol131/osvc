@@ -17,7 +17,7 @@ export default function page() {
       <HeroMidAlign
         options={{
           heading: "Kalkulačka paušální daň vs. paušální výdaje",
-          secondHeading: "Která varianta se vám vyplatí?",
+          label: "kalkulačka",
           text: "Porovnávejte paušální daň s tradičním režimem paušálních výdajů. Zjistěte, jaký režim je pro vás výhodnější a kolik můžete měsíčně ušetřit.",
           buttonsColumns: 1,
         }}

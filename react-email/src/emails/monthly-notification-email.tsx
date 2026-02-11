@@ -107,9 +107,18 @@ export default function MonthlyNotificationEmail({
                 {message.heading}
               </Heading>
               <ul style={{ marginTop: "12px", marginBottom: "24px" }}>
-                {message.notifications.map((notification, idx) => (
-                  <Obligation key={idx} notification={notification} />
-                ))}
+                {message.notifications.length > 0 ? (
+                  message.notifications.map((notification, idx) => (
+                    <Obligation key={idx} notification={notification} />
+                  ))
+                ) : (
+                  <Obligation
+                    key={0}
+                    notification={{
+                      text: "V této kategorii nejsou žádné nové změny.",
+                    }}
+                  />
+                )}
               </ul>
             </Container>
           ))}

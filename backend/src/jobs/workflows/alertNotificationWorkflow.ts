@@ -83,14 +83,6 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
 
       const dayGap = differenceInDays(new Date(obligation.date), new Date())
 
-      let header: string = ''
-
-      if (dayGap <= 0) {
-        header = 'Dnes je poslední den pro splnění povinnosti'
-      } else {
-        header = `Zbývá ${dayGap} ${dayGap === 1 ? 'den' : dayGap <= 4 ? 'dny' : 'dní'} pro splnění povinnosti`
-      }
-
       const smsBody = createAlertNotificationSms({
         mobileText: obligation.mobileText || obligation.text,
         date: obligation.date,

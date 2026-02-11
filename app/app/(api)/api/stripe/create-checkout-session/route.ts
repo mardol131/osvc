@@ -87,26 +87,16 @@ export async function POST(request: Request) {
       apiKey: process.env.CMS_API_KEY,
     });
 
+    console.log("User accounts found:", userAccounts);
+
     let accountId: string | undefined = userAccounts[0]?.id;
 
     if (!userAccounts[0]) {
       const password = generateAlphanumericId(12);
 
-      let passwordDoc;
-      try {
-        passwordDoc = await createPassword({ password });
-      } catch (err) {
-        throw new Error(`Failed to create password: ${err}`);
-      }
-
-      if (!passwordDoc?.id) {
-        throw new Error("Failed to create password for new account");
-      }
-
       const newAccount = await createAccount({
         email: body.orderEmail.toLowerCase(),
         password: password,
-        passwordRelation: passwordDoc.id,
         terms: body.terms,
         marketing: body.marketing || false,
       });

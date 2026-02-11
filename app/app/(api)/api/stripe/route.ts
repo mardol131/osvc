@@ -79,6 +79,7 @@ export async function POST(request: Request) {
               active: true,
               stripeSubscribeId: stripeSubscriptionId,
               promocodeAlreadySent: true,
+              stripeCustomerId: customer,
             },
           });
         }
