@@ -1,32 +1,21 @@
 self.addEventListener("push", (event) => {
-  console.log("[SW] Push event received");
-
   let data = {};
 
   try {
     data = event.data ? event.data.json() : {};
-    console.log("[SW] Push data:", data);
-  } catch (error) {
-    console.error("[SW] Error parsing push data:", error);
-  }
+  } catch (error) {}
 
   const title = data.title || "OSVČ365";
   const options = {
     body: data.body || "Nová notifikace",
     icon: data.icon || "/logo-osvc.png",
     badge: "/logo-osvc.png",
+    data: {
+      url: data.data?.url || "/",
+    },
   };
 
-  console.log("[SW] Showing notification:", title, options);
-
-  event.waitUntil(
-    self.registration
-      .showNotification(title, options)
-      .then(() => console.log("[SW] Notification shown successfully"))
-      .catch((error) =>
-        console.error("[SW] Error showing notification:", error),
-      ),
-  );
+  event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener("notificationclick", (event) => {

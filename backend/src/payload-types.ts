@@ -329,6 +329,13 @@ export interface PushSubscription {
   p256dh: string;
   auth: string;
   account?: (string | null) | Account;
+  /**
+   * Odeslat testovací push notifikaci po uložení této subscription
+   */
+  sendTestSubscriptionAfterSave?: boolean | null;
+  testNotificationTitle?: string | null;
+  testNotificationBody?: string | null;
+  testNotificationUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -356,6 +363,7 @@ export interface MonthlyNotification {
   useSms?: boolean | null;
   emailForTest?: string | null;
   phoneForTest?: string | null;
+  pushNotificationIdForTest?: string | null;
   notifications?:
     | {
         text: string;
@@ -717,6 +725,10 @@ export interface PushSubscriptionsSelect<T extends boolean = true> {
   p256dh?: T;
   auth?: T;
   account?: T;
+  sendTestSubscriptionAfterSave?: T;
+  testNotificationTitle?: T;
+  testNotificationBody?: T;
+  testNotificationUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -731,6 +743,7 @@ export interface MonthlyNotificationsSelect<T extends boolean = true> {
   useSms?: T;
   emailForTest?: T;
   phoneForTest?: T;
+  pushNotificationIdForTest?: T;
   notifications?:
     | T
     | {
@@ -937,6 +950,7 @@ export interface TaskSendPushNotification {
     title: string;
     message: string;
     accountId: string;
+    url?: string | null;
   };
   output?: unknown;
 }

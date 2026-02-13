@@ -49,6 +49,14 @@ export const Accounts: CollectionConfig = {
       return adminOrApiKeyAuth(req)
     },
     update: async ({ req }) => {
+      const user = req.user
+      if (user && user.collection === 'accounts') {
+        return {
+          id: {
+            equals: user.id,
+          },
+        }
+      }
       return adminOrApiKeyAuth(req)
     },
     delete: async ({ req }) => {
@@ -66,17 +74,32 @@ export const Accounts: CollectionConfig = {
           type: 'text',
         },
       ],
+      access: {
+        update: async ({ req }) => {
+          return adminOrApiKeyAuth(req)
+        },
+      },
     },
     {
       name: 'terms',
       type: 'checkbox',
       label: 'Souhlas s obchodními podmínkami',
       required: true,
+      access: {
+        update: async ({ req }) => {
+          return adminOrApiKeyAuth(req)
+        },
+      },
     },
     {
       name: 'marketing',
       type: 'checkbox',
       label: 'Souhlas se zasíláním marketingových sdělení',
+      access: {
+        update: async ({ req }) => {
+          return adminOrApiKeyAuth(req)
+        },
+      },
     },
   ],
 }

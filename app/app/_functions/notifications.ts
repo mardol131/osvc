@@ -1,3 +1,15 @@
+import { stringify } from "qs-esm";
+import {
+  createRecord,
+  deleteRecord,
+  deleteRecords,
+  getCollection,
+  getSingleRecord,
+  updateRecord,
+  updateRecords,
+} from "./backend";
+import { useAuth } from "../_context/auth-context";
+
 export type NotificationResult = {
   success: boolean;
   message: string;
@@ -18,59 +30,81 @@ export type BrowserNotificationStatus =
   | "denied" // Zamítnuty - nelze zapnout
   | "unsupported"; // Prohlížeč nepodporuje
 
-export const checkBrowserNotifications =
-  async (): Promise<BrowserNotificationStatus> => {
-    try {
-      console.log("1. Kontrola API...");
+export function usePushNotifications() {
+  const { user } = useAuth();
 
-      if (
-        !("serviceWorker" in navigator) ||
-        !("PushManager" in window) ||
-        !("Notification" in window)
-      ) {
-        console.log("Něco z API chybí");
+  const checkBrowserNotifications =
+    async (): Promise<BrowserNotificationStatus> => {
+      try {
+        console.log("1. Kontrola API...");
+
+        if (
+          !("serviceWorker" in navigator) ||
+          !("PushManager" in window) ||
+          !("Notification" in window)
+        ) {
+          console.log("Něco z API chybí");
+          return "unsupported";
+        }
+
+        console.log("2. Kontrola permission...");
+        if (Notification.permission === "denied") {
+          console.log("Permission je denied");
+          return "denied";
+        }
+
+        console.log("3. Kontrola Service Worker...");
+
+        // Na iOS PWA je serviceWorker.ready problematický
+        // Zkus getRegistrations() místo toho
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        console.log("3a. Registrations count:", registrations.length);
+
+        if (registrations.length === 0) {
+          console.log("4. Vracím: supported (žádná registration)");
+          return "supported";
+        }
+
+        console.log("3b. Checking subscription...");
+        const subscription =
+          await registrations[0].pushManager.getSubscription();
+        console.log("3c. Subscription:", subscription);
+
+        const pushSubscription = await getCollection({
+          collectionSlug: "push-subscriptions",
+          query: stringify(
+            {
+              endpoint: subscription?.endpoint || "",
+            },
+            {
+              encodeValuesOnly: true,
+            },
+          ),
+        });
+
+        console.log("3d. Push subscription from backend:", pushSubscription);
+
+        const result =
+          subscription &&
+          pushSubscription.length > 0 &&
+          pushSubscription[0].account
+            ? "enabled"
+            : "supported";
+        console.log("4. Vracím:", result);
+
+        return result;
+      } catch (error) {
+        console.error("Chyba:", error instanceof Error ? error.message : error);
         return "unsupported";
       }
+    };
 
-      console.log("2. Kontrola permission...");
-      if (Notification.permission === "denied") {
-        console.log("Permission je denied");
-        return "denied";
-      }
-
-      console.log("3. Kontrola Service Worker...");
-
-      // Na iOS PWA je serviceWorker.ready problematický
-      // Zkus getRegistrations() místo toho
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      console.log("3a. Registrations count:", registrations.length);
-
-      if (registrations.length === 0) {
-        console.log("4. Vracím: supported (žádná registration)");
-        return "supported";
-      }
-
-      console.log("3b. Checking subscription...");
-      const subscription = await registrations[0].pushManager.getSubscription();
-      console.log("3c. Subscription:", !!subscription);
-
-      const result = subscription ? "enabled" : "supported";
-      console.log("4. Vracím:", result);
-
-      return result;
-    } catch (error) {
-      console.error("Chyba:", error instanceof Error ? error.message : error);
-      return "unsupported";
-    }
+  const convertArrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+    const bytes = new Uint8Array(buffer);
+    return btoa(String.fromCharCode(...bytes));
   };
 
-const convertArrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-  const bytes = new Uint8Array(buffer);
-  return btoa(String.fromCharCode(...bytes));
-};
-
-export const enablePushNotifications =
-  async (): Promise<NotificationResult> => {
+  const enablePushNotifications = async (): Promise<NotificationResult> => {
     try {
       if (!("Notification" in window)) {
         return {
@@ -92,7 +126,7 @@ export const enablePushNotifications =
         return {
           success: false,
           message:
-            "Notifikace byly zamítnuty. Povolte je v nastavení prohlížeče a zkuste znovu.",
+            "Notifikace byly zamítnuty. Povolte je v nastavení prohlížeči a zkuste znovu.",
         };
       }
 
@@ -124,59 +158,71 @@ export const enablePushNotifications =
         });
       }
 
-      const subscription = await registration.pushManager.subscribe({
+      let subscription = await registration.pushManager.getSubscription();
+
+      // Pokud subscription existuje v prohlížeči
+      if (subscription) {
+        console.log(
+          "Subscription již existuje, aktualizuji záznam v backendu...",
+        );
+
+        const sub = await getCollection({
+          collectionSlug: "push-subscriptions",
+          query: stringify(
+            {
+              endpoint: subscription.endpoint,
+            },
+            {
+              encodeValuesOnly: true,
+            },
+          ),
+        });
+
+        if (sub.length > 0) {
+          console.log("Záznam pro subscription existuje, aktualizuji...");
+          await updateRecord({
+            collectionSlug: "push-subscriptions",
+            recordId: sub[0].id,
+            query: stringify(
+              {
+                endpoint: subscription.endpoint,
+              },
+              {
+                encodeValuesOnly: true,
+              },
+            ),
+            body: {},
+          });
+
+          return {
+            success: true,
+            message: "Notifikace byly zapnuty.",
+          };
+        }
+      }
+
+      // Pokud subscription v prohlížeči neexistuje nebo nešel updatovat - vytvoř nový
+      subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: process.env.NEXT_PUBLIC_VAPID_KEY,
       });
-
       const p256dh = subscription.getKey("p256dh");
       const auth = subscription.getKey("auth");
 
-      if (!p256dh || !auth) {
-        return {
-          success: false,
-          message: "Chyba při získávání klíčů pro notifikace.",
-        };
-      }
+      console.log("New subscription:", subscription);
 
-      const p256dhBase64 = convertArrayBufferToBase64(p256dh);
-      const authBase64 = convertArrayBufferToBase64(auth);
-
-      console.log("Push subscription keys obtained:", {
-        p256dh: p256dhBase64.substring(0, 20) + "...",
-        auth: authBase64.substring(0, 20) + "...",
-      });
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_CMS_URL}/api/push-subscriptions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            endpoint: subscription.endpoint,
-            p256dh: p256dhBase64,
-            auth: authBase64,
-          }),
-          credentials: "include",
+      await createRecord({
+        collectionSlug: "push-subscriptions",
+        body: {
+          endpoint: subscription.endpoint,
+          p256dh: p256dh ? convertArrayBufferToBase64(p256dh) : "",
+          auth: auth ? convertArrayBufferToBase64(auth) : "",
         },
-      );
-
-      console.log("Server response for push subscription:", response);
-
-      if (!response.ok) {
-        console.log(response);
-        return {
-          success: false,
-          message: "Chyba při registraci notifikací na serveru.",
-        };
-      }
-      console.log(response);
+      });
 
       return {
         success: true,
-        message: "Notifikace byly úspěšně zapnuty!",
+        message: "Notifikace byly zapnuty.",
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Neznámá chyba";
@@ -188,8 +234,7 @@ export const enablePushNotifications =
     }
   };
 
-export const disablePushNotifications =
-  async (): Promise<NotificationResult> => {
+  const disablePushNotifications = async (): Promise<NotificationResult> => {
     try {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
@@ -201,7 +246,41 @@ export const disablePushNotifications =
         };
       }
 
+      const sub = await getCollection({
+        collectionSlug: "push-subscriptions",
+        query: stringify(
+          {
+            endpoint: subscription.endpoint,
+          },
+          {
+            encodeValuesOnly: true,
+          },
+        ),
+      });
+
+      if (sub.length === 0) {
+        return {
+          success: false,
+          message: "Nejste přihlášeni k odběru notifikací.",
+        };
+      }
+
+      const res = await deleteRecord({
+        collectionSlug: "push-subscriptions",
+        recordId: sub[0].id,
+        query: stringify(
+          {
+            endpoint: subscription.endpoint,
+          },
+          {
+            encodeValuesOnly: true,
+          },
+        ),
+      });
+
       await subscription.unsubscribe();
+
+      console.log("updated", res);
 
       return {
         success: true,
@@ -209,9 +288,17 @@ export const disablePushNotifications =
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Neznámá chyba";
+      console.log("Chyba při vypínání notifikací:", error);
       return {
         success: false,
         message: `Chyba: ${message}`,
       };
     }
   };
+
+  return {
+    checkBrowserNotifications,
+    enablePushNotifications,
+    disablePushNotifications,
+  };
+}

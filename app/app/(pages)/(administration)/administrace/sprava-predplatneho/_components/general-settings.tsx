@@ -5,10 +5,10 @@ import { Bell, BellOff, ChevronDown, Dot, Smartphone } from "lucide-react";
 import Button from "@/app/_components/atoms/Button";
 import {
   BrowserNotificationStatus,
-  checkBrowserNotifications,
-  disablePushNotifications,
-  enablePushNotifications,
+  usePushNotifications,
 } from "@/app/_functions/notifications";
+import { useAuth } from "@/app/_context/auth-context";
+import HowToUseNotificationOnPhone from "./howToUseNotificationOnPhone";
 
 export default function GeneralSettings() {
   const [browserNotificationStatus, setBrowserNotificationStatus] =
@@ -18,6 +18,13 @@ export default function GeneralSettings() {
     useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHowToExpanded, setIsHowToExpanded] = useState(false);
+  const auth = useAuth();
+
+  const {
+    checkBrowserNotifications,
+    enablePushNotifications,
+    disablePushNotifications,
+  } = usePushNotifications();
 
   useEffect(() => {
     (async () => {
@@ -31,7 +38,7 @@ export default function GeneralSettings() {
     setIsLoading(true);
 
     const currentStatus = await checkBrowserNotifications();
-
+    console.log("Aktuální stav notifikací:", currentStatus);
     // Již povoleno - není co dělat
     if (currentStatus === "enabled") {
       setBrowserNotificationStatus(currentStatus);
@@ -67,7 +74,6 @@ export default function GeneralSettings() {
       alert(result.message);
       // Aktualizujeme stav (mohl se změnit na denied)
       const status = await checkBrowserNotifications();
-      console.log(status);
       setBrowserNotificationStatus(status);
     }
 
@@ -91,6 +97,9 @@ export default function GeneralSettings() {
   return (
     <div className="rounded-xl border w-full p-10 max-md:p-4 bg-white border-zinc-100 shadow-md">
       <div className="w-full flex flex-col gap-10 mx-auto">
+        {/* Sekce 1: Zapnout notifikace pro tento účet */}
+
+        {/* Sekce 2: Nastavení zařízení */}
         <div
           onClick={() => {
             setIsExpanded(!isExpanded);
@@ -112,111 +121,183 @@ export default function GeneralSettings() {
 
             <div className="mb-5 flex flex-col gap-3">
               <p>
-                Notifikace se nastavují pro konkrétní prohlížeč a zařízení,
-                nikoli přímo pro váš uživatelský účet v OSVČ365. To znamená:
+                Notifikace se nastavují pro konkrétní prohlížeč a zařízení.
+                Pokud chcete využívat notifikace i na jiném zařízení, stačí se
+                tam přihlásit a zapnout notifikace.
               </p>
-              <ul>
-                <li className="flex items-start gap-2">
-                  <Dot />
-                  <p>
-                    Notifikace uvidí každý, kdo na tomto zařízení používá stejný
-                    prohlížečový profil.
-                  </p>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Dot />
-                  <p>
-                    Pokud jste přihlášeni do svého Chrome účtu, může se toto
-                    nastavení synchronizovat i na další zařízení, kde používáte
-                    stejný Chrome účet.
-                  </p>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Dot />
-                  <p>
-                    Pokud používáte jiný prohlížeč nebo jiné zařízení, je
-                    potřeba notifikace povolit znovu.
-                  </p>
-                </li>
-              </ul>
               <p>
-                Z bezpečnostních důvodů proto notifikace neobsahují citlivé
-                informace a slouží pouze jako upozornění, že je v aplikaci
-                dostupná nová událost.
+                Pro jedno nastavení prohlížeče (chrome account, windows účet
+                apod.) může mít aktivní notifikace pouze jeden účet. Pokud je v
+                tomto nastavení aktivujete, bude je přijímat pouze tento účet.
+                Notifikace přijímáte i ve chvíli, kdy nejste přihlášení.
               </p>
             </div>
-            <div className="bg-zinc-50 rounded-lg p-4 border border-zinc-100">
-              <div className="flex justify-between max-sm:flex-col max-sm:items-start items-center gap-4">
-                {browserNotificationStatus === "enabled" ? (
-                  <>
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="w-12 h-12 shrink-0 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Bell className="w-6 h-6 text-green-600" />
+            <div className="flex flex-col gap-4">
+              <div className="bg-zinc-50 rounded-lg p-4 border border-zinc-100">
+                <div className="flex justify-between max-sm:flex-col max-sm:items-start items-center gap-4">
+                  {browserNotificationStatus === "enabled" ? (
+                    <>
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="w-12 h-12 shrink-0 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Bell className="w-6 h-6 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-zinc-900">
+                            V tuto chvíli přijímáte notifikace
+                          </p>
+                          <p className="text-sm text-zinc-600 mt-1">
+                            V tomto prohlížeči již můžete dostávat push
+                            notifikace
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  ) : browserNotificationStatus === "supported" ? (
+                    <>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
+                          <BellOff className="w-6 h-6 text-red-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-zinc-900">
+                            Notifikace jsou vypnuty
+                          </p>
+                          <p className="text-sm text-zinc-600 mt-1">
+                            Pokud chcete notifikace zapnout, klikněte na
+                            tlačítko "Zapnout notifikace".
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  ) : browserNotificationStatus === "unsupported" ? (
+                    <>
+                      <div className="w-12 h-12 bg-zinc-200 rounded-lg flex items-center justify-center">
+                        <BellOff className="w-6 h-6 text-zinc-600" />
                       </div>
                       <div>
                         <p className="font-medium text-zinc-900">
-                          Notifikace jsou zapnuty
+                          Prohlížeč notifikace nepodporuje
                         </p>
                         <p className="text-sm text-zinc-600 mt-1">
-                          V tomto prohlížeči budete dostávat push notifikace
+                          Váš prohlížeč nebo zařízení nepodporuje push
+                          notifikace
                         </p>
                       </div>
-                    </div>
-                  </>
-                ) : browserNotificationStatus === "supported" ? (
-                  <>
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
-                        <BellOff className="w-6 h-6 text-red-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-zinc-900">
-                          Notifikace jsou vypnuty
-                        </p>
-                        <p className="text-sm text-zinc-600 mt-1">
-                          Pokud chcete notifikace zapnout, klikněte na tlačítko
-                          "Zapnout notifikace".
-                        </p>
-                      </div>
-                    </div>
-                  </>
-                ) : browserNotificationStatus === "unsupported" ? (
-                  <>
-                    <div className="w-12 h-12 bg-zinc-200 rounded-lg flex items-center justify-center">
-                      <BellOff className="w-6 h-6 text-zinc-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-zinc-900">
-                        Prohlížeč notifikace nepodporuje
-                      </p>
-                      <p className="text-sm text-zinc-600 mt-1">
-                        Váš prohlížeč nebo zařízení nepodporuje push notifikace
-                      </p>
-                    </div>
-                  </>
-                ) : null}
-                {(browserNotificationStatus === "supported" ||
-                  browserNotificationStatus === "enabled") && (
-                  <Button
-                    variant={
-                      browserNotificationStatus === "enabled" ? "red" : "black"
-                    }
-                    size="xs"
-                    text={
-                      browserNotificationStatus === "supported"
-                        ? "Zapnout"
-                        : "Vypnout"
-                    }
-                    onClick={
-                      browserNotificationStatus === "enabled"
-                        ? disableNotificationsHandler
-                        : enableNotificationsHandler
-                    }
-                    disabled={isDisablingNotifications}
-                    loading={isLoading}
-                  />
-                )}
+                    </>
+                  ) : null}
+                  {(browserNotificationStatus === "supported" ||
+                    browserNotificationStatus === "enabled") && (
+                    <Button
+                      variant={
+                        browserNotificationStatus === "enabled"
+                          ? "red"
+                          : "black"
+                      }
+                      size="xs"
+                      text={
+                        browserNotificationStatus === "supported"
+                          ? "Zapnout pro tento prohlížeč"
+                          : browserNotificationStatus === "enabled"
+                            ? "Vypnout pro tento prohlížeč"
+                            : browserNotificationStatus === "denied"
+                              ? "Povolte notifikace v prohlížeči"
+                              : "Notifikace nejsou podporovány"
+                      }
+                      onClick={
+                        browserNotificationStatus === "enabled"
+                          ? disableNotificationsHandler
+                          : browserNotificationStatus === "supported"
+                            ? enableNotificationsHandler
+                            : undefined
+                      }
+                      disabled={isDisablingNotifications}
+                      loading={isLoading}
+                    />
+                  )}
+                </div>
               </div>
+              {/* <div className="bg-zinc-50 rounded-lg p-4 border border-zinc-100">
+                <div className="flex justify-between max-sm:flex-col max-sm:items-start items-center gap-4">
+                  {browserNotificationStatus === "enabled" ? (
+                    <>
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="w-12 h-12 shrink-0 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Bell className="w-6 h-6 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-zinc-900">
+                            Notifikace jsou zapnuty
+                          </p>
+                          <p className="text-sm text-zinc-600 mt-1">
+                            V tomto prohlížeči budete dostávat push notifikace
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  ) : browserNotificationStatus === "supported" ? (
+                    <>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
+                          <BellOff className="w-6 h-6 text-red-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-zinc-900">
+                            Notifikace jsou vypnuty
+                          </p>
+                          <p className="text-sm text-zinc-600 mt-1">
+                            Pokud chcete notifikace zapnout, klikněte na
+                            tlačítko "Zapnout notifikace".
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  ) : browserNotificationStatus === "unsupported" ? (
+                    <>
+                      <div className="w-12 h-12 bg-zinc-200 rounded-lg flex items-center justify-center">
+                        <BellOff className="w-6 h-6 text-zinc-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-zinc-900">
+                          Prohlížeč notifikace nepodporuje
+                        </p>
+                        <p className="text-sm text-zinc-600 mt-1">
+                          Váš prohlížeč nebo zařízení nepodporuje push
+                          notifikace
+                        </p>
+                      </div>
+                    </>
+                  ) : null}
+                  {(browserNotificationStatus === "supported" ||
+                    browserNotificationStatus === "enabled") && (
+                    <Button
+                      variant={
+                        browserNotificationStatus === "enabled"
+                          ? "red"
+                          : "black"
+                      }
+                      size="xs"
+                      text={
+                        browserNotificationStatus === "supported"
+                          ? "Zapnout pro tento prohlížeč"
+                          : browserNotificationStatus === "enabled"
+                            ? "Vypnout pro tento prohlížeč"
+                            : browserNotificationStatus === "denied"
+                              ? "Povolte notifikace v prohlížeči"
+                              : "Notifikace nejsou podporovány"
+                      }
+                      onClick={
+                        browserNotificationStatus === "enabled"
+                          ? disableNotificationsHandler
+                          : browserNotificationStatus === "supported"
+                            ? enableNotificationsHandler
+                            : undefined
+                      }
+                      disabled={isDisablingNotifications}
+                      loading={isLoading}
+                    />
+                  )}
+                </div>
+              </div> */}
             </div>
 
             {/* Návod jak zapnout na telefonu */}
@@ -236,142 +317,7 @@ export default function GeneralSettings() {
                 />
               </button>
 
-              {isHowToExpanded && (
-                <div className="mt-4 space-y-6">
-                  {/* iPhone */}
-                  <div className="bg-zinc-50 rounded-lg p-4 border border-zinc-100">
-                    <h6 className="font-semibold text-zinc-900 mb-3">
-                      iPhone (Safari)
-                    </h6>
-                    <p className="text-sm text-zinc-600 mb-3">
-                      Na iPhonu je potřeba nejdříve přidat OSVČ365 na plochu
-                      jako aplikaci:
-                    </p>
-                    <ol className="space-y-2 text-sm text-zinc-700">
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          1.
-                        </span>
-                        <span>
-                          Otevřete{" "}
-                          <span className="font-medium">osvc365.cz</span> v
-                          Safari (jiné prohlížeče na iPhonu notifikace
-                          nepodporují).
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          2.
-                        </span>
-                        <span>
-                          Klepněte na ikonu{" "}
-                          <span className="font-medium">Sdílet</span> (čtverec
-                          se šipkou nahoru) ve spodní liště.
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          3.
-                        </span>
-                        <span>
-                          Vyberte{" "}
-                          <span className="font-medium">Přidat na plochu</span>{" "}
-                          a potvrďte.
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          4.
-                        </span>
-                        <span>
-                          Otevřete aplikaci OSVČ365 z plochy (ne ze Safari).
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          5.
-                        </span>
-                        <span>
-                          Přejděte do této sekce a klepněte na{" "}
-                          <span className="font-medium">Zapnout</span>.
-                        </span>
-                      </li>
-                    </ol>
-                    <p className="text-xs text-zinc-500 mt-3">
-                      Notifikace na iPhonu fungují pouze v aplikaci přidané na
-                      plochu. Vyžaduje iOS 16.4 nebo novější.
-                    </p>
-                  </div>
-
-                  {/* Android */}
-                  <div className="bg-zinc-50 rounded-lg p-4 border border-zinc-100">
-                    <h6 className="font-semibold text-zinc-900 mb-3">
-                      Android (Chrome)
-                    </h6>
-                    <p className="text-sm text-zinc-600 mb-3">
-                      Na Androidu můžete notifikace zapnout přímo v prohlížeči,
-                      nebo si přidat aplikaci na plochu:
-                    </p>
-                    <ol className="space-y-2 text-sm text-zinc-700">
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          1.
-                        </span>
-                        <span>
-                          Otevřete{" "}
-                          <span className="font-medium">osvc365.cz</span> v
-                          Chrome.
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          2.
-                        </span>
-                        <span>
-                          Přejděte do této sekce a klepněte na{" "}
-                          <span className="font-medium">Zapnout</span>.
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          3.
-                        </span>
-                        <span>
-                          Když se objeví dotaz na povolení notifikací, klepněte
-                          na <span className="font-medium">Povolit</span>.
-                        </span>
-                      </li>
-                    </ol>
-                    <p className="text-sm text-zinc-600 mt-4 mb-2">
-                      Pro lepší zážitek si můžete přidat aplikaci na plochu:
-                    </p>
-                    <ol className="space-y-2 text-sm text-zinc-700">
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          1.
-                        </span>
-                        <span>
-                          Klepněte na tři tečky v pravém horním rohu Chrome.
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <span className="font-semibold text-zinc-900 shrink-0">
-                          2.
-                        </span>
-                        <span>
-                          Vyberte{" "}
-                          <span className="font-medium">Přidat na plochu</span>{" "}
-                          nebo{" "}
-                          <span className="font-medium">
-                            Nainstalovat aplikaci
-                          </span>
-                          .
-                        </span>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-              )}
+              {isHowToExpanded && <HowToUseNotificationOnPhone />}
             </div>
           </div>
         )}

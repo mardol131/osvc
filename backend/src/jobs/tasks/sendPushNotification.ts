@@ -18,6 +18,11 @@ const sendPushNotificationInputSchema: Field[] = [
     type: 'text',
     required: true,
   },
+  {
+    name: 'url',
+    type: 'text',
+    required: false,
+  },
 ]
 
 export const sendPushNotificationTask: TaskConfig<any> = {
@@ -70,10 +75,10 @@ export const sendPushNotificationTask: TaskConfig<any> = {
     const data = JSON.stringify({
       title: title,
       body: message,
-      url: '/',
+      url: input.url || '/',
     })
 
-    const res = await webpush.sendNotification(
+    await webpush.sendNotification(
       {
         endpoint: pushSubscribe.docs[0].endpoint,
         keys: {
@@ -83,8 +88,6 @@ export const sendPushNotificationTask: TaskConfig<any> = {
       },
       data,
     )
-
-    console.log('Push notification sent:', res)
 
     return {
       output: {

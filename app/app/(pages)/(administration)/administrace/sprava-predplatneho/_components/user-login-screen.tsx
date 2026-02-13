@@ -3,7 +3,7 @@
 import LoadErrorState from "@/app/(pages)/(access)/[accessId]/_components/LoadErrorState";
 import LoginModal from "@/app/_components/molecules/login-modal/login-modal";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 type Props = {
   queryEmail?: string;
@@ -11,8 +11,12 @@ type Props = {
 
 export default function UserLoginScreen({ queryEmail }: Props) {
   const searchParams = useSearchParams();
-  const openModal = searchParams.get("openLoginModal") === "true";
-  const [loginModalIsOpen, setLoginModalIsOpen] = React.useState(openModal);
+  const [loginModalIsOpen, setLoginModalIsOpen] = React.useState(false);
+  useEffect(() => {
+    const openModal = searchParams.get("openLoginModal") === "true";
+
+    setLoginModalIsOpen(openModal);
+  }, []);
   return (
     <>
       <LoginModal
