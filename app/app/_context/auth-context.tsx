@@ -26,6 +26,14 @@ interface User {
   };
   terms: boolean;
   marketing: boolean;
+  pushSubscription?: (
+    | string
+    | {
+        id: string;
+        endpoint: string;
+        [key: string]: any;
+      }
+  )[];
 }
 
 interface AuthContextType {

@@ -5,7 +5,7 @@ self.addEventListener("push", (event) => {
 
   try {
     data = event.data ? event.data.json() : {};
-    console.log("[SW] Push data:", data);
+    console.log("[SW] Push data:", data.url);
   } catch (error) {
     console.error("[SW] Error parsing push data:", error);
   }
@@ -15,8 +15,12 @@ self.addEventListener("push", (event) => {
     body: data.body || "Nová notifikace",
     icon: data.icon || "/logo-osvc.png",
     badge: "/logo-osvc.png",
+    data: {
+      url: data.data.url || "/",
+    },
   };
 
+  console.log("[SW] Notification options:", data);
   console.log("[SW] Showing notification:", title, options);
 
   event.waitUntil(
@@ -32,7 +36,12 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
+  console.log("[SW] Notification click event:", event);
+  console.log("[SW] Notification data:", event.notification);
+  console.log("[SW] Notification click event data:", event.notification.data);
+
   const url = event.notification.data?.url || "/";
+  console.log("[SW] Notification click URL:", url);
 
   event.waitUntil(
     clients

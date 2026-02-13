@@ -203,19 +203,24 @@ export async function updateRecord({
   apiKey,
   authToken,
   body,
+  query,
 }: {
   collectionSlug:
     | "subscribes"
     | "monthly-notifications"
     | "accesses"
-    | "accounts";
+    | "accounts"
+    | "push-subscriptions";
   recordId: string;
   apiKey?: string;
   authToken?: string;
   body: Record<string, any>;
+  query?: string;
 }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}`,
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}${
+      query ? `?${query}` : ""
+    }`,
     {
       method: "PATCH",
       headers: {
@@ -239,6 +244,168 @@ export async function updateRecord({
   return data.doc;
 }
 
+export async function createRecord({
+  collectionSlug,
+  apiKey,
+  authToken,
+  body,
+}: {
+  collectionSlug:
+    | "subscribes"
+    | "monthly-notifications"
+    | "accesses"
+    | "accounts"
+    | "push-subscriptions";
+  apiKey?: string;
+  authToken?: string;
+  body: Record<string, any>;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: apiKey
+          ? `users API-Key ${apiKey}`
+          : authToken
+            ? `Bearer ${authToken}`
+            : "",
+      },
+      body: JSON.stringify(body),
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    throw new Error(
+      `Failed to create record in collection ${collectionSlug}: ${response.statusText}`,
+    );
+  }
+  const data = await response.json();
+  return data.doc;
+}
+
+export async function deleteRecords({
+  collectionSlug,
+  apiKey,
+  authToken,
+  query,
+}: {
+  collectionSlug:
+    | "subscribes"
+    | "monthly-notifications"
+    | "accesses"
+    | "accounts"
+    | "push-subscriptions";
+  apiKey?: string;
+  authToken?: string;
+  query?: string;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${
+      query ? `?${query}` : ""
+    }`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: apiKey
+          ? `users API-Key ${apiKey}`
+          : authToken
+            ? `Bearer ${authToken}`
+            : "",
+      },
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    throw new Error(
+      `Failed to delete records from collection ${collectionSlug}: ${response.statusText}`,
+    );
+  }
+  const data = await response.json();
+  return data.docs;
+}
+
+export async function deleteRecord({
+  collectionSlug,
+  recordId,
+  apiKey,
+  query,
+}: {
+  collectionSlug:
+    | "subscribes"
+    | "monthly-notifications"
+    | "accesses"
+    | "accounts"
+    | "push-subscriptions";
+  recordId: string;
+  apiKey?: string;
+  query?: string;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${recordId}${
+      query ? `?${query}` : ""
+    }`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
+      },
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch record ${recordId} from collection ${collectionSlug}: ${response.statusText}`,
+    );
+  }
+  const data = await response.json();
+  return data.doc;
+}
+
+export async function updateRecords({
+  collectionSlug,
+  apiKey,
+  body,
+  query,
+}: {
+  collectionSlug:
+    | "subscribes"
+    | "monthly-notifications"
+    | "accesses"
+    | "accounts"
+    | "push-subscriptions";
+  apiKey?: string;
+  body: Record<string, any>;
+  query?: string;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/${collectionSlug}/${
+      query ? `?${query}` : ""
+    }`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: apiKey ? `users API-Key ${apiKey}` : "",
+      },
+      body: JSON.stringify(body),
+      credentials: "include",
+    },
+  );
+
+  console.log("Update records response:", response);
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch records from collection ${collectionSlug}: ${response.statusText}`,
+    );
+  }
+  const data = await response.json();
+  return data.docs;
+}
+
 export async function getCollection({
   collectionSlug,
   authToken,
@@ -252,7 +419,8 @@ export async function getCollection({
     | "subscribes"
     | "monthly-notifications"
     | "accesses"
-    | "accounts";
+    | "accounts"
+    | "push-subscriptions";
   apiKey?: string;
   authToken?: string;
   query?: string;

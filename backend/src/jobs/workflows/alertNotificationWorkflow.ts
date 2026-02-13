@@ -90,6 +90,18 @@ export const alertNotificationWorkflow: WorkflowConfig<any> = {
       })
 
       await payload.jobs.queue({
+        task: 'sendPushNotification',
+        queue: 'send-push-notification-queue',
+        input: {
+          title: 'Připomínka nadcházející povinnosti',
+          message: `Připomínáme Vám, že se blíží termín povinnosti: ${obligation.text}. Pro detaily a přehled klikněte na notifikaci.`,
+          accountId:
+            typeof subscribe.account === 'string' ? subscribe.account : subscribe.account.id,
+          url: access && `/${access.accessId}`,
+        },
+      })
+
+      await payload.jobs.queue({
         task: 'sendEmail',
         queue: 'send-email-queue',
         input: {

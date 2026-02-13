@@ -208,9 +208,10 @@ export const monthlyNotificationsWorkflow: WorkflowConfig<any> = {
             queue: 'send-push-notification-queue',
             input: {
               title: 'Měsíční přehled změn a povinností',
-              message: `Na email ${subscribe.email} jsme Vám poslali nový přehled povinností`,
+              message: `Podívejte se na svůj nový měsíční přehled povinností a změn pro OSVČ. Klikněte pro zobrazení detailů a přehledu.`,
               accountId:
                 typeof subscribe.account === 'string' ? subscribe.account : subscribe.account.id,
+              url: `/${accessResponse.accessId}`,
             },
           })
         }

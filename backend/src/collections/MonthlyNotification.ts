@@ -3,6 +3,7 @@ import { createGeneralNotificationSms, sendSms } from '@/functions/notifications
 import { renderMonthlyNotificationEmail, sendEmail } from '@osvc/react-email'
 import { set } from 'date-fns'
 import type { CollectionConfig, Field } from 'payload'
+import webpush from 'web-push'
 
 export const notificationFields: Field[] = [
   { name: 'text', type: 'textarea', required: true },
@@ -127,6 +128,11 @@ export const MonthlyNotifications: CollectionConfig = {
           type: 'text',
           label: 'Telefonní číslo pro odeslání testovací SMS zprávy',
         },
+        {
+          name: 'pushNotificationIdForTest',
+          type: 'text',
+          label: 'ID push notifikace pro odeslání testovací push notifikace',
+        },
       ],
     },
     {
@@ -166,7 +172,7 @@ export const MonthlyNotifications: CollectionConfig = {
       },
     ],
     beforeChange: [
-      async ({ data }) => {
+      async ({ data, req }) => {
         if (data._status === 'draft') {
           type Notification = {
             text: string
@@ -261,8 +267,48 @@ export const MonthlyNotifications: CollectionConfig = {
             }
           }
 
+          if (data.pushNotificationIdForTest) {
+            const pushNotification = await req.payload.findByID({
+              collection: 'push-subscriptions',
+              id: data.pushNotificationIdForTest,
+            })
+
+            if (pushNotification) {
+              try {
+                webpush.setVapidDetails(
+                  process.env.NEXT_PUBLIC_VAPID_SUBJECT!,
+                  process.env.NEXT_PUBLIC_VAPID_KEY!,
+                  process.env.VAPID_PRIVATE_KEY!,
+                )
+
+                await webpush.sendNotification(
+                  {
+                    endpoint: pushNotification.endpoint,
+                    keys: {
+                      p256dh: pushNotification.p256dh,
+                      auth: pushNotification.auth,
+                    },
+                  },
+                  JSON.stringify({
+                    title: `Testovací notifikace - ${data.month} ${data.year}`,
+                    body: customMessages
+                      .filter((msg) => msg.notifications.length > 0)
+                      .map((msg) => msg.heading)
+                      .join(', '),
+                    data: {
+                      url: `${process.env.WEBSITE_URL}/testovací-access-link`,
+                    },
+                  }),
+                )
+              } catch (error) {
+                console.error('Chyba při odesílání testovací push notifikace:', error)
+              }
+            }
+          }
+
           data.emailForTest = undefined
           data.phoneForTest = undefined
+          data.pushNotificationIdForTest = undefined
         }
         return data
       },
